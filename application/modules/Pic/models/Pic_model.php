@@ -203,16 +203,35 @@ class Pic_model extends CI_Model
 
     public function getCustomerFromSales($group = null, $customer = null)
     {
+        // var_dump($group);
+        // var_dump($customer);
         $sql = "SELECT DISTINCT CardCode, GroupName, CardName AS CustomerName, GroupCode FROM tb_sales";
 
         if ($group != null) {
-            $sql .= " WHERE GroupCode = '$group'";
+            $group = implode(",", $group);
+            $sql .= " WHERE GroupCode IN (select value FROM  STRING_SPLIT('$group', ','))";
         }
 
         if ($customer != null) {
-            $customer = implode("','", $customer);
-            $sql .= " AND CardCode NOT IN('$customer')";
+            // $customer = implode(",", $customer);
+            $sql .= " AND CardCode NOT IN(select value FROM  STRING_SPLIT('$customer', ','))";
         }
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getCustomerFromTBSales($customer_code = null)
+    {
+        // var_dump($group);
+        // var_dump($customer);
+        $sql = "SELECT DISTINCT CardCode, GroupName, CardName AS CustomerName, GroupCode FROM tb_sales";
+
+        if ($customer_code != null) {
+            // $customer = implode(",", $customer);
+            $sql .= " WHERE CardCode IN(select value FROM  STRING_SPLIT('$customer_code', ','))";
+        }
+
         $query = $this->db->query($sql);
         return $query;
     }
@@ -232,56 +251,74 @@ class Pic_model extends CI_Model
     public function getItemFromPenjualan($brand, $customer, $start, $end, $item = null)
     {
 
-        // $sql = "SELECT t0.ItemCode,t0.ItemName,isnull(t0.FrgnName,'') as Barcode ,
-        // case when t1.Price is null then t0.price else t1.Price  end Price,
-        // case when t1.CodeBrand is null then t0.BrandCode else t1.CodeBrand  end CodeBrand,
-        // case when t1.BrandName is null then t0.BrandName else t1.BrandName  end BrandName, 
-        // isnull(t1.Quantity,0) AS Quantity
-        // FROM tb_item t0
-        // left join (SELECT t1.ItemCode, t1.ItemName, t1.Barcode, t1.Price, t1.CodeBrand,t1.BRAND AS BrandName, SUM(t1.Quantity) AS Quantity  
-        // FROM tb_penjualan_qty t1 WHERE t1.CodeBrand = '$brand'
-        // AND t1.CardCode IN ($customer)
-        // AND t1.[month] BETWEEN '$start' AND '$end'";
-        // $sql .= " GROUP BY t1.ItemCode, t1.ItemName, t1.Barcode, t1.Price, t1.CodeBrand, t1.BRAND
-		// ) t1  on  t0.ItemCode=t1.ItemCode collate SQL_Latin1_General_CP850_CI_AS
-        // where t0.BrandCode='$brand'";
-        // $sql .= $item != NULL ? " AND t0.ItemCode IN ('$item')" : "";
-        // $sql .= " ORDER BY t0.ItemCode";
+        // if ($item != null) {
+        //     $sql = "IF OBJECT_ID('tempdb..#tempItemFromSales') IS NOT NULL
+        //     DROP TABLE #tempItemFromSales;
+        //     CREATE TABLE #tempItemFromSales
+        //     (
+        //     ItemCode VARCHAR(255),
+        //     ItemName VARCHAR(255),
+        //     Barcode VARCHAR(255),
+        //     CodeBrand VARCHAR(255),
+        //     BrandName VARCHAR(255),
+        //     Quantity VARCHAR(255),
+        //     Price VARCHAR(255)
+        //     )
+        //     INSERT INTO #tempItemFromSales
+        //     EXEC select_item_from_sales @BrandCode = '$brand', @StartDate = '$start', 
+        //     @EndDate = '$end', @StringListCustomerCode ='$customer'";
+        //     $this->db->query($sql);
 
+        //     $query = "select * from #tempItemFromSales where ItemCode IN (select value FROM  STRING_SPLIT('$item', ','))";
+        //     $result = $this->db->query($query);
+        // } else {
+        //     $sql = "EXEC select_item_from_sales @BrandCode = '$brand', @StartDate = '$start',@EndDate = '$end', @StringListCustomerCode ='$customer'";
+        //     // $sql = "select * from tb_sales where ";
+        //     $result = $this->db->query($sql);
+        // }
 
-        $sql = "SELECT
-        ss.ItemCode, ss.ItemName, ss.Barcode, ss.CodeBrand, ss.BrandName,
-        SUM(ss.Quantity) AS Quantity, AVG(ss.Price) AS Price
-        FROM
+        $sql = "select * from 
         (
-        SELECT CardCode,CardName,[ItemCode],[ItemName], Barcode,
-        CodeBrand,BrandName, Quantity, Price ,[Date]
-        from
-        ( select t1.CardCode,t1.CardName,T0.[ItemCode],T2.[ItemName],T2.FrgnName AS Barcode,
-        TB.ItmsGrpCod AS CodeBrand,TB.ItmsGrpNam AS BrandName, T0.Price,
-        T1.[DocDate] AS [Date],
-        sum(T0.[Quantity]) as Quantity, month(T1.[DocDate]) as Month FROM [pksrv-sap].PANDURASA_LIVE.dbo.INV1 T0 
-        INNER JOIN [pksrv-sap].PANDURASA_LIVE.dbo.OINV T1 ON T0.DocEntry = T1.DocEntry 
-        AND T1.CANCELED='N'
-        INNER JOIN [pksrv-sap].PANDURASA_LIVE.dbo.OITM T2 ON T0.ItemCode = T2.ItemCode
-        INNER JOIN [pksrv-sap].PANDURASA_LIVE.dbo.oitb tb WITH (NOLOCK) on T2.itmsgrpcod=tb.itmsgrpcod 
-        AND T1.[DocDate] between '2023-01-01' and getdate()
-        GROUP BY t1.CardCode,t1.CardName,T2.FrgnName,T0.Price,
-        TB.ItmsGrpNam,tb.ItmsGrpCod,T0.[ItemCode],T2.[ItemName],
-        T1.[DocDate],
-        T1.DocDate)S
-        )ss
-        where ss.CardCode IN ($customer)
-        and ss.date BETWEEN '$start' AND '$end'
-        and ss.CodeBrand = '$brand'";
-        
-        $sql .= $item != NULL ? " AND ss.ItemCode IN ('$item')" : "";
+        select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode,
+        ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, 
+        Barcode collate SQL_Latin1_General_CP850_CI_AS as Barcode,
+        CodeBrand as CodeBrand,
+        BRAND collate SQL_Latin1_General_CP850_CI_AS as BrandName, 
+        SUM(Quantity) as Quantity, 
+        AVG(Price) as Price 
+        from tb_sales 
+        WHERE CardCode collate SQL_Latin1_General_CP850_CI_AS IN (select value FROM  STRING_SPLIT('$customer', ','))
+        AND [Month] between '$start' and '$end'
+        AND CodeBrand = '$brand' 
+        group by ItemCode, ItemName, Barcode, CodeBrand, BRAND 
+        union
+        select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode,
+        ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, 
+        FRGNNAME collate SQL_Latin1_General_CP850_CI_AS as Barcode,
+        BrandCode as CodeBrand,
+        BrandName collate SQL_Latin1_General_CP850_CI_AS as BrandName, 
+        '0' as Quantity,
+        Price 
+        from tb_item 
+        WHERE ItemCode collate SQL_Latin1_General_CP850_CI_AS NOT IN(
+        select distinct ItemCode from tb_sales 
+        WHERE CardCode  IN (select value FROM  STRING_SPLIT('$customer', ',')) 
+        AND [Month] between '$start' and '$end'
+        AND CodeBrand = '$brand'
+        )
+        AND tb_item.BrandCode = '$brand'
+        )ss";
 
-        $sql .= " group by  
-        ss.ItemCode, ss.ItemName, ss.Barcode, ss.CodeBrand, ss.BrandName";
+        if ($item != null) {
+            $sql .= " WHERE ss.ItemCode IN (select value FROM  STRING_SPLIT('$item', ','))";
+        }
+
+        $sql .= " order by ss.Quantity DESC";
+        $result = $this->db->query($sql);
         // print_r($sql);
-        $query = $this->db->query($sql);
-        return $query;
+        // die;
+
+        return $result;
     }
 
     public function getBudget()
@@ -369,11 +406,27 @@ class Pic_model extends CI_Model
 
     public function getBudgetActivity($budget_code_activity, $end_date)
     {
-        $sql = "SELECT SUM(BudgetActivity) AS BudgetActivity FROM tb_operating_activity 
-        WHERE BudgetCodeActivity = '$budget_code_activity'
-        AND [month] BETWEEN (SELECT MIN([month]) FROM tb_operating_activity WHERE BudgetCodeActivity = '$budget_code_activity') AND '$end_date'";
+        // $sql = "SELECT SUM(BudgetActivity) AS BudgetActivity FROM tb_operating_activity 
+        // WHERE BudgetCodeActivity = '$budget_code_activity'
+        // AND [month] BETWEEN (SELECT MIN([month]) FROM tb_operating_activity WHERE BudgetCodeActivity = '$budget_code_activity') AND '$end_date'";
+        // $query = $this->db->query($sql);
+        $sql = "SELECT SUM(BudgetActivity)/12 AS BudgetActivity FROM tb_operating_activity 
+        WHERE BudgetCodeActivity = '$budget_code_activity'";
         $query = $this->db->query($sql);
         return $query->row()->BudgetActivity;
+    }
+
+    public function getBudgetActivityReport($budget_code)
+    {
+        $sql = "select distinct t1.BudgetCode, t1.BudgetCodeActivity, t1.ActivityName, t1.BudgetActivity,
+        (select sum(Budget_booked) from tb_operating_proposal 
+        where BudgetCodeActivity = t1.BudgetCodeActivity) as Used,
+        t1.BudgetActivity - (select sum(Budget_booked) from tb_operating_proposal 
+        where BudgetCodeActivity = t1.BudgetCodeActivity) as Saldo
+        from tb_operating_activity t1
+        where BudgetCode = '$budget_code'";
+        $query = $this->db->query($sql);
+        return $query;
     }
 
     public function getBudgetCode($post)
@@ -429,7 +482,8 @@ class Pic_model extends CI_Model
 
     public function getNumber()
     {
-        $sql = "SELECT FORMAT(MAX(SUBSTRING(number,5,8))+1, 'd4') as number from tb_proposal";
+        $user_code = $_SESSION['user_code'];
+        $sql = "SELECT FORMAT(MAX(SUBSTRING(number,10,13))+1, 'd4') as number from tb_proposal where UserCode = '$user_code'";
         $query = $this->db->query($sql);
         $number = $query->row()->number;
         if ($number == null) {
@@ -437,7 +491,7 @@ class Pic_model extends CI_Model
         }
         $sql2 = "SELECT concat(cast(year(getdate()) AS varchar),'$number') as num";
         $query2 = $this->db->query($sql2);
-        $number = $query2->row()->num;
+        $number = $user_code . $query2->row()->num;
         return $number;
     }
 
@@ -469,6 +523,7 @@ class Pic_model extends CI_Model
         // die;
         $number = $this->getNumber();
         $username = $_SESSION['username'];
+        $user_code = $_SESSION['user_code'];
         $date = $this->getDate();
         $budget_code_activity = $post['budget_code'];
         if ($post['budget_type'] == 'on_top') {
@@ -489,6 +544,7 @@ class Pic_model extends CI_Model
             'Status' => 'open',
             'ClaimTo' => $post['claim_to'],
             'CreatedBy' => $_SESSION['username'],
+            'UserCode' => $user_code,
         );
         $this->db->insert('tb_proposal', $params);
         $id = $this->db->insert_id();
@@ -590,10 +646,7 @@ class Pic_model extends CI_Model
 
     public function getProposal($params = null)
     {
-        // $sql = "SELECT * FROM tb_proposal";
-        $sql = "SELECT DISTINCT t1.*, t2.GroupCustomer FROM tb_proposal t1
-        INNER JOIN tb_proposal_customer t2
-        ON t1.Number = t2.ProposalNumber";
+        $sql = "SELECT DISTINCT t1.* FROM tb_proposal t1";
         if (!empty($params['user_code'])) {
             $user_code = $params['user_code'];
             $sql .= " WHERE t1.BrandCode IN(SELECT BrandCode FROM tb_pic_brand WHERE UserCode = '$user_code')";
@@ -605,6 +658,7 @@ class Pic_model extends CI_Model
         }
 
         $sql .= " ORDER BY id DESC";
+
         $query = $this->db->query($sql);
         return $query;
     }
@@ -621,12 +675,34 @@ class Pic_model extends CI_Model
 
     public function getProposalCustomer($number)
     {
-        $sql = "SELECT GroupCustomer, t3.GroupName, t2.CustomerName FROM tb_proposal_customer t1
+        $sql = "SELECT t1.id, GroupCustomer, t3.GroupName, t2.CustomerName, t1.no_sk FROM tb_proposal_customer t1
         INNER JOIN m_customer t2 ON t1.CustomerCode = t2.CardCode
         INNER JOIN m_group t3 ON t1.GroupCustomer = t3.GroupCode
         WHERE t1.ProposalNumber = '$number'";
         $query = $this->db->query($sql);
+        // var_dump($sql);
+        // die;
         return $query;
+    }
+
+    public function editNoSK($post)
+    {
+        // var_dump($post);
+        // die;
+        for ($i = 0; $i < count($post['id']); $i++) {
+            $data = array(
+                'no_sk' => $post['no_sk'][$i],
+                'sk_created_by' => $_SESSION['username'],
+                'sk_created_at' => $this->getDate(),
+            );
+
+            $this->db->where('id', $post['id'][$i]);
+            $this->db->update('tb_proposal_customer', $data);
+        }
+
+        // var_dump($this->db->last_query());
+        // var_dump($this->db->error());
+        // die;
     }
 
     public function deleteProposal($number)
@@ -692,6 +768,8 @@ class Pic_model extends CI_Model
                 'PrincipalAnpValas' => (float)str_replace(',', '', $post['anp_principal_valas'][$i]),
                 'PrincipalAnpIDR' => (float)str_replace(',', '', $post['anp_principal_idr'][$i]),
                 'OperatingBudget' => (float)str_replace(',', '', $post['anp_operating'][$i]),
+                'IMS_Target' => (float)str_replace(',', '', $post['ims_target'][$i]),
+                'IMS_Budget' => (float)str_replace(',', '', $post['ims_budget'][$i]),
                 'is_ims' => $post['set_ims'],
                 'ims_percent' => $post['ims_percent'],
                 'CreatedBy' => $_SESSION['username'],
@@ -810,29 +888,58 @@ class Pic_model extends CI_Model
         return $query;
     }
 
-    public function simpanOperatingActivity($post)
+    // public function simpanOperatingActivity($post) // script old
+    // {
+    //     // var_dump($post);
+    //     // die;
+    //     for ($i = 0; $i < count($post['activity']); $i++) {
+    //         $params = array(
+    //             'BudgetCode' => $post['budget_code'],
+    //             'BudgetCodeActivity' => $post['budget_code_activity'][$i],
+    //             'BrandCode' => $post['brand_code'],
+    //             'BrandName' => getBrandName($post['brand_code']),
+    //             'ActivityCode' => $post['activity'][$i],
+    //             'ActivityName' => getActivityName($post['activity'][$i]),
+    //             'Month' => $post['month'][$i],
+    //             'PrincipalTargetIDR' => $this->getPrincipalTarget($post['budget_code']),
+    //             'PrincipalAnpIDR' => $this->getTargetAnp($post['budget_code']),
+    //             'OperatingBudget' => $this->getTotalOperatingBudget($post['budget_code']),
+    //             'BudgetActivity' => (float)$post['budget_activity'][$i],
+    //             'BudgetActivity%' => ((float)$post['budget_activity'][$i] / (float)$this->getTotalOperatingBudget($post['budget_code'])) * 100,
+    //             'CreatedBy' => $_SESSION['username'],
+    //             'CreatedDate' => $this->getDate()
+    //         );
+    //         // var_dump($params);
+    //         $this->db->insert('tb_operating_activity', $params);
+    //     }
+    // }
+
+    public function simpanOperatingActivity($post) // script revisi
     {
-        // var_dump($post);
+        //var_dump($post["month"]);
         // die;
         for ($i = 0; $i < count($post['activity']); $i++) {
-            $params = array(
-                'BudgetCode' => $post['budget_code'],
-                'BudgetCodeActivity' => $post['budget_code_activity'][$i],
-                'BrandCode' => $post['brand_code'],
-                'BrandName' => getBrandName($post['brand_code']),
-                'ActivityCode' => $post['activity'][$i],
-                'ActivityName' => getActivityName($post['activity'][$i]),
-                'Month' => $post['month'][$i],
-                'PrincipalTargetIDR' => $this->getPrincipalTarget($post['budget_code']),
-                'PrincipalAnpIDR' => $this->getTargetAnp($post['budget_code']),
-                'OperatingBudget' => $this->getTotalOperatingBudget($post['budget_code']),
-                'BudgetActivity' => (float)$post['budget_activity'][$i],
-                'BudgetActivity%' => ((float)$post['budget_activity'][$i] / (float)$this->getTotalOperatingBudget($post['budget_code'])) * 100,
-                'CreatedBy' => $_SESSION['username'],
-                'CreatedDate' => $this->getDate()
-            );
-            // var_dump($params);
-            $this->db->insert('tb_operating_activity', $params);
+
+            for ($m = 0; $m < count($post['month']); $m++) {
+                $params = array(
+                    'BudgetCode' => $post['budget_code'],
+                    'BudgetCodeActivity' => $post['budget_code_activity'][$i],
+                    'BrandCode' => $post['brand_code'],
+                    'BrandName' => getBrandName($post['brand_code']),
+                    'ActivityCode' => $post['activity'][$i],
+                    'ActivityName' => getActivityName($post['activity'][$i]),
+                    'Month' => $post['month'][$m],
+                    'PrincipalTargetIDR' => $this->getPrincipalTarget($post['budget_code']),
+                    'PrincipalAnpIDR' => $this->getTargetAnp($post['budget_code']),
+                    'OperatingBudget' => $this->getTotalOperatingBudget($post['budget_code']),
+                    'BudgetActivity' => (float)$post['budget_activity'][$i],
+                    'BudgetActivity%' => ((float)$post['budget_activity'][$i] / (float)$this->getTotalOperatingBudget($post['budget_code'])) * 100,
+                    'CreatedBy' => $_SESSION['username'],
+                    'CreatedDate' => $this->getDate()
+                );
+                // var_dump($params);
+                $this->db->insert('tb_operating_activity', $params);
+            }
         }
     }
 
@@ -960,7 +1067,9 @@ class Pic_model extends CI_Model
         SUM(PrincipalTargetValas) AS TotalPrincipalTargetValas,
         SUM(PrincipalTargetIDR) AS TotalPrincipalTargetIDR,
         SUM([PrincipalAnpIDR]) AS TotalTargetAnp, 
-        SUM(OperatingBudget) AS TotalOperating 
+        SUM(OperatingBudget) AS TotalOperating,
+        SUM(IMS_Target) AS TotalImsTarget, 
+        SUM(IMS_Budget) AS TotalImsBudget
         FROM tb_operating WHERE BudgetCode = '$budget_code'";
         $query = $this->db->query($sql);
         return $query;
@@ -1295,5 +1404,85 @@ class Pic_model extends CI_Model
         UpdateBy = '$username', UpdateDate = '$date' 
         WHERE ProposalNumber = '$proposal_number'";
         $this->db->query($sql);
+    }
+
+    public function delete_cart_item()
+    {
+        $user_id = $_SESSION['user_code'];
+        $sql = "delete from tb_item_cart where user_id = '$user_id'";
+        $this->db->query($sql);
+    }
+
+    public function insert_batch_customer_item($data)
+    {
+        $this->db->insert_batch('tb_proposal_customer_item', $data);
+    }
+
+    public function set_cart_item($post)
+    {
+
+        // var_dump($post);
+        // die;        
+        $end = date('Y-m-d', strtotime($post['start_date']));
+        $start = '';
+        if ($post['avg_sales'] == 'Last 3 Month') {
+            $start = date("Y-m-d", strtotime("-3 Months", strtotime($end)));
+        } else if ($post['avg_sales'] == 'Last Year') {
+            $start = date("Y-m-d", strtotime("-12 Months", strtotime($end)));
+        }
+        $brand = $post['brand'];
+
+        $data = array();
+        for ($i = 0; $i < count($post['item_code']); $i++) {
+            for ($x = 0; $x < count($post['customer']); $x++) {
+
+                $param = array(
+                    'no_proposal' => $post['no_proposal'],
+                    'customer_code' => $post['customer'][$x],
+                    'customer_name' => $this->getCustomerFromTBSales($post['customer'][$x])->row()->CustomerName,
+                    'item_code' => $post['item_code'][$i],
+                    'item_name' => getNameItem($post['item_code'][$i]),
+                    'qty_avg_sales' => (int)$this->getItemFromPenjualan($brand, $post['customer'][$x], $start, $end, $post['item_code'][$i])->row()->Quantity,
+                    'sales_estimation' => $post['item_qty'][$i],
+                    'user_id' => $_SESSION['user_code'],
+                );
+
+                $cek = $this->db->query("select * from tb_item_cart where no_proposal = '" . $post['no_proposal'] . "' and item_code = '" . $post['item_code'][$i] . "'");
+
+                if ($cek->num_rows() > 0) {
+                    //nothing
+                } else {
+                    array_push($data, $param);
+                }
+            }
+        }
+
+        // var_dump($data);
+        // die;
+
+        $this->db->insert_batch('tb_item_cart', $data);
+    }
+
+    public function get_item_cart()
+    {
+        $user_id = $_SESSION['user_code'];
+        $sql = "select distinct no_proposal, item_code, item_name, sales_estimation from tb_item_cart where user_id = '$user_id'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function get_proposal_customer_item($number)
+    {
+        $sql = "select t1.no_proposal, t1.customer_code, t2.CustomerName as customer_name, t1.item_code, 
+        t3.FrgnName as barcode, t3.ItemName as item_name, t1.sales_estimation, t1.avg_sales,
+		CASE WHEN CAST(t1.avg_sales as varchar) = '0' THEN '0' ELSE
+		CAST(ROUND(((t1.sales_estimation-t1.avg_sales)/t1.avg_sales)*100,0) as varchar)
+		END as growth
+        from tb_proposal_customer_item t1
+        inner join m_customer t2 on t1.customer_code = t2.CardCode
+        inner join m_item t3 on t1.item_code = t3.ItemCode
+        where t1.no_proposal = '$number' --and t1.sales_estimation > 0";
+        $query = $this->db->query($sql);
+        return $query;
     }
 }

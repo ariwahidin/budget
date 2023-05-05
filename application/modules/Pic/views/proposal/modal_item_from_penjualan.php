@@ -5,7 +5,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">Pilih Item</h4>
+                <h4 class="modal-title"><b>PILIH PRODUCT</b></h4>
             </div>
             <div class="modal-body">
                 <form id="frm-example" name="frm-example">
@@ -170,7 +170,7 @@
                             inputCosting.classList.add('form-control', 'input_costing');
                             tdCosting.appendChild(inputCosting);
 
-                            tdAction.innerHTML = '<button onclick="deleteRow(this)" class="btn btn-danger btn-xs">Delete</button>';
+                            tdAction.innerHTML = '<button onclick="deleteRow(this)" class="btn btn-danger btn-xs btn_delete_product">Delete</button>';
                             tr.appendChild(tdBarcode);
                             tr.appendChild(tdItemName);
                             tr.appendChild(tdPrice);

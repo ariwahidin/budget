@@ -176,6 +176,9 @@ class Pic extends CI_Controller
 
     public function show_form_proposal_from_sales()
     {
+
+        $delete_cart = $this->pic_model->delete_cart_item();
+
         if ($_POST['budget_source'] == 'on_top') {
             $budget_source = $_POST['budget_source'];
         } else if ($_POST['budget_source'] == 'anp') {
@@ -186,13 +189,42 @@ class Pic extends CI_Controller
             'number' => $this->pic_model->getNumber(),
             'budget_code_activity' => $_POST['budget_code_activity'],
             'budget_type' => $budget_source,
+            'item_cart' => $this->pic_model->get_item_cart()
         ];
 
         if ($_POST['is_sales'] == 'N') { //Listing
             $this->load->view('proposal/form_proposal_non_sales_v', $data);
         } else {
-            $this->load->view('proposal/form_proposal_from_sales_v', $data);
+            // $this->load->view('proposal/form_proposal_from_sales_v', $data);
+            $this->load->view('proposal/form_proposal_from_sales_v_rev', $data);
         }
+    }
+
+    public function set_cart_item()
+    {
+
+        // var_dump($_POST);
+        // die;
+        $this->pic_model->set_cart_item($_POST);
+
+        $response = array();
+        if ($this->db->affected_rows() > 0) {
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+        }
+        echo json_encode($response);
+    }
+
+    public function get_cart_item()
+    {
+        $item_cart = $this->pic_model->get_item_cart();
+
+        $data = array(
+            'item_cart' => $item_cart
+        );
+
+        $this->load->view('proposal/table_cart_item_detail', $data);
     }
 
     public function get_budget()
@@ -234,7 +266,8 @@ class Pic extends CI_Controller
                 }
 
                 if ($actual_budget < $budget_activity) {
-                    $balance = $actual_budget - $budget_allocated;
+                    // $balance = $actual_budget - $budget_allocated;
+                    $balance = $budget_activity - $budget_allocated;
                 } else {
                     $balance = $budget_activity - $budget_allocated;
                 }
@@ -432,6 +465,10 @@ class Pic extends CI_Controller
         $data = array(
             'customer' => $customer,
         );
+
+        // var_dump($this->db->last_query());
+        // var_dump($this->db->error());
+        // die;
         $this->load->view('proposal/modal_customer_from_sales', $data);
     }
 
@@ -445,8 +482,28 @@ class Pic extends CI_Controller
         $this->load->view('proposal/modal_customer_for_listing', $data);
     }
 
-    public function simpanProposal()
+    // public function simpanProposal()
+    // {
+    //     $this->pic_model->insertProposal($_POST);
+    //     if ($this->db->affected_rows() > 0) {
+    //         $params = array(
+    //             'success' => true
+    //         );
+    //     } else {
+    //         $params = array(
+    //             'success' => false
+    //         );
+    //     }
+    //     echo json_encode($params);
+    // }
+
+    public function simpanProposalRev()
     {
+
+        // var_dump($_POST);
+        // die;
+
+        $this->simpanCustomerItems($_POST['customer_items']);
         $this->pic_model->insertProposal($_POST);
         if ($this->db->affected_rows() > 0) {
             $params = array(
@@ -458,6 +515,24 @@ class Pic extends CI_Controller
             );
         }
         echo json_encode($params);
+    }
+
+    public function simpanCustomerItems($json_customer_items)
+    {
+        $customer_items = json_decode($json_customer_items);
+        $params_customer_item = array();
+
+        for ($y = 0; $y < count($customer_items[0]); $y++) {
+            $param = array(
+                'no_proposal' => $customer_items[0][$y],
+                'customer_code' => $customer_items[1][$y],
+                'item_code' => $customer_items[2][$y],
+                'sales_estimation' => $customer_items[3][$y],
+                'avg_sales' => $customer_items[4][$y],
+            );
+            array_push($params_customer_item, $param);
+        }
+        $this->pic_model->insert_batch_customer_item($params_customer_item);
     }
 
     public function showProposal()
@@ -480,6 +555,7 @@ class Pic extends CI_Controller
         $objective = $this->pic_model->getObjective($number);
         $mechanism = $this->pic_model->getMechanism($number);
         $comment = $this->pic_model->getComment($number);
+
         $data = array(
             'proposal' => $proposal,
             'proposalItem' => $proposalItem,
@@ -489,7 +565,23 @@ class Pic extends CI_Controller
             'mechanism' => $mechanism,
             'comment' => $comment,
         );
+
         $this->load->view('proposal/data_proposal_detail_v', $data);
+    }
+
+    public function prosesNoSk()
+    {
+        $post = $this->input->post();
+        $no_proposal = $post['no_proposal'];
+        $this->pic_model->editNoSK($post);
+
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('success', 'Berhasil edit data');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal edit data');
+        }
+
+        redirect(base_url($_SESSION['page']) . '/showProposalDetail/' . $no_proposal);
     }
 
     public function deleteProposal($number)
@@ -587,7 +679,8 @@ class Pic extends CI_Controller
             'end_month' => $end_month,
             'periode' => $periode,
         );
-        $this->load->view('operating/create_operating2_v', $data);
+        // $this->load->view('operating/create_operating2_v', $data);
+        $this->load->view('operating/create_operating2_v_rev', $data);
     }
 
     public function simpanOperating()
@@ -646,7 +739,8 @@ class Pic extends CI_Controller
             'budget_code' => $budget_code,
             'operating_header' => $operatingHeader,
         );
-        $this->load->view('operating/set_operating_activity_v', $data);
+        // $this->load->view('operating/set_operating_activity_v', $data);
+        $this->load->view('operating/set_operating_activity_v_revisi', $data);
     }
 
     public function showFormActivity()
@@ -659,7 +753,8 @@ class Pic extends CI_Controller
             'operating' => $operating,
             'activity' => $activity_code,
         );
-        $this->load->view('operating/add_activity', $data);
+        // $this->load->view('operating/add_activity', $data);
+        $this->load->view('operating/add_activity_revisi', $data);
     }
 
 
@@ -713,6 +808,7 @@ class Pic extends CI_Controller
         $is_ims = $ims->row()->ims == 'Y' ? 'Yes' : 'No';
         $ims_percent = $ims->row()->ims == 'Y' ? round($ims->row()->ims_percent * 100) : 0;
         $ims_value = $ims->row()->ims == 'Y' ? round($ims->row()->ims_value) : 0;
+        $budget_activity_report = $this->pic_model->getBudgetActivityReport($budget_code);
 
         // var_dump($ims->result());
         // die;
@@ -725,8 +821,10 @@ class Pic extends CI_Controller
             'is_ims' => $is_ims,
             'ims_percent' => $ims_percent,
             'ims_value' => $ims_value,
+            'budget_activity_report' => $budget_activity_report
         );
-        $this->load->view('operating/detail_budget_v', $data);
+        // $this->load->view('operating/detail_budget_v', $data);
+        $this->load->view('operating/detail_budget_v_rev', $data);
     }
 
     public function getItem()
@@ -772,7 +870,7 @@ class Pic extends CI_Controller
 
         $brand = $_POST['brand'];
         $customer = $_POST['customer'];
-        $item = implode("','", $_POST["item_code"]);
+        $item = implode(",", $_POST["item_code"]);
 
         $items = $this->pic_model->getItemFromPenjualan($brand, $customer, $start, $end, $item);
 
@@ -1023,6 +1121,7 @@ class Pic extends CI_Controller
         $objective = $this->pic_model->getObjective($number);
         $mechanism = $this->pic_model->getMechanism($number);
         $comment = $this->pic_model->getComment($number);
+        $customer_item  = $this->pic_model->get_proposal_customer_item($number);
         $data = array(
             'title_pdf' => 'Proposal Promotion ' . $number,
             'proposal_header' => $proposal_header,
@@ -1033,6 +1132,7 @@ class Pic extends CI_Controller
             'objective' => $objective,
             'mechanism' => $mechanism,
             'comment' => $comment,
+            'customer_item' => $customer_item
         );
 
         // filename dari pdf ketika didownload
@@ -1206,7 +1306,7 @@ class Pic extends CI_Controller
         // }
 
         $this->pic_model->update_tb_operating_proposal($_POST);
-        
+
         if ($this->db->affected_rows() > 0) {
             echo json_encode(['success' => true]);
         } else {

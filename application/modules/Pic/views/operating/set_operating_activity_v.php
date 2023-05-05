@@ -55,6 +55,7 @@
                             </tr>
                         </table>
                         <button onclick="showModalActivity()" class="btn btn-primary pull-right">Pilih Activity</button>
+                        <!-- <button class="btn btn-primary pull-right" style="margin-right: 5px;">Edit</button> -->
                     </div>
                     <div class="box-body">
                         <table class="table table-responsive table-bordered table-striped">

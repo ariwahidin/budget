@@ -6,10 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title_pdf; ?></title>
     <style>
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+    <style>
         #table {
             font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
             border-collapse: collapse;
             width: 100%;
+        }
+
+        #tb {
+            width: auto;
+        }
+
+        #tb,
+        #tb td,
+        #tb th {
+            border-collapse: collapse;
+            border: 1px solid black;
+            padding: 5px;
         }
 
         #table td,
@@ -18,9 +35,9 @@
             padding: 8px;
         }
 
-        #table tr:nth-child(even) {
+        /* #table tr:nth-child(even) {
             background-color: #f2f2f2;
-        }
+        } */
 
         #table tr:hover {
             background-color: #ddd;
@@ -30,8 +47,8 @@
             padding-top: 10px;
             padding-bottom: 10px;
             text-align: left;
-            background-color: #4CAF50;
-            color: white;
+            /* background-color: #4CAF50; */
+            /* color: white; */
         }
 
         table {
@@ -46,44 +63,56 @@
 
 <body>
     <!-- <?php var_dump($proposal_item->result()); ?> -->
-    <div style="text-align:center">
-        <h3> Proposal Promotion </h3>
+
+
+    <div>
+        <img src="<?= base_url() ?>assets/dist/img/pandurasa_kharisma_pt.png" style="max-width:30px; padding-bottom:-10px;" alt="">
+        <span style="font-size:12px;"><strong> PT.PANDURASA KHARISMA</strong></span>
     </div>
-    <div class="">
+    <div>
+        <span style="font-size:12px; float: right; margin-top:-15px;"><?= date('d/m/Y') ?></span>
+    </div>
+    <hr>
+
+
+    <div style="text-align:center">
+        <h3 style="font-size:24px;"> <b>PROPOSAL PROMOTION</b> </h3>
+    </div>
+    <div>
         <table>
             <tr>
-                <td>No.</td>
+                <td>NO.</td>
                 <td>&nbsp;:&nbsp;<?= $proposal_header->row()->Number ?></td>
 
             </tr>
             <tr>
-                <td>Brand</td>
+                <td>BRAND</td>
                 <td>&nbsp;:&nbsp;<?= getBrandName($proposal_header->row()->BrandCode) ?></td>
             </tr>
             <tr>
-                <td>Periode</td>
-                <td>&nbsp;:&nbsp;<?= date('d-M-Y', strtotime($proposal_header->row()->StartDatePeriode)) . ' to ' . date('d-M-Y', strtotime($proposal_header->row()->EndDatePeriode)) ?></td>
+                <td>PERIODE</td>
+                <td>&nbsp;:&nbsp;<?= date('d-m-Y', strtotime($proposal_header->row()->StartDatePeriode)) . ' s/d ' . date('d-m-Y', strtotime($proposal_header->row()->EndDatePeriode)) ?></td>
             </tr>
             <tr>
-                <td>Pic</td>
+                <td>PIC</td>
                 <td>&nbsp;:&nbsp;<?= ucfirst($proposal_header->row()->CreatedBy) ?></td>
             </tr>
             <tr>
-                <td>Activity</td>
+                <td>ACTIVITY</td>
                 <td>&nbsp;:&nbsp;<?= getActivityName($proposal_header->row()->Activity) ?></td>
             </tr>
-            <tr>
+            <tr style="display:none">
                 <td>Claim to</td>
                 <td>&nbsp;:&nbsp;<?= ucfirst($proposal_header->row()->ClaimTo) ?></td>
             </tr>
             <tr>
-                <td>Status</td>
+                <td>STATUS</td>
                 <td>&nbsp;:&nbsp;<?= ucfirst($proposal_header->row()->Status) ?></td>
             </tr>
         </table>
     </div>
     <div>
-        <table style="float:right">
+        <table style="display:none">
             <tr>
                 <td>Balance <?= getActivityName($proposal_header->row()->Activity) ?></td>
                 <td>&nbsp;:&nbsp;<?= number_format(proposal_approved($proposal_header->row()->Number)->row()->Budget_balance) ?> (<?= proposal_approved($proposal_header->row()->Number)->row()->Budget_type ?>)</td>
@@ -93,7 +122,7 @@
     <div>
         <table>
             <tr>
-                <th colspan="2">Objective</th>
+                <th colspan="4">OBJECTIVE</th>
             </tr>
             <?php $no = 1;
             foreach ($objective->result() as $obj) { ?>
@@ -102,10 +131,8 @@
                     <td><?= $obj->Objective ?></td>
                 </tr>
             <?php } ?>
-        </table>
-        <table>
             <tr>
-                <th colspan="2">Promo Mechanism</th>
+                <th colspan="2">MECHANISM</th>
             </tr>
             <?php $no = 1;
             foreach ($mechanism->result() as $mek) { ?>
@@ -115,11 +142,14 @@
                 </tr>
             <?php } ?>
         </table>
+        <table style="float: right;">
+
+        </table>
     </div>
-    <div style="text-align:left">
-        <b>Sales Target</b>
+    <div style="text-align:left; padding-top: 10px;">
+        <b style="font-size: 12px;">SALES TARGET</b>
     </div>
-    <table id="table">
+    <table id="tb">
         <thead>
             <tr>
                 <th>No.</th>
@@ -127,8 +157,9 @@
                 <th>Product Description</th>
                 <th>Price</th>
                 <?php if (activity_is_sales($proposal_header->row()->Activity) != 'N') { ?>
-                    <th><?= $proposal_header->row()->AvgSales ?>(Qty)</th>
+                    <th><?= $proposal_header->row()->AvgSales ?></th>
                 <?php } ?>
+                <th>Qty Target</th>
                 <th>Target</th>
             </tr>
         </thead>
@@ -139,11 +170,12 @@
                     <td scope="row"><?= $no++ ?></td>
                     <td><?= $data->Barcode ?></td>
                     <td style="width:100%;"><?= $data->ItemName ?></td>
-                    <td><?= number_format($data->Price) ?></td>
+                    <td style="text-align: right;"><?= number_format($data->Price) ?></td>
                     <?php if (activity_is_sales($proposal_header->row()->Activity) != 'N') { ?>
-                        <td><?= $data->AvgSales ?></td>
+                        <td style="text-align: right;"><?= $data->AvgSales ?></td>
                     <?php } ?>
-                    <td><?= number_format($data->Target) ?></td>
+                    <td style="text-align: right;"><?= number_format($data->Qty) ?></td>
+                    <td style="text-align: right;"><?= number_format($data->Target) ?></td>
                 </tr>
             <?php } ?>
         </tbody>
@@ -164,24 +196,27 @@
             ?>
             <tr>
                 <td colspan="3">Total</td>
-                <td>
+                <td style="text-align: right;">
                     <?= number_format($price); ?>
                 </td>
                 <?php if (activity_is_sales($proposal_header->row()->Activity) != 'N') { ?>
-                    <td>
+                    <td style="text-align: right;">
                         <?= number_format($avg_sales); ?>
                     </td>
                 <?php } ?>
-                <td>
+                <td style="text-align: right;">
+                    <?= number_format($qty); ?>
+                </td>
+                <td style="text-align: right;">
                     <?= number_format($target); ?>
                 </td>
             </tr>
         </tfoot>
     </table>
-    <div style="text-align:left">
-        <b>Costing</b>
+    <div style="text-align:left; padding-top:10px;">
+        <b style="font-size: 12px;">COSTING</b>
     </div>
-    <table id="table">
+    <table id="tb">
         <thead>
             <tr>
                 <th>No.</th>
@@ -204,26 +239,26 @@
                 <tr>
                     <td scope="row"><?= $no++ ?></td>
                     <td style="width:100%;"><?= $data->ItemName ?></td>
-                    <td><?= number_format($data->Price) ?></td>
-                    <td><?= $data->Qty ?></td>
+                    <td style="text-align: right;"><?= number_format($data->Price) ?></td>
+                    <td style="text-align: right;"><?= $data->Qty ?></td>
                     <?php if (activity_is_sales($proposal_header->row()->Activity) != 'N') { ?>
-                        <td><?= number_format($data->Price * ($data->Promo / 100)) ?></td>
-                        <td><?= $data->Promo ?></td>
+                        <td style="text-align: right;"><?= number_format($data->Price * ($data->Promo / 100)) ?></td>
+                        <td style="text-align: right;"><?= $data->Promo ?></td>
                     <?php } ?>
                     <?php if (activity_is_sales($proposal_header->row()->Activity) == 'N') { ?>
                         <td><?= number_format($data->ListingCost) ?></td>
                     <?php } ?>
-                    <td><?= number_format($data->Costing) ?></td>
+                    <td style="text-align: right;"><?= number_format($data->Costing) ?></td>
                 </tr>
             <?php } ?>
         </tbody>
         <tfoot>
             <tr>
                 <td colspan="2">Total</td>
-                <td>
+                <td style="text-align: right;">
                     <?= number_format($price); ?>
                 </td>
-                <td>
+                <td style="text-align: right;">
                     <?= number_format($qty); ?>
                 </td>
                 <?php if (activity_is_sales($proposal_header->row()->Activity) != 'N') { ?>
@@ -231,9 +266,9 @@
                     <td></td>
                 <?php } ?>
                 <?php if (activity_is_sales($proposal_header->row()->Activity) == 'N') { ?>
-                        <td></td>
-                    <?php } ?>
-                <td>
+                    <td></td>
+                <?php } ?>
+                <td style="text-align: right;">
                     <?= number_format($costing); ?>
                 </td>
             </tr>
@@ -247,14 +282,68 @@
             ?>
             <tr>
                 <td>COST RATIO <span>(total costing/total target)</span></td>
-                <td>&nbsp;:&nbsp; <?= round($cost_ratio) ?>%</td>
+                <td>&nbsp;:&nbsp; <?= round($cost_ratio,2) ?>%</td>
             </tr>
         </table>
     </div>
+
+    <!-- PAGE 2 -->
+    <div class="page-break"></div>
+
+    <div>
+        <!-- <img src="<?= base_url() ?>assets/dist/img/pandurasa_kharisma_pt.png" style="max-width:30px; padding-bottom:-10px;" alt=""> -->
+        <span style="font-size:12px;"><b>DETAIL PROPOSAL <?= $proposal_header->row()->Number ?></b></span>
+    </div>
+    <div>
+        <span style="font-size:12px; float: right; margin-top:-15px;"></span>
+    </div>
+    <hr>
+    <table id="tb">
+        <thead>
+            <tr>
+                <th style="width: fit-content;">No.</th>
+                <th style="width: fit-content;">Customer Name</th>
+                <th style="width: fit-content;">Barcode</th>
+                <th>Item Name</th>
+                <th style="width: fit-content">Sales</th>
+                <th style="width: fit-content">Qty</th>
+                <th style="width: fit-content">Gr(%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $no = 1;
+            $total_estimation = 0;
+            $avg_gr = 0;
+            foreach ($customer_item->result() as $data) { ?>
+                <tr>
+                    <td><?= $no++ ?></td>
+                    <td><?= $data->customer_name ?></td>
+                    <td><?= $data->barcode ?></td>
+                    <td><?= $data->item_name ?></td>
+                    <td style="text-align: right;"><?= $data->avg_sales ?></td>
+                    <td style="text-align: right;"><?= $data->sales_estimation ?></td>
+                    <td style="text-align: right;"><?= $data->growth ?></td>
+                </tr>
+            <?php
+                $total_estimation = $total_estimation + (float) $data->sales_estimation;
+                //$avg_gr = $avg_gr + (float)$data->growth;
+            } ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5">Total</td>
+                <td style="text-align: right;">
+                    <?= number_format($total_estimation); ?>
+                </td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+
     <div>
         <table>
             <tr>
-                <th colspan="2">Comment</th>
+                <th colspan="3">COMMENT</th>
             </tr>
             <?php $no = 1;
             foreach ($comment->result() as $com) { ?>
@@ -327,6 +416,7 @@
             </tr>
         </table>
     </div>
+
 </body>
 
 </html>

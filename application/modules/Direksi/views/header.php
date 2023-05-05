@@ -300,7 +300,7 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li <?= $this->uri->segment(2) == 'createProposal' ? 'class="active"' : '' ?>><a href="<?= base_url($_SESSION['page']) . '/show_create_form' ?>"><i class="fa fa-circle-o"></i> Create New Proposal</a></li>
+                            <!-- <li <?= $this->uri->segment(2) == 'createProposal' ? 'class="active"' : '' ?>><a href="<?= base_url($_SESSION['page']) . '/show_create_form' ?>"><i class="fa fa-circle-o"></i> Create New Proposal</a></li> -->
                             <li <?= $this->uri->segment(2) == 'showProposal' ? 'class="active"' : '' ?>><a href="<?= base_url($_SESSION['page'] . '/showProposal') ?>"><i class="fa fa-circle-o"></i> Data Proposal</a></li>
                         </ul>
                     </li>
@@ -313,7 +313,7 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li <?= $this->uri->segment(2) == 'createOperating' ? 'class="active"' : '' ?>><a href="<?= site_url($_SESSION['page'] . '/createOperating') ?>"><i class="fa fa-circle-o"></i> Create New Budget</a></li>
+                            <!-- <li <?= $this->uri->segment(2) == 'createOperating' ? 'class="active"' : '' ?>><a href="<?= site_url($_SESSION['page'] . '/createOperating') ?>"><i class="fa fa-circle-o"></i> Create New Budget</a></li> -->
                             <li <?= $this->uri->segment(2) == 'showOperating' || $this->uri->segment(2) == 'lihatOperatingActivity' || $this->uri->segment(2) == 'lihatOperatingActivityDetail' ? 'class="active"' : '' ?>><a href="<?= site_url($_SESSION['page'] . '/showOperating') ?>"><i class="fa fa-circle-o"></i> Budget </a></li>
                             <!-- <li <?= $this->uri->segment(2) == 'showBudgetOperatingPurchase' ? 'class="active"' : '' ?>><a href="<?= site_url($_SESSION['page'] . '/showBudgetOperatingPurchase') ?>"><i class="fa fa-circle-o"></i> Data Budget</a></li> -->
                             <!-- <li <?= $this->uri->segment(2) == 'showPurchase' ? 'class="active"' : '' ?>><a href="<?= site_url($_SESSION['page'] . '/showPurchase') ?>"><i class="fa fa-circle-o"></i> Data Purchase</a></li> -->

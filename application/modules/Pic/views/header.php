@@ -223,7 +223,11 @@
 </style>
 <div id="muncul_loading" class=""></div>
 
-<body class="hold-transition skin-blue-light <?= $this->uri->segment(2) == 'setOperatingActivity' ? '' : 'sidebar-mini' ?> <?= $this->uri->segment(2) == 'ShowDetailBudget' || $this->uri->segment(2) == 'setOperatingActivity' || $this->uri->segment(2) == 'createOperating2' || $this->uri->segment(2) == 'show_form_proposal_from_sales' || $this->uri->segment(2) == 'showFormAddOnTop' ? 'sidebar-collapse' : '' ?>" style="height: auto; min-height: 100%;">
+<body class="hold-transition skin-blue-light <?= $this->uri->segment(2) == 'setOperatingActivity' ? '' : 'sidebar-mini' ?> <?= $this->uri->segment(2) == 'ShowDetailBudget' || $this->uri->segment(2) == 'setOperatingActivity' || 
+                                                                $this->uri->segment(2) == 'createOperating2' || 
+                                                                $this->uri->segment(2) == 'show_form_proposal_from_sales' || 
+                                                                $this->uri->segment(2) == 'showFormAddOnTop' ||
+                                                                $this->uri->segment(2) == 'show_form_create_budget' ? 'sidebar-collapse' : '' ?>" style="height: auto; min-height: 100%;">
     <div class="wrapper">
         <header class="main-header">
             <a href="" class="logo">
@@ -298,7 +302,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="treeview <?= $this->uri->segment(2) == 'createProposal' || $this->uri->segment(2) == 'showProposal' ? 'active' : '' ?>">
+                    <li class="treeview <?= $this->uri->segment(2) == 'show_create_form' || $this->uri->segment(2) == 'showProposal' ? 'active' : '' ?>">
                         <a href="#">
                             <i class="fa fa-folder-o"></i>
                             <span>Proposal Promotion</span>
@@ -307,7 +311,7 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li <?= $this->uri->segment(2) == 'createProposal' ? 'class="active"' : '' ?>><a href="<?= base_url($_SESSION['page']) . '/show_create_form' ?>"><i class="fa fa-circle-o"></i> Create New Proposal</a></li>
+                            <li <?= $this->uri->segment(2) == 'show_create_form' ? 'class="active"' : '' ?>><a href="<?= base_url($_SESSION['page']) . '/show_create_form' ?>"><i class="fa fa-circle-o"></i> Create New Proposal</a></li>
                             <li <?= $this->uri->segment(2) == 'showProposal' ? 'class="active"' : '' ?>><a href="<?= base_url($_SESSION['page'] . '/showProposal') ?>"><i class="fa fa-circle-o"></i> Data Proposal</a></li>
                         </ul>
                     </li>

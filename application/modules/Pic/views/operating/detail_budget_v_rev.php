@@ -55,7 +55,7 @@
                             </tr>
 
                             <tr>
-                                <td>Principal Target</td>
+                                <td>Target</td>
                                 <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalPrincipalTargetIDR) ?></td>
                             </tr>
                             <tr>
@@ -64,7 +64,7 @@
                                 $target_anp = ($budget_detail_header->row()->TotalTargetAnp / $budget_detail_header->row()->TotalPrincipalTargetIDR);
                                 $target_anp_percent = $target_anp * 100;
                                 ?>
-                                <td>A&P Target (<?= round($target_anp_percent) ?>%)</td>
+                                <td>A&P</td>
                                 <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalTargetAnp) ?></td>
                             </tr>
                             <tr>
@@ -73,17 +73,17 @@
                                 $operating = ($budget_detail_header->row()->TotalOperating / $budget_detail_header->row()->TotalTargetAnp);
                                 $operating_percent = $operating * 100;
                                 ?>
-                                <td>Operating Budget (<?= round($operating_percent) ?>%)</td>
+                                <td>Operating (<?= round($operating_percent) ?>%)</td>
                                 <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalOperating); ?></td>
                             </tr>
                             <tr>
-                                <td>YTD Actual Purchase</td>
+                                <td>Purchase</td>
                                 <?php
                                 $actual_purchase = getActualPurchase($budget_detail->row()->BrandCode, $budget_detail_header->row()->StartPeriode, $budget_detail_header->row()->EndPeriode);
                                 ?>
                                 <td>&nbsp;:&nbsp; <?= number_format($actual_purchase); ?></td>
                             </tr>
-                            <tr>
+                            <tr  style="display:none">
                                 <?php
                                 $total_actual_anp = 0;
                                 $total_actual_anp = $actual_purchase * $target_anp;
@@ -96,7 +96,7 @@
                                 <td>&nbsp;:&nbsp; <?= $is_ims ?></td>
                             </tr>
                             <tr>
-                                <td>YTD IMS (<?= $ims_percent ?>%)</td>
+                                <td>IMS (<?= $ims_percent ?>%)</td>
                                 <td>&nbsp;:&nbsp; <?= number_format($ims_value) ?></td>
                             </tr>
 
@@ -115,37 +115,37 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Principal Target</td>
+                                    <td>Target</td>
                                     <?php foreach ($budget_detail->result() as $data) { ?>
                                         <td><?= number_format($data->PrincipalTargetIDR) ?></td>
                                     <?php } ?>
                                 </tr>
                                 <tr>
-                                    <td>A&P Target</td>
+                                    <td>A&P</td>
                                     <?php foreach ($budget_detail->result() as $data) { ?>
                                         <td><?= number_format($data->TargetAnp) ?></td>
                                     <?php } ?>
                                 </tr>
                                 <tr>
-                                    <td>Operating Budget</td>
+                                    <td>Operating</td>
                                     <?php foreach ($budget_detail->result() as $data) { ?>
                                         <td><?= number_format($data->OperatingBudget) ?></td>
                                     <?php } ?>
                                 </tr>
                                 <tr>
-                                    <td>Actual Purchase</td>
+                                    <td>Purchase</td>
                                     <?php foreach ($budget_detail->result() as $data) { ?>
                                         <td><?= number_format(getActualPurchasePerMonth($data->BrandCode, $data->Month)) ?></td>
                                     <?php } ?>
                                 </tr>
-                                <tr>
+                                <tr  style="display:none">
                                     <td>Actual A&P</td>
                                     <?php foreach ($budget_detail->result() as $data) { ?>
                                         <td><?= number_format(getActualPurchasePerMonth($data->BrandCode, $data->Month) * $target_anp) ?></td>
                                     <?php } ?>
                                 </tr>
-                                <tr>
-                                    <td>Actual IMS</td>
+                                <tr style="display:none">
+                                    <td>IMS</td>
                                     <?php foreach ($budget_detail->result() as $data) { ?>
                                         <td><?= number_format(getActualIMSPermonth($data->BrandCode, $data->Month, $ims_percent, $is_ims)) ?></td>
                                     <?php } ?>
@@ -200,7 +200,7 @@
     </section>
 
     <section class="content-header">
-        <h1>IMS Monthly</h1>
+        <h1>Sales</h1>
     </section>
 
     <section class="content">

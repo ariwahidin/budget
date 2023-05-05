@@ -1,19 +1,57 @@
 <?php
-// var_dump($budget_type);
+// var_dump($_POST);
 ?>
 <?php $this->view('header'); ?>
 <div class="content-wrapper">
     <section class="content-header">
-        <h1>Create Proposal</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Create Proposal</h4>
+            </div>
+            <div class="col-md-6">
+                <a href="javascript:history.go(-1)" class="btn btn-warning pull-right">Back</a>
+            </div>
+        </div>
 
     </section>
     <section class="content">
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
+
                     <div class="box-body">
-                        <a href="javascript:history.go(-1)" class="btn btn-warning pull-right">Back</a>
-                        <table>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>No Proposal</th>
+                                    <th>Brand</th>
+                                    <th>Activity</th>
+                                    <th>Start Periode</th>
+                                    <th>End Periode</th>
+                                    <th>Claim to</th>
+                                    <th>Booked</th>
+                                    <th>Unbooked</th>
+                                    <th>Balance</th>
+                                    <th>Total Costing</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td><?= $number ?></td>
+                                    <td><?= getBrandName($_POST['brand']) ?></td>
+                                    <td><?= getActivityName($_POST['activity']) ?></td>
+                                    <td><?= date('d-M-Y', strtotime($_POST['start_date'])) ?></td>
+                                    <td><?= date('d-M-Y', strtotime($_POST['end_date'])) ?></td>
+                                    <td><?= ucfirst($_POST['claim_to']) ?></td>
+                                    <td><?= $_POST['budget_activity'] ?></td>
+                                    <td><?= $_POST['budget_booked'] ?></td>
+                                    <td><?= $_POST['balance_budget'] ?></td>
+                                    <td><b id="td_total_costing"></b></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table style="display: none;">
                             <tr>
                                 <td>No Proposal</td>
                                 <td>&nbsp;:&nbsp;<b><?= $number ?></b></td>
@@ -64,7 +102,7 @@
                             </tr>
                             <tr>
                                 <td>Total Costing</td>
-                                <td>&nbsp;:&nbsp;<b id="td_total_costing"></b></td>
+                                <td>&nbsp;:&nbsp;</td>
                             </tr>
                         </table>
                     </div>
@@ -75,7 +113,17 @@
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <button onclick="showModalItem('<?= $_POST['brand'] ?>')" class="btn btn-primary">Pilih Item</button>
+                        <div class="row">
+                            <div class="col col-md-4">
+                                <button onclick="showModalItem('<?= $_POST['brand'] ?>')" class="btn btn-primary btn_pilih_product">Pilih Product</button>
+                            </div>
+                            <div class="col col-md-4 text-center">
+                                <h4><b>TABEL PRODUCT</b></h4>
+                            </div>
+                            <div class="col col-md-4">
+                                <button onclick="set_cart_item()" class="btn btn-success pull-right btn_set_detail">Set Detail</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="box-body">
                         <table class="table table-responseive table-bordered">
@@ -129,6 +177,12 @@
                 </div>
             </div>
         </div>
+
+        <div id="containerSetDetail">
+            <?php $this->view('table_cart_item_detail') ?>
+        </div>
+
+
         <div class="row">
             <div class="col-md-8">
                 <div class="box">
@@ -162,7 +216,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" style="display:none">
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
@@ -216,6 +270,35 @@ $group_code = implode("','", $_POST['group']);
     $(document).ready(function() {
         calculate_cost_ratio();
     });
+
+
+    function validationEstimasi(e) {
+        var item_code = e.parentElement.parentElement.querySelector(".td_item_code").innerText
+        var max_estimasi = e.parentElement.parentElement.querySelector(".max_estimasi").value
+        var item_codes = document.querySelectorAll(".td_item_code")
+        let total_val_estimation_this_item_code = 0;
+
+        for (let i = 0; i < item_codes.length; i++) {
+            var all_item_code = document.querySelectorAll(".td_item_code")[i].innerText
+            if (all_item_code == item_code) {
+
+                // console.log(i)
+                var value_estimasi = document.querySelectorAll(".qty_estimasi_detail")[i].value
+                total_val_estimation_this_item_code = parseFloat(total_val_estimation_this_item_code) + parseFloat(value_estimasi)
+                // console.log(value_estimasi)
+                // console.log(all_item_code)
+            }
+        }
+        // console.log(total_val_estimation_this_item_code)
+        // console.log(max_estimasi)
+
+        if (total_val_estimation_this_item_code > max_estimasi) {
+            Swal.fire('Maximal qty estimation : ' + max_estimasi)
+            e.value = 0
+        }
+        // console.log(item_code)
+        // console.log(item_codes)
+    }
 
     function showModalItem(brand) {
         loadingShow();
@@ -346,7 +429,305 @@ $group_code = implode("','", $_POST['group']);
         span_cost_ratio.innerText = !isNaN(cost_ratio) ? cost_ratio.toFixed(2) + '%' : 0 + '%';
     }
 
+
+    function set_cart_item() {
+
+        <?php
+        // Include the PHP code here
+        // PHP code
+        $myArray = $_POST['customer'];
+        $myArrayJSON = json_encode($myArray);
+        echo "var customer = " . $myArrayJSON . ";";
+        ?>
+
+
+
+        console.log(customer)
+
+        var avg_sales = "<?= $_POST['avg_sales'] ?>"
+        var start_date = "<?= $_POST['start_date'] ?>"
+        var end_date = "<?= $_POST['end_date'] ?>"
+        var brand = "<?= $_POST['brand'] ?>"
+        var no_proposal = "<?= $number ?>"
+        var item_code = [];
+        var item_qty = [];
+        var input_item_code = document.querySelectorAll('input.itemCode_item');
+        var input_qty = document.querySelectorAll('input.input_qty');
+        for (var x = 0; x < input_item_code.length; x++) {
+            item_code.push(input_item_code[x].value);
+            item_qty.push(input_qty[x].value.replace(/,/g, ''));
+        }
+        console.log(item_code);
+        console.log(item_qty);
+
+
+
+
+        // return false
+
+        if (item_code.length > 0) {
+
+
+            var qty_inputs = document.querySelectorAll('.input_qty')
+            for (let i = 0; i < qty_inputs.length; i++) {
+                if (qty_inputs[i].value === "" || qty_inputs[i].value === "0") {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Input sales estimation tidak boleh kosong!',
+                    })
+                    return false;
+                }
+
+            }
+
+            var promo_inputs = document.querySelectorAll('.input_value_promo')
+            for (let i = 0; i < promo_inputs.length; i++) {
+                if (promo_inputs[i].value === "" || promo_inputs[i].value === "0") {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Input value promo tidak boleh kosong!',
+                    })
+                    return false;
+                }
+            }
+
+
+            //cek budget
+            var budget_saldo = '<?= (float)str_replace(',', '', $_POST['balance_budget']) ?>';
+            var total_costing = $('#total_costing').val().replace(/,/g, '');
+
+            // console.log(budget_saldo)
+            // console.log(total_costing)
+
+            if (parseFloat(total_costing) > parseFloat(budget_saldo)) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Balance tidak cukup!',
+                })
+                return false;
+            }
+
+
+
+            Swal.fire({
+                icon: 'question',
+                title: 'Anda yakin lanjut ke set detail, \n Tabel product tidak bisa dirubah kembali',
+                showDenyButton: false,
+                showCancelButton: true,
+                confirmButtonText: 'Lanjutkan',
+                // denyButtonText: `Don't save`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    //Swal.fire('Saved!', '', 'success')
+                    loadingShow();
+                    $.ajax({
+                        type: "POST",
+                        url: "<?= base_url($_SESSION['page']) . '/set_cart_item' ?>",
+                        data: {
+                            no_proposal,
+                            item_code,
+                            item_qty,
+                            customer,
+                            avg_sales,
+                            start_date,
+                            end_date,
+                            brand,
+                        },
+                        dataType: "JSON",
+                        success: function(response) {
+                            // Handle the response from the server
+                            //console.log(response.success);
+                            if (response.success == true) {
+                                $("#containerSetDetail").load('<?= base_url($_SESSION['page'] . '/get_cart_item') ?>', {
+                                    customer
+                                });
+
+                                const inputs = document.querySelectorAll('.input_qty'); // select all input elements of type "text"
+                                for (let i = 0; i < inputs.length; i++) {
+                                    inputs[i].readOnly = true; // set the readOnly property to true for each element
+
+                                }
+                                const promo_inputs = document.querySelectorAll('.input_value_promo'); // select all input elements of type "text"
+                                for (let i = 0; i < promo_inputs.length; i++) {
+                                    promo_inputs[i].readOnly = true; // set the readOnly property to true for each element
+
+                                }
+                                const btn_delete = document.querySelectorAll('.btn_delete_product'); // select all input elements of type "text"
+                                for (let i = 0; i < btn_delete.length; i++) {
+                                    btn_delete[i].disabled = true; // set the disabled property to true for each element
+                                    btn_delete[i].style.display = 'none';
+                                }
+
+                                const btn_pilih_product = document.querySelectorAll('.btn_pilih_product'); // select all input elements of type "text"
+                                for (let i = 0; i < btn_pilih_product.length; i++) {
+                                    btn_pilih_product[i].disabled = true; // set the disabled property to true for each element
+                                    btn_pilih_product[i].style.display = 'none';
+                                }
+
+                                const btn_set_detail = document.querySelectorAll('.btn_set_detail'); // select all input elements of type "text"
+                                for (let i = 0; i < btn_set_detail.length; i++) {
+                                    btn_set_detail[i].disabled = true; // set the disabled property to true for each element
+                                    btn_set_detail[i].style.display = 'none';
+                                }
+
+                                loadingHide();
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle errors here
+                            console.log("Error: " + error);
+                        }
+                    });
+                } else if (result.isDenied) {
+                    Swal.fire('Changes are not saved', '', 'info')
+                }
+            })
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tentukan product terlebih dahulu',
+            })
+        }
+    }
+
+    function customer_item() {
+        const no_proposal = []
+        const customers = []
+        const items = []
+        const avg_sales = []
+        const estimations = []
+        const customer_items = []
+        var input_customer = document.querySelectorAll('.customer_item')
+        var input_item = document.querySelectorAll('.customer_item_code')
+        var input_avg_sales = document.querySelectorAll('.qty_avg_sales')
+        var input_estimasi = document.querySelectorAll('.qty_estimasi_detail')
+
+
+        // validasi inputan tidak valid
+        const input_qty_estimasi = document.querySelectorAll('input[name="qty_estimasi_detail"]');
+        let input_estimation_valid = true
+        try {
+            input_qty_estimasi.forEach(function(classElement) {
+                if (classElement.value.trim() === "" || classElement.value < 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Input estimasi tidak valid',
+                    })
+                    input_estimation_valid = false
+                    throw new Error('Input estimasi tidak valid');
+                }
+            });
+        } catch (error) {
+            console.error(error.message);
+        }
+
+        if (!input_estimation_valid) {
+            return false
+        }
+
+        for (var i = 0; i < input_customer.length; i++) {
+            no_proposal.push("<?= $number ?>")
+            customers.push(input_customer[i].value)
+            items.push(input_item[i].value)
+            estimations.push(input_estimasi[i].value)
+            avg_sales.push(input_avg_sales[i].value)
+        }
+
+        customer_items.push(no_proposal, customers, items, estimations, avg_sales)
+        var json_customer_items = JSON.stringify(customer_items)
+
+        return json_customer_items
+    }
+
+    function validatation_item_estimations() {
+        let validatation_item_estimation = true
+        const inputEstimationMax = document.querySelectorAll('input[data-estimation]');
+        const inputElements = document.querySelectorAll('input[data-cic]');
+        const dataEstimataion = new Map();
+        const dataValues = new Map();
+
+        for (const inputEstimation of inputEstimationMax) {
+            const keyMapEstimation = inputEstimation.dataset.estimation
+            const valMapEstimation = Number(inputEstimation.value)
+            dataEstimataion.set(keyMapEstimation, valMapEstimation)
+        }
+
+        console.log(dataEstimataion)
+
+        // Memproses setiap input dengan atribut data-id
+        for (const input of inputElements) {
+            const dataId = input.dataset.cic;
+            const value = Number(input.value);
+
+            // Menambahkan nilai ke dalam Map berdasarkan data-id
+            if (dataValues.has(dataId)) {
+                const existingValue = dataValues.get(dataId);
+                dataValues.set(dataId, existingValue + value);
+            } else {
+                dataValues.set(dataId, value);
+            }
+        }
+
+        console.log(dataValues)
+
+        // Menampilkan hasil penjumlahan untuk setiap data-id di console
+        for (const [dataId, value] of dataValues) {
+            console.log(`Data ID "${dataId}": ${value}`);
+        }
+
+        //Membandingkan kedua map untuk validasi inputan estimasi sesuai
+        for (let [key, value] of dataEstimataion) {
+            if (dataValues.has(key) && dataValues.get(key) === value) {
+                console.log(`The value of key ${key} is the same in both maps`);
+            } else {
+                console.log(`The value of key ${key} is different in the two maps`);
+                Swal.fire({
+                    icon: 'warning',
+                    title: `Product ${key} tidak sesuai, \n Max : ${value}, Terisi : ${dataValues.get(key)}`,
+                    // text: `Product ${key} tidak sesuai estimatimasi`,
+                })
+                validatation_item_estimation = false
+                return false
+            }
+        }
+
+        return validatation_item_estimation
+
+    }
+
     function simpanProposal() {
+
+        const qty_estimation_inputs = document.querySelectorAll('.qty_estimasi_detail')
+
+        if (qty_estimation_inputs.length < 1) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Set detail terlebih dahulu',
+            })
+            return false
+        }
+        // console.log(qty_estimation_inputs.length)
+        // return false
+
+        const valid_item_estimation = validatation_item_estimations()
+        console.log(validatation_item_estimations())
+
+        if (!valid_item_estimation) {
+            console.log("tidak sesuai estimasi")
+            return false
+        }
+
+        const json_customer_items = customer_item()
+
+        if (!json_customer_items) {
+            console.log("stop")
+            return false
+        }
+
+        console.log(json_customer_items)
+        // return false
+
         var input_group = document.querySelectorAll('input.input_group');
         var input_customer = document.querySelectorAll('input.input_customer');
         var group_code = [];
@@ -435,7 +816,7 @@ $group_code = implode("','", $_POST['group']);
         var customer_code = [];
         var td_customer_code = document.querySelectorAll('td.CustomerCode_Customer');
         for (var c = 0; c < td_customer_code.length; c++) {
-            customer_code.push(td_customer_code[c].innerText);
+            customer_code.push(td_customer_code[c].innerText.replace(/\s/g, ""));
         }
 
         const duplicates_customer = customer_code.filter((item, index) => index !== customer_code.indexOf(item));
@@ -477,50 +858,77 @@ $group_code = implode("','", $_POST['group']);
             return false;
         }
 
-        $.post("<?= base_url($_SESSION['page']) . '/simpanProposal' ?>", {
-            brand,
-            activity,
-            start_date,
-            end_date,
-            budget_code,
-            group_code,
-            customer_code,
-            avg_sales_type,
-            item_code,
-            item_price,
-            item_avg_sales,
-            item_qty,
-            item_target,
-            item_promo,
-            item_promo_value,
-            item_costing,
-            customer_code,
-            ims_saldo,
-            budget_saldo,
-            total_costing,
-            YTD_operating,
-            YTD_purchase,
-            YTD_budget_activity,
-            YTD_actual_budget,
-            objective,
-            mechanism,
-            comment,
-            claim_to,
-            total_budget_activity,
-            total_operating,
-            budget_type: '<?= $budget_type ?>',
-        }, function(result) {
-            if (result.success == true) {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Proposal berhasil Disimpan',
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then((result) => {
-                    window.location.href = "<?= base_url($_SESSION['page']) . '/showProposal' ?>";
-                })
+
+
+        //confirmation before save
+
+
+
+        Swal.fire({
+            icon: 'question',
+            title: 'Anda yakin untuk simpan proposal?',
+            showDenyButton: false,
+            showCancelButton: true,
+            confirmButtonText: 'Simpan',
+            // denyButtonText: `Don't save`,
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+
+                $.post("<?= base_url($_SESSION['page']) . '/simpanProposalRev' ?>", {
+                    brand,
+                    activity,
+                    start_date,
+                    end_date,
+                    budget_code,
+                    group_code,
+                    customer_code,
+                    avg_sales_type,
+                    item_code,
+                    item_price,
+                    item_avg_sales,
+                    item_qty,
+                    item_target,
+                    item_promo,
+                    item_promo_value,
+                    item_costing,
+                    customer_code,
+                    ims_saldo,
+                    budget_saldo,
+                    total_costing,
+                    YTD_operating,
+                    YTD_purchase,
+                    YTD_budget_activity,
+                    YTD_actual_budget,
+                    objective,
+                    mechanism,
+                    comment,
+                    claim_to,
+                    total_budget_activity,
+                    total_operating,
+                    budget_type: '<?= $budget_type ?>',
+                    customer_items: json_customer_items
+                }, function(result) {
+                    if (result.success == true) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Proposal berhasil Disimpan',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then((result) => {
+                            window.location.href = "<?= base_url($_SESSION['page']) . '/showProposal' ?>";
+                        })
+                    }
+                }, 'json');
+
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info')
             }
-        }, 'json');
+        })
+
+
+
+
     }
 </script>

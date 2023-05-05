@@ -278,7 +278,7 @@
         </div>
     </section>
 
-    <section class="content-header">
+    <!-- <section class="content-header">
         <h1>Target Activity</h1>
     </section>
 
@@ -287,7 +287,6 @@
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <!-- <button class="btn btn-success pull-right">Edit</button> -->
                     </div>
                     <div class="box-body table-responsive">
                         <table class="table table-responsive table-bordered table-striped">
@@ -323,7 +322,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <section class="content-header">
         <h1>Target Activity On Top</h1>
@@ -466,9 +465,8 @@
 
 
 
-    <section class="content-header">
+    <!-- <section class="content-header">
         <h1>Proposal Tracking On Actual Purchase</h1>
-        <!-- <?= date('Y-m-d') ?> -->
     </section>
 
     <section class="content">
@@ -506,7 +504,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <section class="content-header">
         <h1>Proposal Tracking On Top</h1>

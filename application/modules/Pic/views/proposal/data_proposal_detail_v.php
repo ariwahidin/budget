@@ -2,11 +2,20 @@
 <?php $this->view('header') ?>
 <div class="content-wrapper">
     <div class="row">
+
         <div class="col-md-12">
+
             <section class="content-header">
+                <?php
+                $this->view('messages');
+                ?>
                 <a class="btn bg-orange pull-right" href="<?= base_url($_SESSION['page'] . '/showProposal') ?>" style="margin-right:5px;">Back</a>
+
                 <?php if ($proposal->row()->Status == 'open' || $proposal->row()->Status == 'cancelled') { ?>
-                    <a class="btn btn-warning pull-right" href="<?= base_url($_SESSION['page'] . '/edit_proposal/' . $proposal->row()->Number) ?>" style="margin-right:5px;">Edit</a>
+                    <!-- <a class="btn btn-warning pull-right" href="<?= base_url($_SESSION['page'] . '/edit_proposal/' . $proposal->row()->Number) ?>" style="margin-right:5px;">Edit</a> -->
+                <?php } ?>
+                <?php if ($proposal->row()->Status == 'approved') { ?>
+                    <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-default" style="margin-right: 10px;"> Add No.SK</button>
                 <?php } ?>
                 <h1>Data Proposal Detail</h1>
             </section>
@@ -227,6 +236,7 @@
                                             <th>Group Code</th>
                                             <th>Group Name</th>
                                             <th>Customer Name</th>
+                                            <th>No.SK</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyCustomer">
@@ -237,6 +247,7 @@
                                                 <td><?= $customer->GroupCustomer ?></td>
                                                 <td><?= $customer->GroupName ?></td>
                                                 <td><?= $customer->CustomerName ?></td>
+                                                <td><?= $customer->no_sk ?></td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -257,11 +268,73 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Customer</h4>
+            </div>
+            <form action="<?= base_url($_SESSION['page']) . '/prosesNoSk' ?>" method="POST" id="formProsesNoSk">
+                <input type="hidden" name="no_proposal" value="<?= $proposal->row()->Number ?>">
+                <div class="modal-body">
+                    <!-- <p>One fine body&hellip;</p> -->
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Group Code</th>
+                                        <th>Group Name</th>
+                                        <th>Customer Name</th>
+                                        <th>No.SK</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyCustomer">
+
+                                    <?php $num = 1;
+                                    foreach ($proposalCustomer->result() as $customer) { ?>
+                                        <tr>
+                                            <td><?= $num++ ?></td>
+                                            <td><?= $customer->GroupCustomer ?></td>
+                                            <td><?= $customer->GroupName ?></td>
+                                            <td><?= $customer->CustomerName ?></td>
+                                            <td>
+                                                <input type="hidden" name="id[]" value="<?= $customer->id ?>">
+                                                <input type="text" class="form-control" value="<?= $customer->no_sk ?>" name="no_sk[]" required autocomplete="off">
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
 <?php $this->view('footer') ?>
 <script>
     $(document).ready(function() {
-        $('.table_customer').DataTable();
+        $('.table_customer').DataTable()
     });
+
+    function prosesSK() {
+        var form = $('#formProsesNoSk')
+        form.submit()
+    }
 
     // var td_item_qty = document.querySelectorAll('td.item_qty');
     // var td_item_target = document.querySelectorAll('td.item_target');

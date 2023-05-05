@@ -438,19 +438,19 @@ function get_ytd_operating_activity($budget_code_activity)
     return $query->row()->YTD_OperatingBudgetActivity;
 }
 
-function get_ytd_purchase($brand_code, $start_periode, $precentage_activity = null)
-{
-    $ci = &get_instance();
-    $sql = "SELECT CodeBrand, SUM(Amount) AS YTD_Purchase FROM
-    (SELECT * FROM tb_purchase 
-    WHERE CodeBrand = '$brand_code' 
-    AND [Year] BETWEEN Year('$start_periode') AND Year(getdate()) 
-    AND [month] BETWEEN Month('$start_periode') AND Month(getdate()))ss
-    GROUP BY CodeBrand
-    ";
-    $query = $ci->db->query($sql);
-    return $query->row()->YTD_Purchase * (10 / 100);
-}
+// function get_ytd_purchase($brand_code, $start_periode, $precentage_activity = null)
+// {
+//     $ci = &get_instance();
+//     $sql = "SELECT CodeBrand, SUM(Amount) AS YTD_Purchase FROM
+//     (SELECT * FROM tb_purchase 
+//     WHERE CodeBrand = '$brand_code' 
+//     AND [Year] BETWEEN Year('$start_periode') AND Year(getdate()) 
+//     AND [month] BETWEEN Month('$start_periode') AND Month(getdate()))ss
+//     GROUP BY CodeBrand
+//     ";
+//     $query = $ci->db->query($sql);
+//     return $query->row()->YTD_Purchase * (10 / 100);
+// }
 
 function get_periode_operating($budget_code)
 {
@@ -1106,4 +1106,11 @@ function total_target($no_proposal){
 function cost_ratio($no_proposal){
     $cost_ratio = round((total_costing($no_proposal)/total_target($no_proposal)) * 100);
     return $cost_ratio.'%';
+}
+
+function get_avg_sales_qty_per_customer($no_proposal,$customer_code,$item_code){
+    $ci = &get_instance();
+    $sql = "select * from tb_item_cart where no_proposal = '$no_proposal' and customer_code = '$customer_code' and item_code = '$item_code'";
+    $query = $ci->db->query($sql);
+    return $query->row()->qty_avg_sales;
 }

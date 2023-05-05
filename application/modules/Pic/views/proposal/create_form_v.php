@@ -1,4 +1,6 @@
 <?php
+// var_dump($_SESSION['user_code']);
+
 // var_dump($customer->result());
 ?>
 <?php
@@ -43,7 +45,7 @@
                                 <tr>
                                     <td>Group Customer</td>
                                     <td>
-                                        <select onchange="resetTableCustomer()" name="group_customer_" id="group" class="form-control select2" required>
+                                        <select onchange="resetTableCustomer()" name="group_customer_" id="group" class="form-control select2" multiple required>
                                             <option value="">--Pilih Group--</option>
                                             <?php foreach ($group->result() as $member_group) { ?>
                                                 <option value="<?= $member_group->GroupCode ?>"><?= $member_group->GroupName ?></option>
@@ -98,7 +100,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Balance</td>
+                                    <td>Balance Activity</td>
                                     <td>
                                         <input type="text" class="form-control" name="balance_budget" value="0" id="balance_budget" readonly required>
                                         <input type="hidden" id="balance_operating" require>
@@ -116,10 +118,11 @@
                                     <td><input type="text" class="form-control" name="budget_booked" id="budget_booked" readonly required></td>
                                 </tr>
                                 <tr>
-                                    <td>YTD Operating Budget - Target</td>
+                                    <!-- <td>YTD Operating Budget - Target</td> -->
+                                    <td>Operating Activity</td>
                                     <td><input type="text" class="form-control" name="budget_activity" id="budget_activity" readonly required></td>
                                 </tr>
-                                <tr>
+                                <tr style="display: none;">
                                     <td>YTD Operating Budget - Purchase</td>
                                     <td><input type="text" class="form-control" name="budget_actual" id="budget_actual" readonly required></td>
                                 </tr>
@@ -360,6 +363,9 @@
 
     function create() {
 
+
+
+
         var brand = $('#brand').val();
         var activity = $('#activity').val();
         var start_date = $('#start_date').val();
@@ -470,8 +476,24 @@
 
         // console.log(form);
 
-        form.action = "<?= base_url($_SESSION['page'] . '/show_form_proposal_from_sales') ?>";
-        form.method = "POST";
-        form.submit();
+        Swal.fire({
+            icon : 'warning',
+            title: 'Anda yakin akan lanjut? \n Data tidak dapat dirubah kembali',
+            // showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Lanjukan',
+            cancelButtonText: 'Check Kembali',
+            // denyButtonText: `Don't save`,
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                form.action = "<?= base_url($_SESSION['page'] . '/show_form_proposal_from_sales') ?>";
+                form.method = "POST";
+                form.submit();
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info')
+            }
+        })
+
     }
 </script>

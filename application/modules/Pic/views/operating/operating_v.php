@@ -19,11 +19,11 @@
                                     <!-- <th>Budget Code</th> -->
                                     <th>Brand</th>
                                     <th>Periode</th>
-                                    <th>Target Principal</th>
-                                    <th>Target A&P</th>
-                                    <th>Operating Budget</th>
-                                    <th>Actual Purchase</th>
-                                    <th>Actual A&P</th>
+                                    <th>Target</th>
+                                    <th>A&P</th>
+                                    <th>Operating</th>
+                                    <th style="display:none">Actual Purchase</th>
+                                    <th style="display:none">Actual A&P</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -40,8 +40,8 @@
                                         <td><?= number_format($op->PrincipalTarget) ?></td>
                                         <td><?= number_format($op->TargetAnp) ?></td>
                                         <td><?= number_format($op->OperatingBudget) ?></td>
-                                        <td><?= number_format(getActualPurchase($op->BrandCode, $op->StartPeriode, $op->EndPeriode)) ?></td>
-                                        <td><?= number_format(getActualPurchase($op->BrandCode, $op->StartPeriode, $op->EndPeriode) * (10 / 100)) ?></td>
+                                        <td style="display:none"><?= number_format(getActualPurchase($op->BrandCode, $op->StartPeriode, $op->EndPeriode)) ?></td>
+                                        <td style="display:none"><?= number_format(getActualPurchase($op->BrandCode, $op->StartPeriode, $op->EndPeriode) * (10 / 100)) ?></td>
                                         <td><?= statusOperatingActivity($op->BudgetCode) ?></td>
                                         <td>
                                             <a onclick="loading()" href="<?= base_url($_SESSION['page'] . '/ShowDetailBudget/' . $op->BudgetCode) ?>" class="btn btn-success btn-xs">Tracking Budget</a>

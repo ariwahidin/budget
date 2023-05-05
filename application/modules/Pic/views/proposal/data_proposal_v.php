@@ -14,7 +14,7 @@
                                     <th>No.</th>
                                     <th>No Proposal</th>
                                     <th>Brand</th>
-                                    <th>Group Customer</th>
+                                    <!-- <th>Group Customer</th> -->
                                     <th>Activity</th>
                                     <th>Start Periode</th>
                                     <th>End Periode</th>
@@ -30,7 +30,7 @@
                                         <td><?= $no++ ?></td>
                                         <td><?= $data->Number ?></td>
                                         <td><?= getBrandName($data->BrandCode)?></td>
-                                        <td><?= getGroupName($data->GroupCustomer)?></td>
+                                        <!-- <td></td> -->
                                         <td><?= getActivityName($data->Activity)?></td>
                                         <td><?= date('Y-m-d',strtotime($data->StartDatePeriode)) ?></td>
                                         <td><?= date('Y-m-d',strtotime($data->EndDatePeriode)) ?></td>

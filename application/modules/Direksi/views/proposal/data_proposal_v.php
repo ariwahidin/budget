@@ -1,7 +1,17 @@
+<?php 
+    // var_dump($_SESSION);
+?>
 <?php $this->view('header'); ?>
 <div class="content-wrapper">
     <section class="content-header">
-        <h1>Data Proposal</h1>
+        <div class="row">
+            <div class="col col-md-6">
+                <h4>Data Proposal</h4>
+            </div>
+            <div class="col col-md-6">
+                <a href="<?=base_url($_SESSION['page'])?>" class="btn btn-warning pull-right">Back</a>
+            </div>
+        </div>
     </section>
     <section class="content">
         <div class="row">
@@ -41,7 +51,7 @@
                                             <?php if ($_SESSION['access_role'] == 'administrator') { ?>
                                                 <button class="btn btn-primary btn-xs">Update</button>
                                                 <a href="<?= base_url($_SESSION['page']) . '/deleteProposal/' . $data->Number ?>" class="btn btn-danger btn-xs">Delete</button>
-                                            <?php } ?>
+                                                <?php } ?>
                                         </td>
                                     </tr>
                                 <?php } ?>

@@ -1,4 +1,4 @@
-<div class="modal fade" id="modal_pilih_activity" role="dialog">
+<div class="modal flip" id="modal_pilih_activity" role="dialog">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
@@ -19,7 +19,7 @@
                             <tr>
                                 <td><?= $ac->promo_name ?></td>
                                 <td>
-                                    <button onClick="addFormActivity(this)" data-activity_code="<?= $ac->id ?>" data-budget_code="<?= $budget_code ?>"  class="btn btn-primary">Select</button>
+                                    <button onClick="addFormActivity(this)" data-activity_code="<?= $ac->id ?>" data-budget_code="<?= $budget_code ?>"  class="btn btn-primary btn-xs">Select</button>
                                 </td>
                             </tr>
                         <?php } ?>
