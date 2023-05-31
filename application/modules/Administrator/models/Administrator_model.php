@@ -271,6 +271,7 @@ class Administrator_model extends CI_Model
     {
         $sql = "DELETE tb_proposal WHERE [Number] = '$number'
             DELETE tb_proposal_item WHERE [ProposalNumber] = '$number'
+            DELETE tb_proposal_item_other WHERE [ProposalNumber] = '$number'
             DELETE tb_proposal_customer WHERE [ProposalNumber] = '$number'
             DELETE tb_operating_proposal WHERE [ProposalNumber] = '$number'
             DELETE tb_proposal_approved WHERE [proposalNumber] = '$number'

@@ -49,6 +49,8 @@
                                                 <option value="AUD">AUD</option>
                                                 <option value="CHF">CHF</option>
                                                 <option value="EUR">EUR</option>
+                                                <option value="GBP">GBP</option>
+                                                <option value="IDR">IDR</option>
                                             </select>
                                         </td>
                                     </tr>
@@ -70,23 +72,23 @@
                                             <input type="number" onkeypress="javascript:return isNumber(event)" min="0" class="form-control" name="percent_operating">
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr style="display:none;">
                                         <td><label for="">Budget Type:</label></td>
                                         <td>
                                             <select class="form-control select2" name="budget_type" id="valas" required>
                                                 <option value="">--Pilih--</option>
                                                 <option value="pandurasa">Pandurasa</option>
-                                                <option value="principal">Principal</option>
+                                                <option value="principal" selected>Principal</option>
                                             </select>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr style="display:none;">
                                         <td><label for="">Set IMS:</label></td>
                                         <td>
                                             <select onchange="setIms()" class="form-control select2" name="set_ims" id="set_ims" required>
                                                 <option value="">--Pilih--</option>
                                                 <option value="Y">Yes</option>
-                                                <option value="N">No</option>
+                                                <option value="N" selected>No</option>
                                             </select>
                                         </td>
                                     </tr>

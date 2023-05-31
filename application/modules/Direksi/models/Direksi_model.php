@@ -492,4 +492,18 @@ class Direksi_model extends CI_Model
         $query = $this->db->query($sql);
         return $query;
     }
+
+    public function getAnpForManagement(){
+        $sql = "EXEC getAnpForManagement";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getResumeAnp(){
+        $sql = "select sum(Operating) AS TotalOperating, sum(ProposalCosting) AS TotalProposalCosting, 
+        sum(Operating) - sum(ProposalCosting) AS TotalOperatingBalance 
+        from view_resumeAnp";
+        $query = $this->db->query($sql);
+        return $query;
+    }
 }

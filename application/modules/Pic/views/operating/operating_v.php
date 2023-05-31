@@ -19,8 +19,10 @@
                                     <!-- <th>Budget Code</th> -->
                                     <th>Brand</th>
                                     <th>Periode</th>
-                                    <th>Target</th>
-                                    <th>A&P</th>
+                                    <th>Principal Target</th>
+                                    <th>Principal A&P</th>
+                                    <th>PK Target</th>
+                                    <th>PK A&P</th>
                                     <th>Operating</th>
                                     <th style="display:none">Actual Purchase</th>
                                     <th style="display:none">Actual A&P</th>
@@ -39,12 +41,14 @@
                                         <td><?= date('M-Y', strtotime($op->StartPeriode)) . ' s/d ' . date('M-Y', strtotime($op->EndPeriode)) ?></td>
                                         <td><?= number_format($op->PrincipalTarget) ?></td>
                                         <td><?= number_format($op->TargetAnp) ?></td>
+                                        <td><?= number_format($op->TotalPKTargetIDR) ?></td>
+                                        <td><?= number_format($op->TotalPKAnpIDR) ?></td>
                                         <td><?= number_format($op->OperatingBudget) ?></td>
                                         <td style="display:none"><?= number_format(getActualPurchase($op->BrandCode, $op->StartPeriode, $op->EndPeriode)) ?></td>
                                         <td style="display:none"><?= number_format(getActualPurchase($op->BrandCode, $op->StartPeriode, $op->EndPeriode) * (10 / 100)) ?></td>
                                         <td><?= statusOperatingActivity($op->BudgetCode) ?></td>
                                         <td>
-                                            <a onclick="loading()" href="<?= base_url($_SESSION['page'] . '/ShowDetailBudget/' . $op->BudgetCode) ?>" class="btn btn-success btn-xs">Tracking Budget</a>
+                                            <a onclick="loading()" href="<?= base_url($_SESSION['page'] . '/ShowDetailBudget/' . $op->BudgetCode) ?>" class="btn btn-success btn-xs">Detail</a>
                                             <?php if (statusOperatingActivity($op->BudgetCode) == 'not complete') { ?>
                                                 <a href="<?= base_url($_SESSION['page'] . '/lihatOperatingActivity/' . $op->BudgetCode) ?>" class="btn btn-info btn-xs">Breakdown Activity</a>
                                             <?php } ?>

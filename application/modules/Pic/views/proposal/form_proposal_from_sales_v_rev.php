@@ -23,14 +23,15 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>No Proposal</th>
+                                    <th>No. Proposal</th>
+                                    <th style="width:200px">No. Doc</th>
                                     <th>Brand</th>
                                     <th>Activity</th>
                                     <th>Start Periode</th>
                                     <th>End Periode</th>
                                     <th>Claim to</th>
-                                    <th>Booked</th>
-                                    <th>Unbooked</th>
+                                    <th style="display: none;">Booked</th>
+                                    <th style="display: none;">Unbooked</th>
                                     <th>Balance</th>
                                     <th>Total Costing</th>
                                 </tr>
@@ -39,13 +40,16 @@
                             <tbody>
                                 <tr>
                                     <td><?= $number ?></td>
+                                    <td>
+                                        <input id="no-doc" type="text" class="form-control" value="<?=$no_doc?>" readonly>
+                                    </td>
                                     <td><?= getBrandName($_POST['brand']) ?></td>
                                     <td><?= getActivityName($_POST['activity']) ?></td>
                                     <td><?= date('d-M-Y', strtotime($_POST['start_date'])) ?></td>
                                     <td><?= date('d-M-Y', strtotime($_POST['end_date'])) ?></td>
                                     <td><?= ucfirst($_POST['claim_to']) ?></td>
-                                    <td><?= $_POST['budget_activity'] ?></td>
-                                    <td><?= $_POST['budget_booked'] ?></td>
+                                    <td style="display: none;"><?= $_POST['budget_activity'] ?></td>
+                                    <td style="display: none;"><?= $_POST['budget_booked'] ?></td>
                                     <td><?= $_POST['balance_budget'] ?></td>
                                     <td><b id="td_total_costing"></b></td>
                                 </tr>
@@ -178,9 +182,53 @@
             </div>
         </div>
 
-        <div id="containerSetDetail">
-            <?php $this->view('table_cart_item_detail') ?>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="box">
+                    <div class="box-header">
+                        <h4>Costing lain - lain</h4>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-responsive table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Desc</th>
+                                    <th style="width: 200px;">Costing</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control input_other_desc">
+                                    </td>
+                                    <td>
+                                        <input type="number" onkeyup="calculateTotalCostingOther(this)" class="form-control input_other_cost">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control input_other_desc">
+                                    </td>
+                                    <td>
+                                        <input type="number" onkeyup="calculateTotalCostingOther(this)" class="form-control input_other_cost">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>TOTAL</td>
+                                    <td>
+                                        <input type="text" id="total_costing_other" class="form-control" readonly value="0">
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
+
+
 
 
         <div class="row">
@@ -216,6 +264,11 @@
                 </div>
             </div>
         </div>
+
+        <div id="containerSetDetail">
+            <?php $this->view('table_cart_item_detail') ?>
+        </div>
+
         <div class="row" style="display:none">
             <div class="col-md-12">
                 <div class="box">
@@ -302,6 +355,17 @@ $group_code = implode("','", $_POST['group']);
 
     function showModalItem(brand) {
         loadingShow();
+        var td_barcode = document.querySelectorAll('.barcode_item')
+        var barcode = []
+
+
+        for (var i = 0; i < td_barcode.length; i++) {
+            barcode.push(td_barcode[i].innerText)
+        }
+
+        console.log(barcode)
+
+
         var avg_sales = '<?= $_POST['avg_sales'] ?>';
         var customer_code = "<?= $customer_code ?>";
         var start_date = '<?= $_POST['start_date'] ?>';
@@ -310,6 +374,7 @@ $group_code = implode("','", $_POST['group']);
             customer_code,
             start_date,
             avg_sales,
+            barcode
         });
     }
 
@@ -371,7 +436,8 @@ $group_code = implode("','", $_POST['group']);
             }
         }
         input_total_costing.value = !isNaN(total_costing) ? money(total_costing) : 0;
-        td_total_costing.innerText = !isNaN(total_costing) ? money(total_costing) : 0;
+        // td_total_costing.innerText = !isNaN(total_costing) ? money(total_costing) : 0;
+        calculateAllTotalCosting()
         calculate_cost_ratio();
     }
 
@@ -381,6 +447,29 @@ $group_code = implode("','", $_POST['group']);
 
     function money(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function calculateCosting(e) {
+
+        // console.log(e)
+
+        var totalCostingOther = document.getElementById("total_costing_other").value
+
+        var row = e.parentElement
+        var input_costing = document.querySelectorAll(".input_costing")
+        var td_total_costing = document.getElementById("td_total_costing")
+        var total_costing = 0
+        for (i = 0; i < input_costing.length; i++) {
+            if (!input_costing[i].value.replace(/,/g, '').isNaN) {
+                total_costing += parseFloat(input_costing[i].value.replace(/,/g, ''))
+            }
+        }
+        // console.log(total_costing)
+        // var input_costing = e.querySelector()
+        var input_total_costing = document.getElementById("total_costing")
+        input_total_costing.value = money(total_costing)
+        calculateAllTotalCosting()
+        // td_total_costing.innerText = money(total_costing + parseFloat(totalCostingOther))
     }
 
     function calculate(e) {
@@ -394,7 +483,7 @@ $group_code = implode("','", $_POST['group']);
         var inputCosting = row.querySelector('input.input_costing');
         var costing = 0;
         costing = ((inputPromo.value / 100) * inputPrice.value.replace(/,/g, '')) * parseFloat(inputQty.value.replace(/,/g, ''));
-        inputCosting.value = !isNaN(parseFloat(costing)) ? Math.round(costing).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0;
+        // inputCosting.value = !isNaN(parseFloat(costing)) ? Math.round(costing).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0;
 
         var target = 0;
         target = parseFloat(inputPrice.value.replace(/,/g, '')) * parseFloat(inputQty.value.replace(/,/g, ''));
@@ -416,7 +505,8 @@ $group_code = implode("','", $_POST['group']);
         var input_total_costing = document.getElementById('total_costing');
         var td_total_costing = document.getElementById('td_total_costing');
         input_total_costing.value = !isNaN(parseFloat(total_costing)) ? total_costing.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0;
-        td_total_costing.innerText = !isNaN(parseFloat(total_costing)) ? total_costing.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0;
+        // td_total_costing.innerText = !isNaN(parseFloat(total_costing)) ? total_costing.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0;
+        calculateAllTotalCosting()
         calculate_cost_ratio();
     }
 
@@ -442,7 +532,7 @@ $group_code = implode("','", $_POST['group']);
 
 
 
-        console.log(customer)
+        // console.log(customer)
 
         var avg_sales = "<?= $_POST['avg_sales'] ?>"
         var start_date = "<?= $_POST['start_date'] ?>"
@@ -457,8 +547,8 @@ $group_code = implode("','", $_POST['group']);
             item_code.push(input_item_code[x].value);
             item_qty.push(input_qty[x].value.replace(/,/g, ''));
         }
-        console.log(item_code);
-        console.log(item_qty);
+        // console.log(item_code);
+        // console.log(item_qty);
 
 
 
@@ -480,24 +570,24 @@ $group_code = implode("','", $_POST['group']);
 
             }
 
-            var promo_inputs = document.querySelectorAll('.input_value_promo')
-            for (let i = 0; i < promo_inputs.length; i++) {
-                if (promo_inputs[i].value === "" || promo_inputs[i].value === "0") {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Input value promo tidak boleh kosong!',
-                    })
-                    return false;
-                }
-            }
+            // var promo_inputs = document.querySelectorAll('.input_value_promo')
+            // for (let i = 0; i < promo_inputs.length; i++) {
+            //     if (promo_inputs[i].value === "" || promo_inputs[i].value === "0") {
+            //         Swal.fire({
+            //             icon: 'warning',
+            //             title: 'Input value promo tidak boleh kosong!',
+            //         })
+            //         return false;
+            //     }
+            // }
 
 
             //cek budget
             var budget_saldo = '<?= (float)str_replace(',', '', $_POST['balance_budget']) ?>';
-            var total_costing = $('#total_costing').val().replace(/,/g, '');
+            var total_costing = $('#td_total_costing').text().replace(/,/g, '');
 
-            // console.log(budget_saldo)
-            // console.log(total_costing)
+            console.log(budget_saldo)
+            console.log(total_costing)
 
             if (parseFloat(total_costing) > parseFloat(budget_saldo)) {
                 Swal.fire({
@@ -506,6 +596,8 @@ $group_code = implode("','", $_POST['group']);
                 })
                 return false;
             }
+
+
 
 
 
@@ -570,7 +662,6 @@ $group_code = implode("','", $_POST['group']);
                                     btn_set_detail[i].disabled = true; // set the disabled property to true for each element
                                     btn_set_detail[i].style.display = 'none';
                                 }
-
                                 loadingHide();
                             }
                         },
@@ -653,7 +744,7 @@ $group_code = implode("','", $_POST['group']);
             dataEstimataion.set(keyMapEstimation, valMapEstimation)
         }
 
-        console.log(dataEstimataion)
+        // console.log(dataEstimataion)
 
         // Memproses setiap input dengan atribut data-id
         for (const input of inputElements) {
@@ -669,36 +760,115 @@ $group_code = implode("','", $_POST['group']);
             }
         }
 
-        console.log(dataValues)
+        // console.log(dataValues)
 
         // Menampilkan hasil penjumlahan untuk setiap data-id di console
         for (const [dataId, value] of dataValues) {
             console.log(`Data ID "${dataId}": ${value}`);
         }
 
+        //dimatikan sementara
         //Membandingkan kedua map untuk validasi inputan estimasi sesuai
-        for (let [key, value] of dataEstimataion) {
-            if (dataValues.has(key) && dataValues.get(key) === value) {
-                console.log(`The value of key ${key} is the same in both maps`);
-            } else {
-                console.log(`The value of key ${key} is different in the two maps`);
-                Swal.fire({
-                    icon: 'warning',
-                    title: `Product ${key} tidak sesuai, \n Max : ${value}, Terisi : ${dataValues.get(key)}`,
-                    // text: `Product ${key} tidak sesuai estimatimasi`,
-                })
-                validatation_item_estimation = false
-                return false
-            }
-        }
+        // for (let [key, value] of dataEstimataion) {
+        //     if (dataValues.has(key) && dataValues.get(key) === value) {
+        //         console.log(`The value of key ${key} is the same in both maps`);
+        //     } else {
+        //         console.log(`The value of key ${key} is different in the two maps`);
+        //         Swal.fire({
+        //             icon: 'warning',
+        //             title: `Product ${key} tidak sesuai, \n Max : ${value}, Terisi : ${dataValues.get(key)}`,
+        //             // text: `Product ${key} tidak sesuai estimatimasi`,
+        //         })
+        //         validatation_item_estimation = false
+        //         return false
+        //     }
+        // }
 
         return validatation_item_estimation
 
     }
 
+    function calculateTotalCostingOther(e) {
+        // console.log(e)
+
+
+        var input_costing_other = document.querySelectorAll(".input_other_cost")
+        var input_total_costing_other = document.getElementById("total_costing_other")
+
+        var total_costing = 0
+        var total_costing_1 = 0
+        var total_costing_2 = 0
+
+        for (var i = 0; i < input_costing_other.length; i++) {
+            if (!isNaN(parseFloat(input_costing_other[i].value.replace(/,/g, '')))) {
+                total_costing_2 += parseFloat(input_costing_other[i].value.replace(/,/g, ''))
+            }
+        }
+
+        if (isNaN(total_costing_2)) {
+            input_total_costing_other.value = 0;
+        } else {
+            input_total_costing_other.value = total_costing_2;
+        }
+
+        calculateAllTotalCosting()
+    }
+
+    function calculateAllTotalCosting() {
+        var total_costing = 0
+
+        var input_total_costing_1 = document.getElementById("total_costing")
+        var input_total_costing_2 = document.getElementById("total_costing_other")
+
+        total_costing = parseFloat(input_total_costing_1.value.replace(/,/g, '')) + parseFloat(input_total_costing_2.value.replace(/,/g, ''))
+
+        var td_total_costing = document.getElementById("td_total_costing")
+        td_total_costing.innerText = total_costing
+    }
+
     function simpanProposal() {
 
+        const other_desc = []
+        const cost_other = []
+        const no_doc = document.getElementById("no-doc").value
         const qty_estimation_inputs = document.querySelectorAll('.qty_estimasi_detail')
+
+        var total_costing = 0
+        var total_costing_1 = 0
+        var total_costing_2 = 0
+
+        if (!isNaN(parseFloat($('#total_costing').val().replace(/,/g, '')))) {
+            total_costing_1 = parseFloat($('#total_costing').val().replace(/,/g, ''))
+        }
+
+        var input_desc_other = document.querySelectorAll(".input_other_desc")
+        var input_costing_other = document.querySelectorAll(".input_other_cost")
+
+        for (var i = 0; i < input_costing_other.length; i++) {
+            if (!isNaN(parseFloat(input_costing_other[i].value.replace(/,/g, '')))) {
+                total_costing_2 += parseFloat(input_costing_other[i].value.replace(/,/g, ''))
+                other_desc.push(input_desc_other[i].value)
+                cost_other.push(parseFloat(input_costing_other[i].value.replace(/,/g, '')))
+            }
+        }
+
+        total_costing = total_costing_1 + total_costing_2
+        // console.log(total_costing_1)
+        // console.log(total_costing_2)
+        // console.log(total_costing)
+
+        // return false
+
+
+        if (total_costing < 1) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Costing tidak boleh kosong',
+            })
+            return false
+        }
+
+
 
         if (qty_estimation_inputs.length < 1) {
             Swal.fire({
@@ -710,22 +880,27 @@ $group_code = implode("','", $_POST['group']);
         // console.log(qty_estimation_inputs.length)
         // return false
 
+
+
+
+
+
         const valid_item_estimation = validatation_item_estimations()
-        console.log(validatation_item_estimations())
+        // console.log(validatation_item_estimations())
 
         if (!valid_item_estimation) {
-            console.log("tidak sesuai estimasi")
+            // console.log("tidak sesuai estimasi")
             return false
         }
 
         const json_customer_items = customer_item()
 
         if (!json_customer_items) {
-            console.log("stop")
+            // console.log("stop")
             return false
         }
 
-        console.log(json_customer_items)
+        // console.log(json_customer_items)
         // return false
 
         var input_group = document.querySelectorAll('input.input_group');
@@ -754,7 +929,7 @@ $group_code = implode("','", $_POST['group']);
         var item_promo = [];
         var item_promo_value = [];
         var item_costing = [];
-        var total_costing = $('#total_costing').val().replace(/,/g, '');
+        // var total_costing = $('#total_costing').val().replace(/,/g, '');
         var YTD_operating = '<?= str_replace(',', '', $_POST['budget_activity']) ?>';
         var YTD_purchase = '<?= str_replace(',', '', $_POST['budget_actual']) ?>';
         var total_budget_activity = '<?= str_replace(',', '', $_POST['total_budget_activity']) ?>';
@@ -859,6 +1034,59 @@ $group_code = implode("','", $_POST['group']);
         }
 
 
+        //cek no ref must be unix
+        if (document.getElementById("no-doc").value == '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'No document tidak boleh kosong',
+            })
+            return false;
+        }
+
+
+        //cek no ref already exists
+        var no_ref_is_exists = false;
+        var data_no_doc = {
+            no_doc: no_doc.replace(/[\s\t]/g, "")
+        };
+        // Melakukan permintaan POST dengan jQuery
+        // $.post("<?= base_url($_SESSION['page']) . '/cekNoDoc' ?>", data_no_doc).done(function(response) {
+        //     if (response.success == true) {
+        //         no_ref_is_exists = true;
+        //     }
+        // });
+
+        no_ref_is_exists = $.ajax({
+            url: "<?= base_url($_SESSION['page']) . '/cekNoDoc' ?>",
+            type: "POST",
+            data: data_no_doc,
+            async: false,
+            success: function(response) {
+                // Menangani respons dari server
+                //console.log(response);
+                if (response.success == true) {
+                    no_ref_is_exists = true;
+                }
+            }
+        }).done(function(response) {
+            return response.success
+        });
+
+        // console.log(JSON.parse(no_ref_is_exists.responseText).success)
+
+        if (JSON.parse(no_ref_is_exists.responseText).success == true) {
+            Swal.fire({
+                icon: 'error',
+                title: 'No document \n' + no_doc.replace(/[\s\t]/g, "") + '\n sudah ada',
+            })
+            return false;
+        }
+
+        // console.log('lanjut')
+        // return false;
+
+
 
         //confirmation before save
 
@@ -907,7 +1135,10 @@ $group_code = implode("','", $_POST['group']);
                     total_budget_activity,
                     total_operating,
                     budget_type: '<?= $budget_type ?>',
-                    customer_items: json_customer_items
+                    customer_items: json_customer_items,
+                    no_doc: no_doc.replace(/[\s\t]/g, ""),
+                    other_desc,
+                    other_cost: cost_other,
                 }, function(result) {
                     if (result.success == true) {
                         Swal.fire({

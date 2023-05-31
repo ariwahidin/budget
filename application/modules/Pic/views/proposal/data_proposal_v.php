@@ -13,6 +13,7 @@
                                 <tr>
                                     <th>No.</th>
                                     <th>No Proposal</th>
+                                    <th>Ref Code</th>
                                     <th>Brand</th>
                                     <!-- <th>Group Customer</th> -->
                                     <th>Activity</th>
@@ -29,6 +30,7 @@
                                     <tr>
                                         <td><?= $no++ ?></td>
                                         <td><?= $data->Number ?></td>
+                                        <td><?= $data->NoRef ?></td>
                                         <td><?= getBrandName($data->BrandCode)?></td>
                                         <!-- <td></td> -->
                                         <td><?= getActivityName($data->Activity)?></td>

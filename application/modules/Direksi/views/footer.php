@@ -68,6 +68,8 @@
 <script type="text/javascript">
     $('.select2').select2();
 
+    $("#table1").DataTable();
+
     function loadingShow() {
         var div_loading = document.getElementById("muncul_loading");
         div_loading.classList.add("loading");

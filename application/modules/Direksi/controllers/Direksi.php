@@ -13,7 +13,14 @@ class Direksi extends CI_Controller
 
     public function index()
     {
-        $this->load->view('direksi_v');
+        $anp = $this->direksi_model->getAnpForManagement();
+        $resumeAnp = $this->direksi_model->getResumeAnp();
+        // var_dump($resumeAnp->result());
+        $data = array(
+            'anp' => $anp,
+            'resumeAnp' => $resumeAnp
+        );
+        $this->load->view('direksi_v', $data);
     }
 
     public function showActivity()

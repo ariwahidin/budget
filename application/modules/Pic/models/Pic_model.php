@@ -248,7 +248,7 @@ class Pic_model extends CI_Model
         return $query;
     }
 
-    public function getItemFromPenjualan($brand, $customer, $start, $end, $item = null)
+    public function getItemFromPenjualan($brand, $customer, $start, $end, $item = null, $barcode)
     {
 
         // if ($item != null) {
@@ -311,6 +311,12 @@ class Pic_model extends CI_Model
 
         if ($item != null) {
             $sql .= " WHERE ss.ItemCode IN (select value FROM  STRING_SPLIT('$item', ','))";
+        }
+
+        if (count($barcode) > 0 || $barcode != null) {
+            $barcode = implode(",", $barcode);
+            var_dump($barcode);
+            $sql .= " WHERE ss.Barcode NOT IN (select value FROM  STRING_SPLIT('$barcode', ','))";
         }
 
         $sql .= " order by ss.Quantity DESC";
@@ -378,6 +384,13 @@ class Pic_model extends CI_Model
         return $query;
     }
 
+    public function getOperatingBudget($budgetCode)
+    {
+        $sql = "select sum(OperatingBudget) as BudgetOperating from tb_operating where BudgetCode = '$budgetCode'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     public function getOperating($params)
     {
         if (!empty($params['user_code'])) {
@@ -387,6 +400,8 @@ class Pic_model extends CI_Model
             MAX([month]) AS EndPeriode, t2.BrandName,
             SUM([PrincipalTargetIDR]) AS PrincipalTarget,
             SUM([PrincipalAnpIDR]) AS TargetAnp,
+            SUM([PKTargetIDR]) AS TotalPKTargetIDR,
+            SUM([PKAnpIDR]) AS TotalPKAnpIDR,
             SUM(OperatingBudget) AS OperatingBudget FROM
             (SELECT * FROM tb_operating)ss
             INNER JOIN m_brand t2 ON ss.BrandCode = t2.BrandCode";
@@ -419,9 +434,9 @@ class Pic_model extends CI_Model
     public function getBudgetActivityReport($budget_code)
     {
         $sql = "select distinct t1.BudgetCode, t1.BudgetCodeActivity, t1.ActivityName, t1.BudgetActivity,
-        (select sum(Budget_booked) from tb_operating_proposal 
+        (select sum(Budget_unbooked) from tb_operating_proposal 
         where BudgetCodeActivity = t1.BudgetCodeActivity) as Used,
-        t1.BudgetActivity - (select sum(Budget_booked) from tb_operating_proposal 
+        t1.BudgetActivity - (select sum(Budget_unbooked) from tb_operating_proposal 
         where BudgetCodeActivity = t1.BudgetCodeActivity) as Saldo
         from tb_operating_activity t1
         where BudgetCode = '$budget_code'";
@@ -498,23 +513,32 @@ class Pic_model extends CI_Model
     public function getYtdBudgetActualActivity($brand, $budget_code, $budget_code_activity, $endDateProposal)
     {
         $budget_actual_activity = 0;
-        $sql = "
-        declare @brand as varchar(100) = '$brand'
-        declare @budgetCode as varchar(100) = '$budget_code'
-        declare @budgetCodeActivity as varchar(100) = '$budget_code_activity'
-        declare @startDateBudget as date = (SELECT MIN([month]) FROM tb_operating WHERE BudgetCode = @budgetCode)
-        declare @endDateProposal as date = '$endDateProposal'
-        declare @ytdPurchase as float = (SELECT SUM(Amount) FROM tb_purchase_with_date WHERE CodeBrand = @brand AND format([Date], 'yyyy-MM') Between format(@startDateBudget, 'yyyy-MM') AND format(@endDateProposal, 'yyyy-MM'))
-        declare @percentageAnp as Float = (SELECT SUM(PrincipalAnpIDR)/SUM(PrincipalTargetIDR) FROM tb_operating WHERE BudgetCode = @budgetCode)
-        declare @percentageOperating as float = (SELECT SUM(OperatingBudget)/SUM(PrincipalAnpIDR) FROM tb_operating WHERE BudgetCode = @budgetCode)
-        declare @budgetActivity as float = (SELECT SUM(BudgetActivity) as float FROM tb_operating_activity WHERE BudgetCodeActivity = @budgetCodeActivity)
-        declare @percentageBudgetActivity as float = (SELECT @budgetActivity/SUM(OperatingBudget) FROM tb_operating WHERE BudgetCode = @budgetCode)
-        SELECT ((@ytdPurchase * @percentageAnp)) * @percentageBudgetActivity AS ytd_budget_actual_activity";
+        // $sql = "
+        // declare @brand as varchar(100) = '$brand'
+        // declare @budgetCode as varchar(100) = '$budget_code'
+        // declare @budgetCodeActivity as varchar(100) = '$budget_code_activity'
+        // declare @startDateBudget as date = (SELECT MIN([month]) FROM tb_operating WHERE BudgetCode = @budgetCode)
+        // declare @endDateProposal as date = '$endDateProposal'
+        // declare @ytdPurchase as float = (SELECT SUM(Amount) FROM tb_purchase_with_date WHERE CodeBrand = @brand AND format([Date], 'yyyy-MM') Between format(@startDateBudget, 'yyyy-MM') AND format(@endDateProposal, 'yyyy-MM'))
+        // declare @percentageAnp as Float = (SELECT SUM(PrincipalAnpIDR)/SUM(PrincipalTargetIDR) FROM tb_operating WHERE BudgetCode = @budgetCode)
+        // declare @percentageOperating as float = (SELECT SUM(OperatingBudget)/SUM(PrincipalAnpIDR) FROM tb_operating WHERE BudgetCode = @budgetCode)
+        // declare @budgetActivity as float = (SELECT SUM(BudgetActivity) as float FROM tb_operating_activity WHERE BudgetCodeActivity = @budgetCodeActivity)
+        // declare @percentageBudgetActivity as float = (SELECT @budgetActivity/SUM(OperatingBudget) FROM tb_operating WHERE BudgetCode = @budgetCode)
+        // SELECT ((@ytdPurchase * @percentageAnp)) * @percentageBudgetActivity AS ytd_budget_actual_activity";
+
+        $sql = "exec getYtdBudgetActualActivity '$brand', '$budget_code', '$budget_code_activity', '$endDateProposal'";
         $query = $this->db->query($sql);
         if ($query->row()->ytd_budget_actual_activity != NULL) {
             $budget_actual_activity = $query->row()->ytd_budget_actual_activity;
         }
         return $budget_actual_activity;
+    }
+
+    public function getNoDoc($noDoc)
+    {
+        $sql = "select NoRef from tb_proposal where NoRef = '$noDoc'";
+        $query = $this->db->query($sql);
+        return $query;
     }
 
     public function insertProposal($post)
@@ -534,6 +558,7 @@ class Pic_model extends CI_Model
         //insert proposal
         $params = array(
             'Number' => $number,
+            'NoRef' => $post['no_doc'],
             'StartDatePeriode' => $post['start_date'],
             'EndDatePeriode' => $post['end_date'],
             'BudgetCode' => $budget_code,
@@ -565,6 +590,18 @@ class Pic_model extends CI_Model
                 'ListingCost' => !empty($post['listing_cost']) ? (float)$post['listing_cost'][$i] : 0,
             );
             $this->db->insert('tb_proposal_item', $items);
+        }
+
+        //insert item other
+        if (isset($post['other_cost'])) {
+            for ($i = 0; $i < count($post['other_cost']); $i++) {
+                $items_other = array(
+                    'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
+                    'Desc' => $post['other_desc'][$i],
+                    'Costing' => $post['other_cost'][$i],
+                );
+                $this->db->insert('tb_proposal_item_other', $items_other);
+            }
         }
 
         //insert customer
@@ -673,6 +710,26 @@ class Pic_model extends CI_Model
         return $query;
     }
 
+    public function getProposalItemOther($number)
+    {
+        $sql = "SELECT * FROM tb_proposal_item_other WHERE ProposalNumber = '$number'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getTotalCosting($number)
+    {
+        $sql = "select sum(ss.costing) as total_costing from
+        (
+        select costing from tb_proposal_item where ProposalNumber = '$number'
+        union
+        select costing from tb_proposal_item_other where ProposalNumber = '$number'
+        )ss";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     public function getProposalCustomer($number)
     {
         $sql = "SELECT t1.id, GroupCustomer, t3.GroupName, t2.CustomerName, t1.no_sk FROM tb_proposal_customer t1
@@ -731,8 +788,8 @@ class Pic_model extends CI_Model
         $username = $_SESSION['username'];
         $date = $this->getDate();
         $unbooked = $this->db->query("SELECT Budget_unbooked FROM tb_operating_proposal WHERE ProposalNumber = '$number'")->row()->Budget_unbooked;
-        var_dump($unbooked);
-        die;
+        // var_dump($unbooked);
+        // die;
         $update_budget = $this->db->query("UPDATE tb_operating_proposal SET Budget_unbooked = 0, DeallocatedBudget = '$unbooked', CancelBy = '$username', CancelDate = '$date' WHERE ProposalNumber = '$number'");
         $update_status_proposal = $this->db->query("UPDATE tb_proposal SET [Status] = 'cancelled', CancelBy = '$username', CancelDate = '$date' WHERE Number = '$number'");
     }
@@ -767,6 +824,8 @@ class Pic_model extends CI_Model
                 'PrincipalTargetIDR' => (float)str_replace(',', '', $post['principal_target_idr'][$i]),
                 'PrincipalAnpValas' => (float)str_replace(',', '', $post['anp_principal_valas'][$i]),
                 'PrincipalAnpIDR' => (float)str_replace(',', '', $post['anp_principal_idr'][$i]),
+                'PKTargetIDR' => (float)str_replace(',', '', $post['pk_target_idr'][$i]),
+                'PKAnpIDR' => (float)str_replace(',', '', $post['pk_anp_idr'][$i]),
                 'OperatingBudget' => (float)str_replace(',', '', $post['anp_operating'][$i]),
                 'IMS_Target' => (float)str_replace(',', '', $post['ims_target'][$i]),
                 'IMS_Budget' => (float)str_replace(',', '', $post['ims_budget'][$i]),
@@ -838,6 +897,7 @@ class Pic_model extends CI_Model
         $sql = "SELECT SUM(PrincipalTargetIDR) as Target, SUM(PrincipalAnpIDR) as Anp, 
         SUM(PrincipalAnpIDR)/SUM(PrincipalTargetIDR) as [Anp_Vs_Target] FROM tb_operating WHERE BudgetCode = '$budget_code'";
         $query = $this->db->query($sql);
+        // var_dump($this->db->error());
         return $query;
     }
 
@@ -916,7 +976,27 @@ class Pic_model extends CI_Model
 
     public function simpanOperatingActivity($post) // script revisi
     {
-        //var_dump($post["month"]);
+        // var_dump($post);
+        // var_dump($post['activity']);
+        // var_dump($post['budget_code_activity']);
+        // var_dump($post['budget_activity']);
+
+
+        //perbaikan insert, activity yang tidak dipilih, agar di set 0
+        $act = implode(",", $post['activity']);
+        $other_activity = $this->db->query("select id from m_promo where id not in(select value FROM  STRING_SPLIT('$act', ','))");
+        foreach ($other_activity->result() as $a) {
+            //activity
+            array_push($post['activity'], (string)$a->id);
+            //budget code activity
+            array_push($post['budget_code_activity'], $post['budget_code'] . "/" . (string)$a->id);
+            //budget activity yang tidak diset user, di set 0
+            array_push($post['budget_activity'], '0');
+        }
+
+        // var_dump($post['activity']);
+        // var_dump($post['budget_code_activity']);
+        // var_dump($post['budget_activity']);
         // die;
         for ($i = 0; $i < count($post['activity']); $i++) {
 
@@ -1033,7 +1113,15 @@ class Pic_model extends CI_Model
         if (is_null($allocated_budget)) {
             $allocated_budget = 0;
         }
+        // var_dump($this->db->error());
         return $allocated_budget;
+    }
+
+    public function getBudgetAllocated($budgetCode)
+    {
+        $sql = "select SUM(Budget_allocated) as budget_total_allocated from tb_operating_proposal where BudgetCode = '$budgetCode'";
+        $query = $this->db->query($sql);
+        return $query;
     }
 
     public function getBrandPic($pic_code)
@@ -1066,6 +1154,8 @@ class Pic_model extends CI_Model
         AVG(ExchangeRate) AS ExchangeRate,
         SUM(PrincipalTargetValas) AS TotalPrincipalTargetValas,
         SUM(PrincipalTargetIDR) AS TotalPrincipalTargetIDR,
+        SUM([PKTargetIDR]) AS TotalPKTargetIDR,
+        SUM([PKAnpIDR]) AS TotalPKAnpIDR,
         SUM([PrincipalAnpIDR]) AS TotalTargetAnp, 
         SUM(OperatingBudget) AS TotalOperating,
         SUM(IMS_Target) AS TotalImsTarget, 
@@ -1442,7 +1532,7 @@ class Pic_model extends CI_Model
                     'customer_name' => $this->getCustomerFromTBSales($post['customer'][$x])->row()->CustomerName,
                     'item_code' => $post['item_code'][$i],
                     'item_name' => getNameItem($post['item_code'][$i]),
-                    'qty_avg_sales' => (int)$this->getItemFromPenjualan($brand, $post['customer'][$x], $start, $end, $post['item_code'][$i])->row()->Quantity,
+                    'qty_avg_sales' => (int)$this->getItemFromPenjualan($brand, $post['customer'][$x], $start, $end, $post['item_code'][$i], null)->row()->Quantity,
                     'sales_estimation' => $post['item_qty'][$i],
                     'user_id' => $_SESSION['user_code'],
                 );

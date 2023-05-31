@@ -186,6 +186,7 @@ class Pic extends CI_Controller
         }
 
         $data = [
+            'no_doc' => $_POST['no_doc'],
             'number' => $this->pic_model->getNumber(),
             'budget_code_activity' => $_POST['budget_code_activity'],
             'budget_type' => $budget_source,
@@ -198,6 +199,26 @@ class Pic extends CI_Controller
             // $this->load->view('proposal/form_proposal_from_sales_v', $data);
             $this->load->view('proposal/form_proposal_from_sales_v_rev', $data);
         }
+    }
+
+    public function cekNoDoc()
+    {
+        $post = $this->input->post();
+        $noDoc = $post['no_doc'];
+        $result = $this->pic_model->getNoDoc($noDoc);
+
+        $response = array();
+
+        if ($result->num_rows() > 0) {
+            $response = array(
+                'success' => true
+            );
+        } else {
+            $response = array(
+                'success' => false
+            );
+        }
+        echo json_encode($response);
     }
 
     public function set_cart_item()
@@ -234,8 +255,6 @@ class Pic extends CI_Controller
 
         $balance = 0;
         if (!empty($_POST['budget_source'])) {
-
-
             if ($_POST['budget_source'] == 'anp') {
                 if ($this->pic_model->getBudgetCode($_POST)->num_rows() < 1) {
                     echo json_encode(['budget' => 'not_set']);
@@ -245,11 +264,11 @@ class Pic extends CI_Controller
                 $budget_code = $this->pic_model->getBudgetCode($_POST)->row()->BudgetCode;
                 $budget_code_activity = $budget_code . '/' . $_POST['activity'];
                 $budget_activity = $this->pic_model->getBudgetActivity($budget_code_activity, $_POST['end_date']);
-                $actual_purchase = (float)$this->pic_model->getYtdActualPurchase($_POST['brand'], $budget_code_activity, $_POST['end_date']);
+                // $actual_purchase = (float)$this->pic_model->getYtdActualPurchase($_POST['brand'], $budget_code_activity, $_POST['end_date']);
                 // var_dump($actual_purchase);
-                $budget_allocated = $this->pic_model->getBudgetAllocatedActivity($budget_code_activity);
-                $anp_vs_target = $this->pic_model->getAnpVsTarget($budget_code)->row()->Anp_Vs_Target;
-                $operating_vs_anp = $this->pic_model->getOperatingVsAnp($budget_code)->row()->Operating_Vs_Anp;
+                $budget_allocated = $this->pic_model->getBudgetAllocated($budget_code)->row()->budget_total_allocated;
+                // $anp_vs_target = $this->pic_model->getAnpVsTarget($budget_code)->row()->Anp_Vs_Target;
+                // $operating_vs_anp = $this->pic_model->getOperatingVsAnp($budget_code)->row()->Operating_Vs_Anp;
                 $budgetActivity_vs_Operating = $this->pic_model->getBudgetActivityVsOperating($budget_code_activity)->row()->activity_vs_operating;
                 // $actual_budget = (($actual_purchase * $operating_vs_anp) * $anp_vs_target) * $budgetActivity_vs_Operating;
                 $actual_budget = $this->pic_model->getYtdBudgetActualActivity($_POST['brand'], $budget_code, $budget_code_activity, $_POST['end_date']);
@@ -259,6 +278,8 @@ class Pic extends CI_Controller
                 $ims_value = 0;
                 $is_ims = $this->db->query("SELECT DISTINCT is_ims FROM tb_operating WHERE BudgetCode = '$budget_code'")->row()->is_ims;
 
+                $operatingBudget = $this->pic_model->getOperatingBudget($budget_code)->row()->BudgetOperating;
+
                 if ($is_ims == 'Y') {
                     $ims_value = $this->pic_model->get_ytd_ims($_POST['brand'], $budget_code, $_POST['end_date']);
                     $ims_used = $this->pic_model->getImsUsed($budget_code);
@@ -267,10 +288,12 @@ class Pic extends CI_Controller
 
                 if ($actual_budget < $budget_activity) {
                     // $balance = $actual_budget - $budget_allocated;
-                    $balance = $budget_activity - $budget_allocated;
+                    $balance = $operatingBudget - $budget_allocated;
                 } else {
-                    $balance = $budget_activity - $budget_allocated;
+                    $balance = $operatingBudget - $budget_allocated;
                 }
+
+
 
                 $data = array(
                     'balance' => $balance,
@@ -283,6 +306,7 @@ class Pic extends CI_Controller
                     'total_budget_activity' => $total_budget_activity,
                     'total_operating' => $total_operating,
                     'ims_value' => $ims_value,
+                    'operatingBudget' => $operatingBudget
                 );
 
                 echo json_encode($data);
@@ -550,20 +574,24 @@ class Pic extends CI_Controller
         $params['number'] = $number;
         $proposal = $this->pic_model->getProposal($params);
         $proposalItem = $this->pic_model->getProposalItem($number);
+        $proposalItemOther = $this->pic_model->getProposalItemOther($number);
         $proposalCustomer = $this->pic_model->getProposalCustomer($number);
         $approvedBy = $this->pic_model->getApprovedBy($number);
         $objective = $this->pic_model->getObjective($number);
         $mechanism = $this->pic_model->getMechanism($number);
         $comment = $this->pic_model->getComment($number);
+        $total_costing = $this->pic_model->getTotalCosting($number)->row()->total_costing;
 
         $data = array(
             'proposal' => $proposal,
             'proposalItem' => $proposalItem,
+            'proposalItemOther' => $proposalItemOther,
             'proposalCustomer' => $proposalCustomer,
             'approvedBy' => $approvedBy,
             'objective' => $objective,
             'mechanism' => $mechanism,
             'comment' => $comment,
+            'total_costing' => $total_costing
         );
 
         $this->load->view('proposal/data_proposal_detail_v', $data);
@@ -629,7 +657,7 @@ class Pic extends CI_Controller
     {
         // var_dump($_POST);
         // die;
-        $brand = $_POST['brand'];
+        $brand = str_replace(array(' ', "\t"), '', $_POST['brand']);;
         $start_month = date('Y-m-d', strtotime($_POST['start_month']));
         $end_month = date('Y-m-d', strtotime($_POST['end_month']));
         $begin = new DateTime($start_month);
@@ -643,6 +671,10 @@ class Pic extends CI_Controller
         foreach ($daterange as $date) {
             array_push($periode, $date->format("Y-m-d"));
         }
+
+        // var_dump($this->db->last_query());
+        // var_dump($check->num_rows());
+        // die;
 
         if ($check->num_rows() > 0) {
             echo json_encode(['budget' => 'budget_already_exists']);
@@ -840,6 +872,14 @@ class Pic extends CI_Controller
     public function showModalItemFromPenjualan()
     {
         // var_dump($_POST);
+
+
+
+        $barcode = array();
+        if (isset($_POST['barcode'])) {
+            $barcode = $_POST['barcode'];
+        }
+
         // die;
         $end = date('Y-m-d', strtotime($_POST['start_date']));
         $start = '';
@@ -850,7 +890,7 @@ class Pic extends CI_Controller
         }
         $brand = $_POST['brand'];
         $customer = $_POST['customer_code'];
-        $item = $this->pic_model->getItemFromPenjualan($brand, $customer, $start, $end);
+        $item = $this->pic_model->getItemFromPenjualan($brand, $customer, $start, $end, null, $barcode);
         $data = array(
             'item' => $item,
         );
@@ -859,6 +899,7 @@ class Pic extends CI_Controller
 
     public function getItemFromPenjualan()
     {
+
         $end = date('Y-m-d', strtotime($_POST['start_date']));
         $start = '';
 
@@ -872,7 +913,7 @@ class Pic extends CI_Controller
         $customer = $_POST['customer'];
         $item = implode(",", $_POST["item_code"]);
 
-        $items = $this->pic_model->getItemFromPenjualan($brand, $customer, $start, $end, $item);
+        $items = $this->pic_model->getItemFromPenjualan($brand, $customer, $start, $end, $item, null);
 
         // var_dump($item->result());
         // die;

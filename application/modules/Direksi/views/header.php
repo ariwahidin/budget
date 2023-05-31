@@ -260,6 +260,12 @@
             <section class="sidebar">
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">MAIN NAVIGATION</li>
+                    <li class="">
+                        <a href="<?= base_url($_SESSION['page']) ?>">
+                            <i class="fa fa-dashboard"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
                     <li class="treeview <?= $this->uri->segment(2) == 'showGroup' ||
                                             $this->uri->segment(2) == 'showBrand' ||
                                             $this->uri->segment(2) == 'showItem' ||

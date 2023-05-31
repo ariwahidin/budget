@@ -32,6 +32,10 @@
                                                 <td>&nbsp;:&nbsp;<b><?= $proposal->row()->Number ?></b></td>
                                             </tr>
                                             <tr>
+                                                <td>Ref Code</td>
+                                                <td>&nbsp;:&nbsp;<b><?= $proposal->row()->NoRef ?></b></td>
+                                            </tr>
+                                            <tr>
                                                 <td>Brand</td>
                                                 <td>&nbsp;:&nbsp;<b><?= getBrandName($proposal->row()->BrandCode) ?></b></td>
                                             </tr>
@@ -54,6 +58,10 @@
                                             <tr>
                                                 <td>Claim To</td>
                                                 <td>&nbsp;:&nbsp;<b><?= ucfirst($proposal->row()->ClaimTo) ?></b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Total Costing</td>
+                                                <td>&nbsp;:&nbsp;<b><?= number_format($total_costing) ?></b></td>
                                             </tr>
                                         </table>
                                     </div>
@@ -217,6 +225,36 @@
                                         <td>COST RATIO</td>
                                         <td>&nbsp;:&nbsp; <b id="cost_ratio"><?= cost_ratio($proposal->row()->Number) ?></b></td>
                                     </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box">
+                            <div class="box-header">
+                                <h3>Lain - lain</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-responseive table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Desc</th>
+                                            <th>Costing</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $num = 1;
+                                        foreach ($proposalItemOther->result() as $io) { ?>
+                                            <tr>
+                                                <td><?= $num++ ?></td>
+                                                <td><?= $io->Desc ?></td>
+                                                <td><?= number_format($io->Costing) ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>

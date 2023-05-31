@@ -39,16 +39,24 @@
                                 <td>&nbsp;:&nbsp; <?= number_format($operating_header->row()->TotalPrincipalTargetValas) ?></td>
                             </tr>
                             <tr>
-                                <td>Target (IDR)</td>
+                                <td>Principal Target (IDR)</td>
                                 <td>&nbsp;:&nbsp; <?= number_format($operating_header->row()->TotalPrincipalTargetIDR) ?></td>
                             </tr>
                             <tr>
                                 <?php
                                 $target_prencentage = 0;
-                                $target_prencentage = ($operating_header->row()->TotalTargetAnp / $operating_header->row()->TotalPrincipalTargetIDR) * 100;
+                                // $target_prencentage = ($operating_header->row()->TotalTargetAnp / $operating_header->row()->TotalPrincipalTargetIDR) * 100;
                                 ?>
-                                <td>A&P (IDR)</td>
+                                <td>Principal A&P (IDR)</td>
                                 <td>&nbsp;:&nbsp; <?= number_format($operating_header->row()->TotalTargetAnp) ?></td>
+                            </tr>
+                            <tr>
+                                <td>PK Target (IDR)</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($operating_header->row()->TotalPKTargetIDR) ?></td>
+                            </tr>
+                            <tr>
+                                <td>PK A&P (IDR)</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($operating_header->row()->TotalPKAnpIDR) ?></td>
                             </tr>
                             <tr>
                                 <td>Operating</td>
@@ -112,11 +120,15 @@
     function addFormActivity(e) {
         var budget_code = e.dataset.budget_code;
         var activity = e.dataset.activity_code;
+        var row = e.parentElement.parentElement
+        // console.log(row)
+        // return false;
         $('#container_form_activity').append($('<div>').load("<?= base_url($_SESSION['page'] . '/showFormActivity') ?>", {
             budget_code,
             activity
         }))
-        $('#modal_pilih_activity').modal('hide');
+        row.remove()
+        // $('#modal_pilih_activity').modal('hide');
     }
 
     function deleteForm(e) {
@@ -202,31 +214,48 @@
             console.log(month);
             console.log(list_budget_activity);
 
-            $.ajax({
-                url: "<?= base_url($_SESSION['page'] . '/simpanOperatingActivity') ?>",
-                type: "POST",
-                data: {
-                    brand_code: "<?= $brand ?>",
-                    activity: activity,
-                    budget_code: "<?= $budget_code ?>",
-                    budget_code_activity: budget_code_activity,
-                    month: month,
-                    budget_activity: list_budget_activity,
-                },
-                dataType: "JSON",
-                success: function(response) {
-                    if (response.success == true) {
-                        window.location.href = "<?= base_url($_SESSION['page'] . '/showOperating') ?>";
-                    } else {
-                        //alert("Gagal simpan data");
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Warning',
-                            text: 'Failed to save data',
-                        })
-                    }
+
+
+            Swal.fire({
+                icon: "question",
+                title: 'Apa anda yakin untuk simpan?',
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                denyButtonText: `Don't save`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    loadingShow()
+                    $.ajax({
+                        url: "<?= base_url($_SESSION['page'] . '/simpanOperatingActivity') ?>",
+                        type: "POST",
+                        data: {
+                            brand_code: "<?= $brand ?>",
+                            activity: activity,
+                            budget_code: "<?= $budget_code ?>",
+                            budget_code_activity: budget_code_activity,
+                            month: month,
+                            budget_activity: list_budget_activity,
+                        },
+                        dataType: "JSON",
+                        success: function(response) {
+                            if (response.success == true) {
+                                loadingHide()
+                                window.location.href = "<?= base_url($_SESSION['page'] . '/showOperating') ?>";
+                            } else {
+                                loadingHide()
+                                //alert("Gagal simpan data");
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Warning',
+                                    text: 'Failed to save data',
+                                })
+                            }
+                        }
+                    });
                 }
-            });
+            })
+
 
         }
     }

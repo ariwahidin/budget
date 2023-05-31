@@ -32,6 +32,18 @@
                         <div class="box-body">
                             <table class="table table-responsive table_header">
                                 <tr>
+                                    <td>No. Doc</td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input id="input-no-doc" name="no_doc" type="text" class="form-control">
+                                            <div class="input-group-btn">
+                                                <button type="button" onclick="checkNoDoc()" class="btn btn-primary">Check</button>
+                                            </div>
+                                            <!-- /btn-group -->
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td>Brand</td>
                                     <td>
                                         <select onchange="resetBudget()" class="form-control select2" name="brand" id="brand">
@@ -84,7 +96,7 @@
                                         <select onchange="changeAVG()" name="avg_sales" id="avg_sales" class="form-control" required>
                                             <option value="">--Pilih--</option>
                                             <option value="Last 3 Month">Last 3 Month</option>
-                                            <option value="none">None</option>
+                                            <!-- <option value="none">None</option> -->
                                             <!-- <input name="avg_sales" type="text" class="form-control" id="avg_sales" value="Last 3 Month" readonly> -->
                                         </select>
                                     </td>
@@ -95,12 +107,18 @@
                                         <select onchange="getBudget();" name="budget_source" id="budget_source" class="form-control" required>
                                             <option value="">--Pilih--</option>
                                             <option value="anp">A&P</option>
-                                            <option value="on_top">On Top</option>
+                                            <!-- <option value="on_top">On Top</option> -->
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Balance Activity</td>
+                                    <td>Operating</td>
+                                    <td>
+                                        <input type="text" class="form-control" value="0" id="operatingBudget" readonly required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Balance</td>
                                     <td>
                                         <input type="text" class="form-control" name="balance_budget" value="0" id="balance_budget" readonly required>
                                         <input type="hidden" id="balance_operating" require>
@@ -117,7 +135,7 @@
                                     <td>Booked</td>
                                     <td><input type="text" class="form-control" name="budget_booked" id="budget_booked" readonly required></td>
                                 </tr>
-                                <tr>
+                                <tr style="display:none">
                                     <!-- <td>YTD Operating Budget - Target</td> -->
                                     <td>Operating Activity</td>
                                     <td><input type="text" class="form-control" name="budget_activity" id="budget_activity" readonly required></td>
@@ -126,7 +144,7 @@
                                     <td>YTD Operating Budget - Purchase</td>
                                     <td><input type="text" class="form-control" name="budget_actual" id="budget_actual" readonly required></td>
                                 </tr>
-                                <tr>&nbsp;
+                                <tr style="display:none">&nbsp;
                                     <td>IMS</td>
                                     <td>
                                         <input name="ims_value" id="ims_value" type="text" class="form-control" readonly required>
@@ -183,6 +201,52 @@
     $(document).ready(function() {
         $('.select2').select2();
     })
+
+    function noDocExists() {
+        var noDoc = document.getElementById("input-no-doc").value
+        var result = true;
+
+        if (noDoc == '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'No doc kosong!',
+            })
+        } else {
+            var ajaxNoDoc = $.ajax({
+                url: '<?= base_url($_SESSION['page'] . '/cekNoDoc') ?>',
+                type: 'POST',
+                data: {
+                    no_doc: noDoc
+                },
+                async: false,
+                dataType: 'JSON',
+                success: function(response) {
+                    if (response.success == true) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'No doc ' + noDoc + ' sudah ada, tidak bisa digunakan',
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'No doc ' + noDoc + ' bisa digunakan',
+                        })
+                    }
+                }
+            });
+
+            if (ajaxNoDoc.responseJSON.success == true) {
+                result = true
+            } else {
+                result = false
+            }
+        }
+        return result
+    }
+
+    function checkNoDoc() {
+        noDocExists()
+    }
 
     function changeAVG() {
         var avg = document.getElementById('avg_sales');
@@ -242,6 +306,7 @@
         var input_total_budget_activity = document.getElementById('total_budget_activity').value = '';
         var input_total_operating = document.getElementById('total_operating').value = '';
         var input_value_ims = document.getElementById('ims_value').value = '';
+        document.getElementById('operatingBudget').value = '';
         var checkbox = document.getElementById('ims');
         if (checkbox.checked) {
             checkbox.checked = false;
@@ -275,6 +340,8 @@
         var tr_use_ims = document.getElementById('use_ims');
         var input_balance_operating = document.getElementById('balance_operating');
 
+        var inputOperatingBudget = document.getElementById('operatingBudget');
+
         $.ajax({
             url: '<?= base_url($_SESSION['page'] . '/get_budget') ?>',
             type: 'POST',
@@ -307,6 +374,8 @@
                     return false;
                 }
 
+                console.log(response)
+
                 input_balance_budget.value = money(response.balance);
                 input_balance_operating.value = money(response.balance);
                 input_allocated_budget.value = money(response.budget_allocated);
@@ -317,6 +386,8 @@
                 input_total_budget_activity.value = money(response.total_budget_activity);
                 input_total_operating.value = money(response.total_operating);
                 input_ims_value.value = money(response.ims_value);
+
+                inputOperatingBudget.value = money(response.operatingBudget);
                 // console.log(response.balance);
                 if (response.balance < 1000000) {
                     tr_use_ims.style.display = 'revert';
@@ -362,10 +433,6 @@
     }
 
     function create() {
-
-
-
-
         var brand = $('#brand').val();
         var activity = $('#activity').val();
         var start_date = $('#start_date').val();
@@ -474,10 +541,14 @@
             return false;
         }
 
+        if (noDocExists() == true) {
+            return false;
+        }
+
         // console.log(form);
 
         Swal.fire({
-            icon : 'warning',
+            icon: 'warning',
             title: 'Anda yakin akan lanjut? \n Data tidak dapat dirubah kembali',
             // showDenyButton: true,
             showCancelButton: true,

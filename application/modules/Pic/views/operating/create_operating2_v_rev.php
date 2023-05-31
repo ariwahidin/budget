@@ -6,7 +6,7 @@
 <?php $this->view('header'); ?>
 <div class="content-wrapper">
     <section class="content-header">
-        <h1>Create Operating</h1>
+        <h1>Create Budget</h1>
     </section>
     <section class="content">
         <div class="row">
@@ -49,18 +49,26 @@
                                     <td>&nbsp;:&nbsp; <b id="total_principal_aud"></b></td>
                                 </tr>
                                 <tr>
-                                    <td>Target IDR</td>
+                                    <td>Principal Target IDR</td>
                                     <td>&nbsp;:&nbsp; <b id="total_principal_idr"></b></td>
                                 </tr>
                                 <tr>
-                                    <td>A&P</td>
+                                    <td>Principal A&P</td>
                                     <td>&nbsp;:&nbsp; <b id="total_target"></b></td>
+                                </tr>
+                                <tr>
+                                    <td>PK Target IDR</td>
+                                    <td>&nbsp;:&nbsp; <b id="total_pk_target_idr"></b></td>
+                                </tr>
+                                <tr>
+                                    <td>PK A&P</td>
+                                    <td>&nbsp;:&nbsp; <b id="total_pk_anp_target"></b></td>
                                 </tr>
                                 <tr>
                                     <td>Operating (<?= $_POST['percent_operating'] ?>%) </td>
                                     <td>&nbsp;:&nbsp; <b id="total_operating"></b></td>
                                 </tr>
-                                <tr>
+                                <tr style="display:none">
                                     <td>IMS</td>
                                     <td>&nbsp;:&nbsp; <b><?= $_POST['set_ims'] == 'Y' ? 'Yes' : 'No' ?></b></td>
                                 </tr>
@@ -81,9 +89,11 @@
                                         <th>No.</th>
                                         <th>Month</th>
                                         <th style="display:none">Target (<?= $_POST['valas'] ?>)</th>
-                                        <th>Target (IDR)</th>
+                                        <th>Principal Target (IDR)</th>
                                         <th style="display:none">A&P (<?= $_POST['valas'] ?>)</th>
-                                        <th>A&P (IDR)</th>
+                                        <th>Principal A&P (IDR)</th>
+                                        <th>PK Target (IDR)</th>
+                                        <th>PK A&P (IDR)</th>
                                         <th>Operating (IDR) (<?= $_POST['percent_operating'] ?>%)</th>
                                         <?php if ($_POST['set_ims'] = 'Y') { ?>
                                             <th>IMS Target</th>
@@ -101,19 +111,28 @@
                                                 <input type="hidden" name="month[]" class="input_month" value="<?= $month ?>">
                                             </td>
                                             <td style="display:none">
-                                                <input type="text" name="principal_target_valas[]" onpaste="calculating(this)" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this); calculating(this)" class="form-control input_principal_target_aud target_valas" readonly>
+                                                <input type="text" name="principal_target_valas[]" onpaste="calculating(this)" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this); calculating(this)" class="form-control input_principal_target_aud target_valas" readonly value="0">
                                             </td>
                                             <td>
-                                                <input type="text" name="principal_target_idr[]" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this); calculateTargetValas(this)" class="form-control input_principal_target_idr">
+                                                <input type="text" name="principal_target_idr[]" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this); calculateTargetValas(this)" class="form-control input_principal_target_idr" value="0">
                                             </td>
                                             <td style="display:none">
-                                                <input type="text" name="anp_principal_valas[]" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this); calculating(this)" class="form-control input_anp_valas" readonly>
+                                                <input type="text" name="anp_principal_valas[]" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this); calculating(this)" class="form-control input_anp_valas" readonly value="0">
                                             </td>
                                             <td>
-                                                <input type="text" name="anp_principal_idr[]" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this);calculatingOperating(this);calculatingAnpValas(this)" class="form-control input_target">
+                                                <input type="text" name="anp_principal_idr[]" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this);calculatingOperating(this);calculatingAnpValas(this)" class="form-control input_target input_principal_anp_idr" value="0">
                                             </td>
+
                                             <td>
-                                                <input type="text" name="anp_operating[]" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this)" class="form-control input_operating" readonly>
+                                                <input type="text" name="pk_target_idr[]" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this)" class="form-control input_pk_target_idr" value="0">
+                                            </td>
+
+                                            <td>
+                                                <input type="text" name="pk_anp_idr[]" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this);calculatingOperating(this);" class="form-control input_pk_anp_idr" value="0">
+                                            </td>
+
+                                            <td>
+                                                <input type="text" name="anp_operating[]" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this)" class="form-control input_operating" value="0">
                                             </td>
                                             <td>
                                                 <input type="text" name="input_ims_target[]" onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this)" class="form-control input_ims_target" value="0" <?= $_POST['set_ims'] == 'N' ? 'readonly' : ''; ?>>
@@ -168,11 +187,28 @@
     function calculatingOperating(el) {
         var persenOperating = "<?= $_POST['percent_operating'] ?>"
         var row = el.parentElement.parentElement
+
+
+        var inputPrincipalAnp = row.querySelector('.input_principal_anp_idr').value.replace(/,/g, '')
+        var inputPkAnp = row.querySelector('.input_pk_anp_idr').value.replace(/,/g, '')
+        var operatingValue = (parseFloat(inputPrincipalAnp) + parseFloat(inputPkAnp)) * parseFloat((persenOperating / 100))
+
+
         var inputOperating = row.querySelector('.input_operating')
-        var anpValue = el.value.replace(/,/g, '')
-        var operatingValue = parseFloat((persenOperating / 100) * anpValue)
+        // var anpValue = el.value.replace(/,/g, '')
+        // var pkAnpValue = el.value.replace(/,/g, '')
+        // var operatingValue = parseFloat((persenOperating / 100) * anpValue)
         inputOperating.value = operatingValue
+        calculate()
     }
+
+    // function calculating_total_pk_target_dan_pk_anp() {
+    //     var b_total_pk_target = document.getElementById('total_pk_target_idr')
+    //     var b_total_pk_anp = document.getElementById('total_pk_anp_target')
+
+    //     b_total_pk_target.innerText = "test"
+    //     b_total_pk_anp.innerText = "test2" 
+    // }
 
     function calculatingAnpValas(el) {
         var valueValas = "<?= $_POST['exchange_rate'] ?>"
@@ -224,6 +260,9 @@
         var input_ims_target = document.querySelectorAll('input.input_ims_target');
         var input_ims_budget = document.querySelectorAll('input.input_ims');
 
+        var input_pk_target_idr = document.querySelectorAll('input.input_pk_target_idr')
+        var input_pk_anp_idr = document.querySelectorAll('input.input_pk_anp_idr')
+
         var b_total_principal_aud = document.getElementById('total_principal_aud');
         var b_total_principal_idr = document.getElementById('total_principal_idr');
         var b_total_target = document.getElementById('total_target');
@@ -231,12 +270,20 @@
         var b_total_ims_target = document.getElementById('total_ims_target');
         var b_total_ims_budget = document.getElementById('total_ims_budget');
 
+        var b_total_pk_target = document.getElementById('total_pk_target_idr')
+        var b_total_pk_anp = document.getElementById('total_pk_anp_target')
+
         var total_aud = 0;
         var total_idr = 0;
         var total_target = 0;
         var total_operating = 0;
         var total_ims_target = 0;
         var total_ims_budget = 0;
+
+        var total_pk_target_idr = 0;
+        var total_pk_anp_idr = 0;
+
+
         for (var i = 0; i < input_target.length; i++) {
 
             if (input_principal_aud[i].value != '') {
@@ -262,6 +309,14 @@
             if (input_ims_budget[i].value != '') {
                 total_ims_budget += parseFloat(input_ims_budget[i].value.replace(/,/g, ''));
             }
+            
+            if (input_pk_target_idr[i].value != '') {
+                total_pk_target_idr += parseFloat(input_pk_target_idr[i].value.replace(/,/g, ''));
+            }
+
+            if (input_pk_anp_idr[i].value != '') {
+                total_pk_anp_idr += parseFloat(input_pk_anp_idr[i].value.replace(/,/g, ''));
+            }
         }
 
         b_total_principal_aud.innerText = total_aud.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -270,6 +325,11 @@
         b_total_operating.innerText = total_operating.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         b_total_ims_target.innerText = total_ims_target.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         b_total_ims_budget.innerText = total_ims_budget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        
+        b_total_pk_target.innerText = total_pk_target_idr.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        b_total_pk_anp.innerText = total_pk_anp_idr.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    
     }
 
     function simpan() {
@@ -306,6 +366,9 @@
         var input_ims_target = document.querySelectorAll('input.input_ims_target');
         var input_ims_budget = document.querySelectorAll('input.input_ims');
 
+        var input_pk_target_idr = document.querySelectorAll('input.input_pk_target_idr');
+        var input_pk_anp_idr = document.querySelectorAll('input.input_pk_anp_idr');
+
         var month = [];
         var principal_target_valas = [];
         var principal_target_idr = [];
@@ -314,6 +377,9 @@
         var operating = [];
         var ims_target = [];
         var ims_budget = [];
+
+        var pk_target_idr = [];
+        var pk_anp_idr = [];
 
         var set_ims = '<?= $_POST['set_ims'] ?>';
         var ims_percent = '<?= $_POST['percentage_ims'] == '' ? 0 : $_POST['percentage_ims'] ?>';
@@ -327,43 +393,62 @@
             operating.push(parseFloat(input_operating[i].value.replace(/,/g, '')));
             ims_target.push(parseFloat(input_ims_target[i].value.replace(/,/g, '')));
             ims_budget.push(parseFloat(input_ims_budget[i].value.replace(/,/g, '')));
+
+            pk_target_idr.push(parseFloat(input_pk_target_idr[i].value.replace(/,/g, '')));
+            pk_anp_idr.push(parseFloat(input_pk_anp_idr[i].value.replace(/,/g, '')));
         }
 
 
-        $.ajax({
-            url: "<?= base_url($_SESSION['page'] . '/simpanOperating') ?>",
-            type: "POST",
-            // data: $('#budget').serialize(),
-            data: {
-                set_ims,
-                ims_percent,
-                budget_type,
-                brand_code,
-                valas,
-                exchange_rate,
-                month: month,
-                principal_target_valas: principal_target_valas,
-                principal_target_idr: principal_target_idr,
-                anp_principal_valas: principal_anp_valas,
-                anp_principal_idr: principal_anp_idr,
-                anp_operating: operating,
-                ims_target: ims_target,
-                ims_budget: ims_budget,
-            },
-            dataType: "json",
-            success: function(response) {
-                if (response.success == true) {
-                    window.location.href = "<?= base_url($_SESSION['page'] . '/setOperatingActivity/') ?>" + response.budget_code;
-                } else {
-                    //alert('gagal simpan Data')
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Warning',
-                        text: 'Failed to save data',
-                        // footer: '<a href="">Why do I have this issue?</a>'
-                    })
-                }
+        Swal.fire({
+            icon: "question",
+            title: 'Apa anda yakin untuk simpan?',
+            showCancelButton: true,
+            confirmButtonText: 'Save',
+            denyButtonText: `Don't save`,
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?= base_url($_SESSION['page'] . '/simpanOperating') ?>",
+                    type: "POST",
+                    // data: $('#budget').serialize(),
+                    data: {
+                        set_ims,
+                        ims_percent,
+                        budget_type,
+                        brand_code,
+                        valas,
+                        exchange_rate,
+                        month: month,
+                        principal_target_valas: principal_target_valas,
+                        principal_target_idr: principal_target_idr,
+                        anp_principal_valas: principal_anp_valas,
+                        anp_principal_idr: principal_anp_idr,
+                        anp_operating: operating,
+                        ims_target: ims_target,
+                        ims_budget: ims_budget,
+                        pk_target_idr,
+                        pk_anp_idr,
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success == true) {
+                            window.location.href = "<?= base_url($_SESSION['page'] . '/setOperatingActivity/') ?>" + response.budget_code;
+                        } else {
+                            //alert('gagal simpan Data')
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Warning',
+                                text: 'Failed to save data',
+                                // footer: '<a href="">Why do I have this issue?</a>'
+                            })
+                        }
+                    }
+                });
             }
-        });
+        })
+
+
+
     }
 </script>

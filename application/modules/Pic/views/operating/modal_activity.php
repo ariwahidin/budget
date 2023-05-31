@@ -28,7 +28,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="btn_set_promo" class="btn btn-primary">Ok</button>
+                <!-- <button id="btn_set_promo" class="btn btn-primary">Ok</button> -->
             </div>
         </div>
     </div>

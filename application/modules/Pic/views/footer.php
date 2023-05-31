@@ -67,6 +67,7 @@
 <script type="text/javascript" src="<?= base_url() ?>assets/js/sweetalert2.js"></script>
 <script type="text/javascript">
     $('.select2').select2();
+    $("#table1").DataTable()
 
     function loadingShow() {
         var div_loading = document.getElementById("muncul_loading");
