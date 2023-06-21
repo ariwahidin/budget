@@ -278,6 +278,8 @@ class Administrator_model extends CI_Model
             DELETE tb_proposal_objective WHERE [ProposalNumber] = '$number'
             DELETE tb_proposal_mechanism WHERE [ProposalNumber] = '$number'
             DELETE tb_proposal_customer_item WHERE [no_proposal] = '$number'
+            DELETE tb_proposal_group WHERE [ProposalNumber] = '$number'
+            DELETE tb_proposal_group_item WHERE [ProposalNumber] = '$number'
             DELETE tb_proposal_comment WHERE [Proposalnumber] = '$number'";
         $this->db->query($sql);
     }

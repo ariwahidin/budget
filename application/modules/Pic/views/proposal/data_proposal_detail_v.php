@@ -136,98 +136,102 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="box">
-                            <div class="box-header">
-                                <h3>Items</h3>
-                            </div>
-                            <div class="box-body">
-                                <table class="table table-responseive table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Item Code</th>
-                                            <th>Barcode</th>
-                                            <th>Item Name</th>
-                                            <th>Price</th>
-                                            <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
-                                                <th><?= $proposal->row()->AvgSales ?></th>
-                                            <?php } ?>
-                                            <th>Qty</th>
-                                            <th>Target</th>
-                                            <?php if (activity_is_sales($proposal->row()->Activity) == 'N') { ?>
-                                                <th><?= getActivityName($proposal->row()->Activity) ?> Cost</th>
-                                            <?php } ?>
-                                            <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
-                                                <th>Promo(%)</th>
-                                                <th>Value</th>
-                                            <?php } ?>
-                                            <th>Costing</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbodyItem">
-                                        <?php $no = 1;
-                                        foreach ($proposalItem->result() as $item) { ?>
+                        <?php if ($proposalItem->num_rows() > 0) { ?>
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3>Items</h3>
+                                </div>
+                                <div class="box-body">
+                                    <table class="table table-responseive table-bordered table-striped">
+                                        <thead>
                                             <tr>
-                                                <td><?= $no++ ?></td>
-                                                <td><?= $item->ItemCode ?></td>
-                                                <td><?= $item->Barcode ?></td>
-                                                <td><?= $item->ItemName ?></td>
-                                                <td><?= number_format($item->Price) ?></td>
+                                                <th>No.</th>
+                                                <th>Item Code</th>
+                                                <th>Barcode</th>
+                                                <th>Item Name</th>
+                                                <th>Price</th>
                                                 <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
-                                                    <td><?= number_format($item->AvgSales) ?></td>
+                                                    <th><?= $proposal->row()->AvgSales ?></th>
                                                 <?php } ?>
-                                                <td class="item_qty"><?= number_format($item->Qty) ?></td>
-                                                <td class="item_target"><?= number_format($item->Target) ?></td>
-                                                <?php if (activity_is_sales($proposal->row()->Activity) == 'N') {  ?>
-                                                    <td>
-                                                        <?= number_format($item->ListingCost)  ?>
-                                                    </td>
+                                                <th>Qty</th>
+                                                <th>Target</th>
+                                                <?php if (activity_is_sales($proposal->row()->Activity) == 'N') { ?>
+                                                    <th><?= getActivityName($proposal->row()->Activity) ?> Cost</th>
                                                 <?php } ?>
                                                 <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
-                                                    <td><?= $item->Promo ?></td>
-                                                    <td class="item_value"><?= number_format(($item->Promo / 100) * $item->Price) ?></td>
+                                                    <th>Promo(%)</th>
+                                                    <th>Value</th>
                                                 <?php } ?>
-                                                <td class="item_costing"><?= number_format($item->Costing) ?></td>
+                                                <th>Costing</th>
                                             </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                    <tfooter>
+                                        </thead>
+                                        <tbody id="tbodyItem">
+                                            <?php $no = 1;
+                                            // var_dump($proposalItem->result());
+                                            foreach ($proposalItem->result() as $item) { ?>
+                                                <tr>
+                                                    <td><?= $no++ ?></td>
+                                                    <td><?= $item->ItemCode ?></td>
+                                                    <td><?= $item->Barcode ?></td>
+                                                    <td><?= $item->ItemName ?></td>
+                                                    <td><?= number_format($item->Price) ?></td>
+                                                    <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
+                                                        <td><?= number_format($item->AvgSales) ?></td>
+                                                    <?php } ?>
+                                                    <td class="item_qty"><?= number_format($item->Qty) ?></td>
+                                                    <td class="item_target"><?= number_format($item->Target) ?></td>
+                                                    <?php if (activity_is_sales($proposal->row()->Activity) == 'N') {  ?>
+                                                        <td>
+                                                            <?= number_format($item->ListingCost)  ?>
+                                                        </td>
+                                                    <?php } ?>
+                                                    <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
+                                                        <td><?= $item->Promo ?></td>
+                                                        <!-- <td class="item_value"><?= number_format(($item->Promo / 100) * $item->Price) ?></td> -->
+                                                        <td class="item_value"><?= number_format($item->PromoValue) ?></td>
+                                                    <?php } ?>
+                                                    <td class="item_costing"><?= number_format($item->Costing) ?></td>
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                        <tfooter>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td id="total_qty"></td>
+                                                <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
+                                                    <td></td>
+                                                <?php } ?>
+                                                <td id="total_target">
+                                                    <?= number_format(total_target($proposal->row()->Number)) ?>
+                                                </td>
+                                                <?php if (activity_is_sales($proposal->row()->Activity) == 'N') { ?>
+                                                    <td></td>
+                                                <?php } ?>
+                                                <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
+                                                    <td></td>
+                                                    <td id="total_value"></td>
+                                                <?php } ?>
+                                                <td id="total_costing">
+                                                    <?= number_format(total_costing($proposal->row()->Number)) ?>
+                                                </td>
+                                            </tr>
+                                        </tfooter>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <table>
                                         <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td id="total_qty"></td>
-                                            <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
-                                                <td></td>
-                                            <?php } ?>
-                                            <td id="total_target">
-                                                <?= number_format(total_target($proposal->row()->Number)) ?>
-                                            </td>
-                                            <?php if (activity_is_sales($proposal->row()->Activity) == 'N') { ?>
-                                                <td></td>
-                                            <?php } ?>
-                                            <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
-                                                <td></td>
-                                                <td id="total_value"></td>
-                                            <?php } ?>
-                                            <td id="total_costing">
-                                                <?= number_format(total_costing($proposal->row()->Number)) ?>
-                                            </td>
+                                            <!-- <td>COST RATIO</td> -->
+                                            <!-- <td>&nbsp;:&nbsp; <b id="cost_ratio"><?= cost_ratio($proposal->row()->Number) ?></b></td> -->
                                         </tr>
-                                    </tfooter>
-                                </table>
+                                    </table>
+                                </div>
                             </div>
-                            <div class="modal-footer">
-                                <table>
-                                    <tr>
-                                        <td>COST RATIO</td>
-                                        <td>&nbsp;:&nbsp; <b id="cost_ratio"><?= cost_ratio($proposal->row()->Number) ?></b></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
+                        <?php } ?>
                     </div>
                 </div>
                 <div class="row">
@@ -296,8 +300,8 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
+                        <a href="<?= base_url($_SESSION['page']) . '/exportProposalToPdf/' . $proposal->row()->Number ?>" class="btn btn-danger pull-right" style="margin-left:5px;">Export to Pdf</a>
                         <?php if ($proposal->row()->Status == 'approved') { ?>
-                            <a href="<?= base_url($_SESSION['page']) . '/exportProposalToPdf/' . $proposal->row()->Number ?>" class="btn btn-danger pull-right" style="margin-left:5px;">Export to Pdf</a>
                             <a href="<?= base_url($_SESSION['page']) . '/exportProposalToExcel/' . $proposal->row()->Number ?>" class="btn btn-success pull-right">Export to Excel</a>
                         <?php } ?>
                     </div>

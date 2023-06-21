@@ -14,18 +14,20 @@
                     <table class="table table-responsive table-bordered">
                         <thead>
                             <tr>
-                                <th>Item Code</th>
+                                <th style="display: none;">Item Code</th>
+                                <th>Barcode</th>
                                 <th>Item Name</th>
-                                <th>Avg Sales (Qty)</th>
+                                <th style="display:none;">Avg Sales (Qty)</th>
                                 <th>Sales Estimation (Qty)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($item_cart->result() as $ir) { ?>
                                 <tr>
-                                    <td class="td_item_code"><?= $ir->item_code ?></td>
+                                    <td style="display: none;" class="td_item_code"><?= $ir->item_code ?></td>
+                                    <td><?= $ir->barcode ?></td>
                                     <td><?= $ir->item_name ?></td>
-                                    <td>
+                                    <td style="display:none;">
                                         <input type="number" name="qty_avg_sales" class="form-control qty_avg_sales" value="<?=get_avg_sales_qty_per_customer($ir->no_proposal,$_POST['customer'][$i],$ir->item_code)?>" readonly>
                                     </td>
                                     <td style="width:150px">

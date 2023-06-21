@@ -297,7 +297,7 @@ class Direksi_model extends CI_Model
 
     public function getProposalItem($number)
     {
-        $sql = "SELECT t1.ItemCode, FrgnName AS Barcode, t3.ItemName, t1.Price,t1.AvgSales, t1.Qty, t1.[Target], t1.Promo, t1.Costing, t1.ListingCost FROM tb_proposal_item t1
+        $sql = "SELECT t1.ItemCode, FrgnName AS Barcode, t3.ItemName, t1.Price,t1.AvgSales, t1.Qty, t1.[Target], t1.Promo, t1.Costing, t1.ListingCost, t1.PromoValue FROM tb_proposal_item t1
         INNER JOIN m_brand t2 ON t1.BrandCode = t2.BrandCode
         INNER JOIN m_item t3 ON t1.ItemCode = t3.ItemCode
         WHERE t1.ProposalNumber = '$number'";

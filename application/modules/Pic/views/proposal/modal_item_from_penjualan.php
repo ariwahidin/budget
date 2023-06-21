@@ -129,30 +129,34 @@
 
                                 var inputPrice = document.createElement('input');
                                 inputPrice.setAttribute('onkeyup', 'calculate(this)');
+                                inputPrice.setAttribute('data-price-item-code', response.item[i].ItemCode);
                                 // inputPrice.setAttribute('readonly', 'readonly');
-                                // inputPrice.value = Math.round(response.item[i].Price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                inputPrice.value = 0;
+                                inputPrice.value = Math.round(response.item[i].Price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                // inputPrice.value = 0;
                                 inputPrice.classList.add('form-control', 'input_price');
                                 tdPrice.appendChild(inputPrice);
 
                                 var inputAvg = document.createElement('input');
                                 inputAvg.setAttribute('onkeypress', 'javascript:return isNumber(event)');
                                 inputAvg.setAttribute('onkeyup', 'formatNumber(this)');
-                                // inputAvg.setAttribute('readonly', 'readonly');
+                                inputAvg.setAttribute('readonly', 'readonly');
                                 inputAvg.classList.add('form-control', 'input_avg_sales');
-                                // inputAvg.value = Math.round(response.item[i].Quantity);
-                                inputAvg.value = 0;
+                                inputAvg.value = Math.round(response.item[i].Quantity);
+                                // inputAvg.value = 0;
                                 tdAvgSales.appendChild(inputAvg);
 
                                 var inputQty = document.createElement('input');
                                 inputQty.setAttribute('onkeypress', 'javascript:return isNumber(event)');
                                 inputQty.setAttribute('onkeyup', 'calculate(this);formatNumber(this)');
+                                inputQty.setAttribute('data-item-code-estimation', response.item[i].ItemCode);
+                                inputQty.setAttribute('readonly', 'readonly');
                                 inputQty.value = 0;
                                 inputQty.classList.add('form-control', 'input_qty');
                                 tdQty.appendChild(inputQty);
 
                                 var inputTarget = document.createElement('input');
                                 inputTarget.setAttribute('readonly', 'readonly');
+                                inputTarget.setAttribute('data-target-item-code', response.item[i].ItemCode)
                                 inputTarget.value = 0;
                                 inputTarget.classList.add('form-control', 'input_target');
                                 tdTarget.appendChild(inputTarget);
@@ -167,12 +171,14 @@
                                 var inputValuePromo = document.createElement('input');
                                 inputValuePromo.value = 0;
                                 inputValuePromo.setAttribute('onkeyup', 'calculateValuePromo(this);formatNumber(this)');
+                                inputValuePromo.setAttribute('data-value-item-code', response.item[i].ItemCode);
                                 inputValuePromo.setAttribute('onkeypress', 'javascript:return isNumber(event)');
                                 inputValuePromo.classList.add('form-control', 'input_value_promo');
                                 tdPromoValue.appendChild(inputValuePromo);
 
                                 var inputCosting = document.createElement('input');
-                                // inputCosting.setAttribute('readonly', 'readonly');
+                                inputCosting.setAttribute('readonly', 'readonly');
+                                inputCosting.setAttribute('data-costing-item-code', response.item[i].ItemCode);
                                 inputCosting.value = 0;
                                 inputCosting.setAttribute('onkeypress', 'javascript:return isNumber(event)');
                                 inputCosting.setAttribute('onkeyup', 'calculateCosting(this);formatNumber(this)')

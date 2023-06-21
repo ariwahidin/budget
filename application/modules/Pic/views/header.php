@@ -63,6 +63,8 @@
     <link type="text/css" href="<?= base_url() ?>assets/css/sweetalert2.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?= base_url() ?>assets//dist/css/skins/_all-skins.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!-- bootstrap datepicker -->
+    <link rel="stylesheet" href="<?= base_url() ?>assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -223,11 +225,11 @@
 </style>
 <div id="muncul_loading" class=""></div>
 
-<body class="hold-transition skin-blue-light <?= $this->uri->segment(2) == 'setOperatingActivity' ? '' : 'sidebar-mini' ?> <?= $this->uri->segment(2) == 'ShowDetailBudget' || $this->uri->segment(2) == 'setOperatingActivity' || 
-                                                                $this->uri->segment(2) == 'createOperating2' || 
-                                                                $this->uri->segment(2) == 'show_form_proposal_from_sales' || 
-                                                                $this->uri->segment(2) == 'showFormAddOnTop' ||
-                                                                $this->uri->segment(2) == 'show_form_create_budget' ? 'sidebar-collapse' : '' ?>" style="height: auto; min-height: 100%;">
+<body class="hold-transition skin-blue-light <?= $this->uri->segment(2) == 'setOperatingActivity' ? '' : 'sidebar-mini' ?> <?= $this->uri->segment(2) == 'ShowDetailBudget' || $this->uri->segment(2) == 'setOperatingActivity' ||
+                                                                                                                                $this->uri->segment(2) == 'createOperating2' ||
+                                                                                                                                $this->uri->segment(2) == 'show_form_proposal_from_sales' ||
+                                                                                                                                $this->uri->segment(2) == 'showFormAddOnTop' ||
+                                                                                                                                $this->uri->segment(2) == 'show_form_create_budget' ? 'sidebar-collapse' : '' ?>" style="height: auto; min-height: 100%;">
     <div class="wrapper">
         <header class="main-header">
             <a href="" class="logo">

@@ -233,7 +233,7 @@
                                                 <?php } ?>
                                                 <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
                                                     <td><?= $item->Promo ?></td>
-                                                    <td class="item_value"><?= number_format(($item->Promo / 100) * $item->Price) ?></td>
+                                                    <td class="item_value"><?= number_format($item->PromoValue) ?></td>
                                                 <?php } ?>
                                                 <td class="item_costing"><?= number_format($item->Costing) ?></td>
                                             </tr>

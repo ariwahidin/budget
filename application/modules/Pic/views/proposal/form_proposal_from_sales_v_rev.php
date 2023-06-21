@@ -1,5 +1,5 @@
 <?php
-// var_dump($_POST);
+// var_dump($group_customer->result());
 ?>
 <?php $this->view('header'); ?>
 <div class="content-wrapper">
@@ -24,7 +24,7 @@
                             <thead>
                                 <tr>
                                     <th>No. Proposal</th>
-                                    <th style="width:200px">No. Doc</th>
+                                    <th style="width:200px; display:none">No. Doc</th>
                                     <th>Brand</th>
                                     <th>Activity</th>
                                     <th>Start Periode</th>
@@ -40,8 +40,8 @@
                             <tbody>
                                 <tr>
                                     <td><?= $number ?></td>
-                                    <td>
-                                        <input id="no-doc" type="text" class="form-control" value="<?=$no_doc?>" readonly>
+                                    <td style="display: none;">
+                                        <input id="no-doc" type="text" class="form-control" value="<?= $no_doc ?>" readonly>
                                     </td>
                                     <td><?= getBrandName($_POST['brand']) ?></td>
                                     <td><?= getActivityName($_POST['activity']) ?></td>
@@ -138,10 +138,10 @@
                                     <th>Item Name</th>
                                     <th style="width: 100px;">Price</th>
                                     <th><?= $_POST['avg_sales'] ?> (Qty)</th>
-                                    <th>Sales Estimation (Qty)</th>
+                                    <th>Qty</th>
                                     <th>Target</th>
-                                    <th style="width: 80px;">Promo(%)</th>
-                                    <th>Value Promo</th>
+                                    <th style="width: 80px;">(%)</th>
+                                    <th>Value</th>
                                     <th>Costing</th>
                                     <th>Action</th>
                                 </tr>
@@ -180,6 +180,11 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div style="display:block;" id="containerSetDetail">
+            <?php //$this->view('table_cart_item_detail') 
+            ?>
         </div>
 
         <div class="row">
@@ -265,17 +270,40 @@
             </div>
         </div>
 
-        <div id="containerSetDetail">
-            <?php $this->view('table_cart_item_detail') ?>
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="box">
+                    <div class="box-header"></div>
+                    <div class="box-body">
+                        <table class="table table-responsove table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Customer Group</th>
+                                </tr>
+                                <?php $no = 1;
+                                foreach ($group_customer->result() as $data) { ?>
+                                    <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td><?= $data->GroupName ?></td>
+                                    </tr>
+                                <?php } ?>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="row" style="display:none">
+        <div class="row" style="display:block">
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
                     </div>
                     <div class="box-body">
-                        <table class="table table-responseive table-bordered">
+                        <table class="table table-responseive table-bordered" id="table1">
                             <thead>
                                 <tr>
                                     <th>Customer Code</th>
@@ -322,7 +350,90 @@ $group_code = implode("','", $_POST['group']);
 <script>
     $(document).ready(function() {
         calculate_cost_ratio();
+        // console.log('<?= strtolower(getActivityName($_POST['activity'])) ?>')
+        if ('<?= strtolower(getActivityName($_POST['activity'])) ?>' == 'rafraction') {
+            var inputs_desc = document.querySelectorAll(".input_other_desc")
+            inputs_desc.forEach(function(e) {
+                e.readOnly = true
+            })
+            var inputs_cost_other = document.querySelectorAll(".input_other_cost")
+            inputs_cost_other.forEach(function(w) {
+                w.readOnly = true
+            })
+        }
     });
+
+    //function mengihitung total qty dan target sesuai itemcode
+    function hitungEstimasi(input) {
+
+        var total = 0;
+        var item_code = input.getAttribute('data-item-code')
+
+        //mencari element input dengan itemcode yang sesuai
+        var inputs = document.querySelectorAll(`input[data-item-code="${item_code}"]`);
+
+        //menjumlahkan semua input qty sesuai itemcode yang sesuai
+        inputs.forEach(input => {
+            const value = parseFloat(input.value); // Mengubah nilai menjadi tipe angka (float)
+            if (!isNaN(value)) {
+                total += value;
+            }
+        });
+
+        //meletakan total qty estimation pada item code yang sesuai
+        input_estimation = document.querySelector(`input[data-item-code-estimation="${item_code}"]`)
+        input_estimation.value = total
+
+        //mengambil price dengan itemcode yang sesuai
+        var input_price = document.querySelector(`input[data-price-item-code="${item_code}"]`)
+        var price = parseFloat(input_price.value.replace(/,/g, ''));
+
+        //menentukan target value
+        var input_target = document.querySelector(`input[data-target-item-code="${item_code}"]`)
+        if (!isNaN(parseFloat(price * total))) {
+            input_target.value = money(parseFloat(price * total))
+        } else {
+            input_target.value = 0
+        }
+
+        //menjumlahkan total target
+        let total_target = 0
+        var inputs_target = document.querySelectorAll(".input_target")
+        inputs_target.forEach(input => {
+            const val = parseFloat(input.value.replace(/,/g, ''))
+            if (!isNaN(val)) {
+                total_target += val
+            }
+        })
+
+        const input_total_target = document.getElementById("total_target")
+        input_total_target.value = money(total_target)
+
+
+        //menentukan costing
+        var input_value_item_code = document.querySelector(`input[data-value-item-code="${item_code}"]`)
+        var value_promo = parseFloat(input_value_item_code.value.replace(/,/g, ''))
+        var costing = parseFloat(input_estimation.value.replace(/,/g, '')) * value_promo
+        var costing_item_code = document.querySelector(`input[data-costing-item-code="${item_code}"]`)
+        costing_item_code.value = money(costing)
+
+        //total costing
+        let total_costing = 0
+        var inputs_costing = document.querySelectorAll(".input_costing")
+        inputs_costing.forEach(input => {
+            const cost = parseFloat(input.value.replace(/,/g, ''))
+            total_costing += cost
+        })
+
+        const input_total_costing = document.getElementById("total_costing")
+        input_total_costing.value = money(total_costing)
+
+        calculate_cost_ratio();
+        // console.log(price);
+        // console.log(total);
+        // console.log(total_target);
+
+    }
 
 
     function validationEstimasi(e) {
@@ -363,7 +474,7 @@ $group_code = implode("','", $_POST['group']);
             barcode.push(td_barcode[i].innerText)
         }
 
-        console.log(barcode)
+        // console.log(barcode)
 
 
         var avg_sales = '<?= $_POST['avg_sales'] ?>';
@@ -418,8 +529,16 @@ $group_code = implode("','", $_POST['group']);
         var input_costing = rows.querySelector('input.input_costing');
         var costing = 0;
         costing = (promo_value * input_qty);
-        promo = Math.round((promo_value / input_price) * 100);
-        input_promo.value = !isNaN(promo) ? promo : 0;
+
+        if (!isNaN(input_price) && input_price != 0) {
+            promo = Math.round((promo_value / input_price) * 100);
+            input_promo.value = !isNaN(promo) ? promo : 0;
+        } else {
+            input_promo.value = 0
+        }
+
+
+
         input_costing.value = !isNaN(costing) ? money(costing) : 0;
         calculate_cost_ratio()
         calculateTotalCosting()
@@ -479,7 +598,17 @@ $group_code = implode("','", $_POST['group']);
         var inputQty = row.querySelector('input.input_qty');
         var inputTarget = row.querySelector('input.input_target');
         var inputPromo = row.querySelector('input.input_promo');
-        inputPromo.value = !isNaN(parseFloat(inputPromo.value)) ? parseFloat(inputPromo.value) : 0;
+
+        var inputValPromo = row.querySelector('input.input_value_promo');
+
+        if (!isNaN(inputPrice.value.replace(/,/g, '')) && inputPrice.value.replace(/,/g, '') != 0) {
+            var percentss = (parseFloat(inputValPromo.value.replace(/,/g, '')) / parseFloat(inputPrice.value.replace(/,/g, ''))) * 100
+            inputPromo.value = Math.round(percentss)
+        } else {
+            inputPromo.value = 0
+        }
+
+
         var inputCosting = row.querySelector('input.input_costing');
         var costing = 0;
         costing = ((inputPromo.value / 100) * inputPrice.value.replace(/,/g, '')) * parseFloat(inputQty.value.replace(/,/g, ''));
@@ -528,6 +657,18 @@ $group_code = implode("','", $_POST['group']);
         $myArray = $_POST['customer'];
         $myArrayJSON = json_encode($myArray);
         echo "var customer = " . $myArrayJSON . ";";
+
+        $result_group = $group_customer->result();
+        $array_group = array();
+
+        foreach ($group_customer->result() as $data) {
+            array_push($array_group, $data->GroupCode);
+        }
+
+
+        $json_group = json_encode($array_group);
+        echo "var group_customer = " . $json_group . ";";
+
         ?>
 
 
@@ -559,16 +700,16 @@ $group_code = implode("','", $_POST['group']);
 
 
             var qty_inputs = document.querySelectorAll('.input_qty')
-            for (let i = 0; i < qty_inputs.length; i++) {
-                if (qty_inputs[i].value === "" || qty_inputs[i].value === "0") {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Input sales estimation tidak boleh kosong!',
-                    })
-                    return false;
-                }
+            // for (let i = 0; i < qty_inputs.length; i++) {
+            //     if (qty_inputs[i].value === "" || qty_inputs[i].value === "0") {
+            //         Swal.fire({
+            //             icon: 'warning',
+            //             title: 'Input sales estimation tidak boleh kosong!',
+            //         })
+            //         return false;
+            //     }
 
-            }
+            // }
 
             // var promo_inputs = document.querySelectorAll('.input_value_promo')
             // for (let i = 0; i < promo_inputs.length; i++) {
@@ -586,8 +727,8 @@ $group_code = implode("','", $_POST['group']);
             var budget_saldo = '<?= (float)str_replace(',', '', $_POST['balance_budget']) ?>';
             var total_costing = $('#td_total_costing').text().replace(/,/g, '');
 
-            console.log(budget_saldo)
-            console.log(total_costing)
+            // console.log(budget_saldo)
+            // console.log(total_costing)
 
             if (parseFloat(total_costing) > parseFloat(budget_saldo)) {
                 Swal.fire({
@@ -611,65 +752,92 @@ $group_code = implode("','", $_POST['group']);
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                    //Swal.fire('Saved!', '', 'success')
                     loadingShow();
-                    $.ajax({
-                        type: "POST",
-                        url: "<?= base_url($_SESSION['page']) . '/set_cart_item' ?>",
-                        data: {
-                            no_proposal,
-                            item_code,
-                            item_qty,
-                            customer,
-                            avg_sales,
-                            start_date,
-                            end_date,
-                            brand,
-                        },
-                        dataType: "JSON",
-                        success: function(response) {
-                            // Handle the response from the server
-                            //console.log(response.success);
-                            if (response.success == true) {
-                                $("#containerSetDetail").load('<?= base_url($_SESSION['page'] . '/get_cart_item') ?>', {
-                                    customer
-                                });
 
-                                const inputs = document.querySelectorAll('.input_qty'); // select all input elements of type "text"
-                                for (let i = 0; i < inputs.length; i++) {
-                                    inputs[i].readOnly = true; // set the readOnly property to true for each element
-
-                                }
-                                const promo_inputs = document.querySelectorAll('.input_value_promo'); // select all input elements of type "text"
-                                for (let i = 0; i < promo_inputs.length; i++) {
-                                    promo_inputs[i].readOnly = true; // set the readOnly property to true for each element
-
-                                }
-                                const btn_delete = document.querySelectorAll('.btn_delete_product'); // select all input elements of type "text"
-                                for (let i = 0; i < btn_delete.length; i++) {
-                                    btn_delete[i].disabled = true; // set the disabled property to true for each element
-                                    btn_delete[i].style.display = 'none';
-                                }
-
-                                const btn_pilih_product = document.querySelectorAll('.btn_pilih_product'); // select all input elements of type "text"
-                                for (let i = 0; i < btn_pilih_product.length; i++) {
-                                    btn_pilih_product[i].disabled = true; // set the disabled property to true for each element
-                                    btn_pilih_product[i].style.display = 'none';
-                                }
-
-                                const btn_set_detail = document.querySelectorAll('.btn_set_detail'); // select all input elements of type "text"
-                                for (let i = 0; i < btn_set_detail.length; i++) {
-                                    btn_set_detail[i].disabled = true; // set the disabled property to true for each element
-                                    btn_set_detail[i].style.display = 'none';
-                                }
-                                loadingHide();
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            // Handle errors here
-                            console.log("Error: " + error);
-                        }
+                    $("#containerSetDetail").load('<?= base_url($_SESSION['page'] . '/set_cart_item') ?>', {
+                        group_customer,
+                        no_proposal,
+                        item_code,
+                        item_qty,
+                        customer,
+                        avg_sales,
+                        start_date,
+                        end_date,
+                        brand,
                     });
+
+                    //Swal.fire('Saved!', '', 'success')
+                    // loadingShow();
+                    // $.ajax({
+                    //     type: "POST",
+                    //     url: "<?= base_url($_SESSION['page']) . '/set_cart_item' ?>",
+                    //     data: {
+                    //         group_customer,
+                    //         no_proposal,
+                    //         item_code,
+                    //         item_qty,
+                    //         customer,
+                    //         avg_sales,
+                    //         start_date,
+                    //         end_date,
+                    //         brand,
+                    //     },
+                    //     dataType: "JSON",
+                    //     success: function(response) {
+                    //         // Handle the response from the server
+                    //         //console.log(response.success);
+                    //         if (response.success == true) {
+                    //             $("#containerSetDetail").load('<?= base_url($_SESSION['page'] . '/get_cart_item') ?>', {
+                    //                 customer
+                    //             });
+
+                    //             const inputs_price = document.querySelectorAll('.input_price'); // select all input elements of type "text"
+                    //             for (let i = 0; i < inputs_price.length; i++) {
+                    //                 inputs_price[i].readOnly = true; // set the readOnly property to true for each element
+
+                    //             }
+
+                    //             const inputs_avg = document.querySelectorAll('.input_avg_sales'); // select all input elements of type "text"
+                    //             for (let i = 0; i < inputs_avg.length; i++) {
+                    //                 inputs_avg[i].readOnly = true; // set the readOnly property to true for each element
+
+                    //             }
+
+                    //             const inputs = document.querySelectorAll('.input_qty'); // select all input elements of type "text"
+                    //             for (let i = 0; i < inputs.length; i++) {
+                    //                 inputs[i].readOnly = true; // set the readOnly property to true for each element
+
+                    //             }
+                    //             const promo_inputs = document.querySelectorAll('.input_value_promo'); // select all input elements of type "text"
+                    //             for (let i = 0; i < promo_inputs.length; i++) {
+                    //                 promo_inputs[i].readOnly = true; // set the readOnly property to true for each element
+
+                    //             }
+                    const btn_delete = document.querySelectorAll('.btn_delete_product'); // select all input elements of type "text"
+                    for (let i = 0; i < btn_delete.length; i++) {
+                        btn_delete[i].disabled = true; // set the disabled property to true for each element
+                        btn_delete[i].style.display = 'none';
+                    }
+
+                    const btn_pilih_product = document.querySelectorAll('.btn_pilih_product'); // select all input elements of type "text"
+                    for (let i = 0; i < btn_pilih_product.length; i++) {
+                        btn_pilih_product[i].disabled = true; // set the disabled property to true for each element
+                        btn_pilih_product[i].style.display = 'none';
+                    }
+
+                    const btn_set_detail = document.querySelectorAll('.btn_set_detail'); // select all input elements of type "text"
+                    for (let i = 0; i < btn_set_detail.length; i++) {
+                        btn_set_detail[i].disabled = true; // set the disabled property to true for each element
+                        btn_set_detail[i].style.display = 'none';
+                    }
+                    loadingHide();
+                    //         }
+                    //     },
+                    //     error: function(xhr, status, error) {
+                    //         // Handle errors here
+                    //         console.log("Error: " + error);
+                    //     }
+                    // });
                 } else if (result.isDenied) {
                     Swal.fire('Changes are not saved', '', 'info')
                 }
@@ -727,7 +895,6 @@ $group_code = implode("','", $_POST['group']);
 
         customer_items.push(no_proposal, customers, items, estimations, avg_sales)
         var json_customer_items = JSON.stringify(customer_items)
-
         return json_customer_items
     }
 
@@ -745,7 +912,6 @@ $group_code = implode("','", $_POST['group']);
         }
 
         // console.log(dataEstimataion)
-
         // Memproses setiap input dengan atribut data-id
         for (const input of inputElements) {
             const dataId = input.dataset.cic;
@@ -868,15 +1034,38 @@ $group_code = implode("','", $_POST['group']);
             return false
         }
 
-
-
-        if (qty_estimation_inputs.length < 1) {
+        if (document.querySelectorAll(".table_detail_target").length < 1) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Set detail terlebih dahulu',
             })
             return false
         }
+
+        var table_detail = document.getElementById("table_detail_target")
+        var t_target = table_detail.querySelectorAll(".t_target")
+        var t_qty_item = []
+        var t_group = []
+        var t_item_code = []
+        var t_sales = []
+
+        for (var i = 0; i < t_target.length; i++) {
+            t_qty_item.push(table_detail.querySelectorAll(".t_target")[i].value)
+            t_group.push(table_detail.querySelectorAll(".t_group")[i].value)
+            t_item_code.push(table_detail.querySelectorAll(".t_item")[i].value)
+            t_sales.push(table_detail.querySelectorAll(".t_qty")[i].value)
+        }
+
+
+        console.log(t_qty_item)
+        console.log(t_group)
+        console.log(t_item_code)
+        console.log(t_sales)
+        console.log(table_detail)
+
+
+
+
         // console.log(qty_estimation_inputs.length)
         // return false
 
@@ -1085,10 +1274,8 @@ $group_code = implode("','", $_POST['group']);
 
         // console.log('lanjut')
         // return false;
-
-
-
         //confirmation before save
+
 
 
 
@@ -1104,6 +1291,10 @@ $group_code = implode("','", $_POST['group']);
             if (result.isConfirmed) {
 
                 $.post("<?= base_url($_SESSION['page']) . '/simpanProposalRev' ?>", {
+                    t_qty_item,
+                    t_group,
+                    t_item_code,
+                    t_sales,
                     brand,
                     activity,
                     start_date,

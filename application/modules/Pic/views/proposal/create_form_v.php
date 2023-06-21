@@ -32,10 +32,10 @@
                         <div class="box-body">
                             <table class="table table-responsive table_header">
                                 <tr>
-                                    <td>No. Doc</td>
-                                    <td>
+                                    <td style="display: none;">No. Doc</td>
+                                    <td style="display: none;">
                                         <div class="input-group">
-                                            <input id="input-no-doc" name="no_doc" type="text" class="form-control">
+                                            <input id="input-no-doc" name="no_doc" type="text" value="<?= $noref ?>" class="form-control" readonly>
                                             <div class="input-group-btn">
                                                 <button type="button" onclick="checkNoDoc()" class="btn btn-primary">Check</button>
                                             </div>
@@ -68,13 +68,13 @@
                                 <tr>
                                     <td>Periode from</td>
                                     <td>
-                                        <input onchange="resetBudget()" name="start_date" type="date" id="start_date" class="form-control col-md-6" required>
+                                        <input onchange="resetBudget()" name="start_date" type="date" id="start_date" class="form-control col-md-6" required min="<?= date('Y-m-d') ?>" max="2025-12-31">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Periode to</td>
                                     <td>
-                                        <input onchange="resetBudget()" name="end_date" type="date" class="form-control col-md-6" id="end_date" value="" required>
+                                        <input onchange="resetBudget()" name="end_date" type="date" class="form-control col-md-6" id="end_date" value="" required min="<?= date('Y-m-d') ?>" max="2025-12-31">
                                     </td>
                                 </tr>
 
@@ -91,7 +91,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>AVG Sales</td>
+                                    <td>Sales</td>
                                     <td>
                                         <select onchange="changeAVG()" name="avg_sales" id="avg_sales" class="form-control" required>
                                             <option value="">--Pilih--</option>
@@ -118,6 +118,11 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <!-- <td>Unbooked</td> -->
+                                    <td>Used</td>
+                                    <td><input type="text" class="form-control" name="allocated_budget" id="allocated_budget" readonly required></td>
+                                </tr>
+                                <tr>
                                     <td>Balance</td>
                                     <td>
                                         <input type="text" class="form-control" name="balance_budget" value="0" id="balance_budget" readonly required>
@@ -127,11 +132,8 @@
                                         <input type="hidden" name="total_operating" id="total_operating" required>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>Unbooked</td>
-                                    <td><input type="text" class="form-control" name="allocated_budget" id="allocated_budget" readonly required></td>
-                                </tr>
-                                <tr>
+
+                                <tr style="display: none;">
                                     <td>Booked</td>
                                     <td><input type="text" class="form-control" name="budget_booked" id="budget_booked" readonly required></td>
                                 </tr>

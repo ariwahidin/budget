@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title_pdf; ?></title>
+    <link rel="icon" type="image/png" href="<?= base_url() ?>assets/dist/img/pandurasa_kharisma_pt.png">
     <style>
         .page-break {
             page-break-after: always;
@@ -242,7 +243,7 @@
                     <td style="text-align: right;"><?= number_format($data->Price) ?></td>
                     <td style="text-align: right;"><?= $data->Qty ?></td>
                     <?php if (activity_is_sales($proposal_header->row()->Activity) != 'N') { ?>
-                        <td style="text-align: right;"><?= number_format($data->Price * ($data->Promo / 100)) ?></td>
+                        <td style="text-align: right;"><?= number_format($data->PromoValue) ?></td>
                         <td style="text-align: right;"><?= $data->Promo ?></td>
                     <?php } ?>
                     <?php if (activity_is_sales($proposal_header->row()->Activity) == 'N') { ?>
@@ -277,13 +278,15 @@
     <div>
         <table>
             <?php
-            $cost_ratio = 0;
-            $cost_ratio = ($costing / $target) * 100;
+            if ($target != 0) {
+                $cost_ratio = 0;
+                $cost_ratio = ($costing / $target) * 100;
             ?>
-            <tr>
-                <td>COST RATIO <span>(total costing/total target)</span></td>
-                <td>&nbsp;:&nbsp; <?= round($cost_ratio,2) ?>%</td>
-            </tr>
+                <tr>
+                    <td>COST RATIO <span>(total costing/total target)</span></td>
+                    <td>&nbsp;:&nbsp; <?= round($cost_ratio, 2) ?>%</td>
+                </tr>
+            <?php } ?>
         </table>
     </div>
 
@@ -302,50 +305,57 @@
         <thead>
             <tr>
                 <th style="width: fit-content;">No.</th>
-                <th style="width: fit-content;">Customer Name</th>
+                <th style="width: fit-content;">Customer Group</th>
                 <th style="width: fit-content;">Barcode</th>
                 <th>Item Name</th>
                 <th style="width: fit-content">Sales</th>
-                <th style="width: fit-content">Qty</th>
-                <th style="width: fit-content">Gr(%)</th>
+                <th style="width: fit-content">Target</th>
             </tr>
         </thead>
         <tbody>
             <?php $no = 1;
-            $total_estimation = 0;
-            $avg_gr = 0;
             foreach ($customer_item->result() as $data) { ?>
                 <tr>
                     <td><?= $no++ ?></td>
-                    <td><?= $data->customer_name ?></td>
-                    <td><?= $data->barcode ?></td>
-                    <td><?= $data->item_name ?></td>
-                    <td style="text-align: right;"><?= $data->avg_sales ?></td>
-                    <td style="text-align: right;"><?= $data->sales_estimation ?></td>
-                    <td style="text-align: right;"><?= $data->growth ?></td>
+                    <td><?= $data->GroupName ?></td>
+                    <td><?= $data->Barcode ?></td>
+                    <td><?= $data->ItemName ?></td>
+                    <td style="text-align: right;"><?= $data->Sales ?></td>
+                    <td style="text-align: right;"><?= $data->Target ?></td>
                 </tr>
-            <?php
-                $total_estimation = $total_estimation + (float) $data->sales_estimation;
-                //$avg_gr = $avg_gr + (float)$data->growth;
-            } ?>
+            <?php } ?>
         </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="5">Total</td>
-                <td style="text-align: right;">
-                    <?= number_format($total_estimation); ?>
-                </td>
-                <td></td>
-            </tr>
-        </tfoot>
     </table>
 
+    <?php if ($customer->num_rows() < 10) { ?>
+        <table id="tb">
+            <thead>
+                <tr>
+                    <th style="width: fit-content;">No.</th>
+                    <th style="width: fit-content;">Customer Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $no = 1;
+                foreach ($customer->result() as $data) { ?>
+                    <tr>
+                        <td><?= $no++ ?></td>
+                        <td><?= $data->CustomerName ?></td>
+                    </tr>
+                <?php
+                } ?>
+            </tbody>
+        </table>
+    <?php } ?>
     <div>
         <table>
             <tr>
                 <th colspan="3">COMMENT</th>
             </tr>
-            <?php $no = 1;
+
+            <?php
+            $no = 1;
             foreach ($comment->result() as $com) { ?>
                 <tr>
                     <td><?= $no++ ?>.&nbsp;</td>

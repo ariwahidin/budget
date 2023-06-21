@@ -11,8 +11,11 @@
             <div class="col-lg-3 col-xs-6">
                 <div class="small-box bg-green">
                     <div class="inner">
-                        <h3><?= number_format($resumeAnp->row()->TotalOperating) ?></h3>
-
+                        <h4>
+                            <strong>
+                                <?= number_format($resumeAnp->row()->TotalOperating) ?>
+                            </strong>
+                        </h4>
                         <p>Operating 2023</p>
                     </div>
                     <div class="icon">
@@ -24,8 +27,11 @@
             <div class="col-lg-3 col-xs-6">
                 <div class="small-box bg-green">
                     <div class="inner">
-                        <h3><?= number_format($resumeAnp->row()->TotalProposalCosting) ?></h3>
-
+                        <h4>
+                            <strong>
+                                <?= number_format($resumeAnp->row()->TotalProposalCosting) ?>
+                            </strong>
+                        </h4>
                         <p>Proposal Cost 2023</p>
                     </div>
                     <div class="icon">
@@ -37,8 +43,11 @@
             <div class="col-lg-3 col-xs-6">
                 <div class="small-box bg-green">
                     <div class="inner">
-                        <h3><?= number_format($resumeAnp->row()->TotalOperatingBalance) ?></h3>
-
+                        <h4>
+                            <strong>
+                                <?= number_format($resumeAnp->row()->TotalOperatingBalance) ?>
+                            </strong>
+                        </h4>
                         <p>Operating Balance 2023</p>
                     </div>
                     <div class="icon">
@@ -48,11 +57,13 @@
                 </div>
             </div>
             <div class="col-lg-3 col-xs-6">
-                <!-- small box -->
                 <div class="small-box bg-yellow">
                     <div class="inner">
-                        <h3><?= getTotalProposal() ?></h3>
-
+                        <h4>
+                            <strong>
+                                <?= getTotalProposal() ?>
+                            </strong>
+                        </h4>
                         <p>Total Proposal</p>
                     </div>
                     <div class="icon">

@@ -163,10 +163,13 @@ class Pic extends CI_Controller
     {
         // var_dump($_POST);
         // die;
+        // $prefix = $this->pic_model->getPrefix();
+        $noref = substr($this->pic_model->getNumber(), -8);
         $brand = $this->pic_model->getBrandPic($_SESSION['user_code']);
         $activity = $this->pic_model->getActivityFromBudgetSeteed();
         $group = $this->pic_model->getGroupFromSales();
         $data = array(
+            'noref' => $noref,
             'brand' => $brand,
             'activity' => $activity,
             'group' => $group,
@@ -185,8 +188,17 @@ class Pic extends CI_Controller
             $budget_source = empty($_POST['ims']) ? 'operating' : 'ims';
         }
 
+
+        $noref = substr($this->pic_model->getNumber(), -8);
+
+        // $prefix = $this->pic_model->getPrefix($_POST['brand'])->row()->prefix;
+        $group_customer = array_values(array_unique($_POST['group']));
+        $group_customer = implode(",", $group_customer);
+        $group_customer = $this->pic_model->getGroupCustomer($group_customer);
+
         $data = [
-            'no_doc' => $_POST['no_doc'],
+            'group_customer' => $group_customer,
+            'no_doc' => $_POST['brand'] . '/' . $noref,
             'number' => $this->pic_model->getNumber(),
             'budget_code_activity' => $_POST['budget_code_activity'],
             'budget_type' => $budget_source,
@@ -226,15 +238,22 @@ class Pic extends CI_Controller
 
         // var_dump($_POST);
         // die;
-        $this->pic_model->set_cart_item($_POST);
+        $salesByGroup = $this->pic_model->set_cart_item($_POST);
+        // var_dump($salesByGroup->result());
 
-        $response = array();
-        if ($this->db->affected_rows() > 0) {
-            $response['success'] = true;
-        } else {
-            $response['success'] = false;
-        }
-        echo json_encode($response);
+        $data = array(
+            'sales_detail' => $salesByGroup
+        );
+
+        $this->load->view('proposal/table_sales_by_group', $data);
+
+        // $response = array();
+        // if ($this->db->affected_rows() > 0) {
+        //     $response['success'] = true;
+        // } else {
+        //     $response['success'] = false;
+        // }
+        // echo json_encode($response);
     }
 
     public function get_cart_item()
@@ -527,7 +546,7 @@ class Pic extends CI_Controller
         // var_dump($_POST);
         // die;
 
-        $this->simpanCustomerItems($_POST['customer_items']);
+        // $this->simpanCustomerItems($_POST['customer_items']);
         $this->pic_model->insertProposal($_POST);
         if ($this->db->affected_rows() > 0) {
             $params = array(
@@ -872,9 +891,6 @@ class Pic extends CI_Controller
     public function showModalItemFromPenjualan()
     {
         // var_dump($_POST);
-
-
-
         $barcode = array();
         if (isset($_POST['barcode'])) {
             $barcode = $_POST['barcode'];
@@ -891,6 +907,9 @@ class Pic extends CI_Controller
         $brand = $_POST['brand'];
         $customer = $_POST['customer_code'];
         $item = $this->pic_model->getItemFromPenjualan($brand, $customer, $start, $end, null, $barcode);
+
+        // var_dump($item->result());
+
         $data = array(
             'item' => $item,
         );
@@ -1151,7 +1170,7 @@ class Pic extends CI_Controller
 
 
         $proposal_item = $this->db->query("SELECT t1.ProposalNumber, t2.ItemName, t2.FrgnName AS Barcode, 
-        t1.Price, t1.AvgSales, t1.Qty, t1.[Target], t1.Promo, t1.Costing, t1.ListingCost FROM tb_proposal_item t1
+        t1.Price, t1.AvgSales, t1.Qty, t1.[Target], t1.Promo, t1.Costing,t1.PromoValue, t1.ListingCost FROM tb_proposal_item t1
         INNER JOIN m_item t2 ON t1.ItemCode = t2.ItemCode
         WHERE t1.ProposalNumber = '$number'");
 
@@ -1163,6 +1182,7 @@ class Pic extends CI_Controller
         $mechanism = $this->pic_model->getMechanism($number);
         $comment = $this->pic_model->getComment($number);
         $customer_item  = $this->pic_model->get_proposal_customer_item($number);
+        $customer = $this->pic_model->getCustomerProposal($number);
         $data = array(
             'title_pdf' => 'Proposal Promotion ' . $number,
             'proposal_header' => $proposal_header,
@@ -1173,7 +1193,8 @@ class Pic extends CI_Controller
             'objective' => $objective,
             'mechanism' => $mechanism,
             'comment' => $comment,
-            'customer_item' => $customer_item
+            'customer_item' => $customer_item,
+            'customer' => $customer
         );
 
         // filename dari pdf ketika didownload
