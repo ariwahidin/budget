@@ -1,5 +1,5 @@
-<?php 
-    // var_dump($_SERVER);
+<?php
+// var_dump($_SESSION);
 ?>
 <?php $this->view('header') ?>
 <div class="content-wrapper">
@@ -11,12 +11,12 @@
                         <h4>Data Proposal Detail</h4>
                     </div>
                     <div class="col col-md-6">
-                        <a href="<?=$_SERVER['HTTP_REFERER']?>" class="btn btn-warning pull-right">Back</a>
+                        <a href="<?=base_url($_SESSION['page'])."/showProposal"?>" class="btn btn-warning btn-sm pull-right">Back</a>
                     </div>
                 </div>
             </section>
             <section class="content">
-                <div class="box">
+                <div class="box box-primary">
                     <div class="row">
                         <div class="box-body">
                             <div class="col-md-4">
@@ -63,25 +63,61 @@
                             <div class="col-md-4">
                                 <?php if ($approvedBy->num_rows() > 0) { ?>
                                     <b>Approved By</b>
-                                    <p><?= ucwords($proposal->row()->ApprovedBy) ?></p>
+                                    <ul>
+                                        <?php foreach ($approvedBy->result() as $data) { ?>
+                                            <li><?= ucwords($data->username) ?></li>
+                                        <?php } ?>
+                                    </ul>
                                 <?php } ?>
-                                <?php if ($proposal->row()->Status == 'cancelled') { ?>
+                                <!-- <?php if ($proposal->row()->Status == 'cancelled') { ?>
                                     <b>Cancell By </b>
                                     <p><?= ucwords($proposal->row()->CancelBy) ?></p>
-                                <?php } ?>
+                                <?php } ?> -->
                             </div>
                             <div class="col-md-4">
-                                <?php if ($proposal->row()->Status == 'open') { ?>
+
+
+
+                                <?php
+                                if ($approvedBy->num_rows() > 0) {
+                                    $array_user = array();
+                                    foreach ($approvedBy->result() as $data) {
+                                        array_push($array_user, $data->created_by);
+                                    }
+                                    if (array_search($this->session->userdata('user_code'), $array_user) !== false) {
+                                        //do nothing
+                                    } else {
+                                        //do something
+                                ?>
+                                        <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-approved">Approve</button>
+                                    <?php
+                                    }
+                                } else {
+                                    ?>
                                     <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-approved">Approve</button>
-                                    <button class="btn btn-danger pull-right" data-toggle="modal" data-target="#modal-cancel" style="margin-right:5px">Cancel</button>
-                                    <!-- <a href="<?= base_url($_SESSION['page']) . '/approveProposal/' . $proposal->row()->Number ?>" class="btn btn-primary pull-right pull-bottom" style="margin-left:5px;">Approve</a>
-                                    <a href="<?= base_url($_SESSION['page']) . '/cancelProposal/' . $proposal->row()->Number ?>" class="btn btn-danger pull-right">Cancel</a> -->
-                                <?php } else { ?>
+                                <?php
+                                }
+                                ?>
+
+                                <?php if ($approvedBy->num_rows() > 0) { ?>
                                     <div class="">
                                         <b>Comment</b>
-                                        <p><?= ucwords($proposal->row()->reason) ?></p>
+                                        <ul>
+                                            <?php foreach ($approvedBy->result() as $data) { ?>
+                                                <li><?= ucwords($data->reason) ?></li>
+                                            <?php } ?>
+                                        </ul>
                                     </div>
                                 <?php } ?>
+
+                                <?php if ($proposal->row()->Status == 'open') { ?>
+                                    <!-- <button class="btn btn-danger pull-right" data-toggle="modal" data-target="#modal-cancel" style="margin-right:5px">Cancel</button> -->
+                                    <!-- <a href="<?= base_url($_SESSION['page']) . '/approveProposal/' . $proposal->row()->Number ?>" class="btn btn-primary pull-right pull-bottom" style="margin-left:5px;">Approve</a> -->
+                                    <!-- <a href="<?= base_url($_SESSION['page']) . '/cancelProposal/' . $proposal->row()->Number ?>" class="btn btn-danger pull-right">Cancel</a> -->
+                                <?php } else { ?>
+                                <?php } ?>
+
+
                                 <div class="modal fade" id="modal-approved">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -188,8 +224,8 @@
                             <div class="box-header">
                                 <h3>Items</h3>
                             </div>
-                            <div class="box-body">
-                                <table class="table table-responseive table-bordered table-striped">
+                            <div class="box-body table-responsive">
+                                <table class="table table-responsive table-bordered table-striped">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
@@ -284,8 +320,8 @@
                             <div class="box-header">
                                 <h3>Customer</h3>
                             </div>
-                            <div class="box-body">
-                                <table class="table table-responseive table-bordered table-striped">
+                            <div class="box-body table-responsive">
+                                <table class="table table-responsive table-bordered table-striped">
                                     <thead>
                                         <tr>
                                             <th>No.</th>

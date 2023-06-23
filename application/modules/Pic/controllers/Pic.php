@@ -179,6 +179,9 @@ class Pic extends CI_Controller
 
     public function show_form_proposal_from_sales()
     {
+        $json_customer = $_POST['json_customer'];
+        $array_customer = json_decode($json_customer, true);
+        $customer = $this->pic_model->getCustomerByCardCode($array_customer);
 
         $delete_cart = $this->pic_model->delete_cart_item();
 
@@ -202,7 +205,8 @@ class Pic extends CI_Controller
             'number' => $this->pic_model->getNumber(),
             'budget_code_activity' => $_POST['budget_code_activity'],
             'budget_type' => $budget_source,
-            'item_cart' => $this->pic_model->get_item_cart()
+            'item_cart' => $this->pic_model->get_item_cart(),
+            'customer' => $customer,
         ];
 
         if ($_POST['is_sales'] == 'N') { //Listing
@@ -947,9 +951,17 @@ class Pic extends CI_Controller
     public function getCustomer()
     {
         $customer_code = implode("','", $_POST["customer_code"]);
-        $sql = "SELECT t1.CardCode, t1.CustomerName, t1.GroupCode, t2.GroupName FROM m_customer t1
+        // $sql = "SELECT t1.CardCode, t1.CustomerName, t1.GroupCode, t2.GroupName FROM m_customer t1
+        // INNER JOIN m_group t2 ON t1.GroupCode = t2.GroupCode
+        // WHERE t1.CardCode IN('$customer_code')";
+        $sql = "SELECT t1.CardCode, t1.CustomerName, t1.GroupCode, t2.GroupName FROM CustomerView t1
         INNER JOIN m_group t2 ON t1.GroupCode = t2.GroupCode
         WHERE t1.CardCode IN('$customer_code')";
+
+        // var_dump($sql);
+        // print_r($sql);
+        // die;
+
         $customer = $this->db->query($sql);
         $params = [
             'customer' => $customer->result(),
@@ -1183,6 +1195,9 @@ class Pic extends CI_Controller
         $comment = $this->pic_model->getComment($number);
         $customer_item  = $this->pic_model->get_proposal_customer_item($number);
         $customer = $this->pic_model->getCustomerProposal($number);
+        $approved = $this->pic_model->getApproved($number);
+        $costingOther = $this->pic_model->getProposalItemOther($number);
+
         $data = array(
             'title_pdf' => 'Proposal Promotion ' . $number,
             'proposal_header' => $proposal_header,
@@ -1194,7 +1209,9 @@ class Pic extends CI_Controller
             'mechanism' => $mechanism,
             'comment' => $comment,
             'customer_item' => $customer_item,
-            'customer' => $customer
+            'customer' => $customer,
+            'approved' => $approved,
+            'costing_other' => $costingOther
         );
 
         // filename dari pdf ketika didownload

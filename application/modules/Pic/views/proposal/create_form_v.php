@@ -26,6 +26,7 @@
     </section>
     <section class="content">
         <form id="formCreate">
+            <input type="hidden" id="json_customer" name="json_customer">
             <div class="row">
                 <div class="col-md-5">
                     <div class="box box-info">
@@ -559,7 +560,22 @@
             // denyButtonText: `Don't save`,
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
+
+
+
+
             if (result.isConfirmed) {
+
+                var input_customer = document.querySelectorAll('input.input_customer')
+                var customer_code = []
+                input_customer.forEach(input => {
+                    customer_code.push(input.value)
+                })
+
+                var json_customer = JSON.stringify(customer_code)
+                var input_jsonCustomer = document.getElementById("json_customer");
+                input_jsonCustomer.value = json_customer
+
                 form.action = "<?= base_url($_SESSION['page'] . '/show_form_proposal_from_sales') ?>";
                 form.method = "POST";
                 form.submit();

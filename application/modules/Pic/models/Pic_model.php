@@ -204,15 +204,24 @@ class Pic_model extends CI_Model
             $sql .= " WHERE t1.GroupCode = '$group'";
         }
 
+        // var_dump($sql);
+        // die;
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getCustomerByCardCode($array_customer)
+    {
+        $customer = implode(",", $array_customer);
+        $sql = "select * from CustomerView where CardCode in(select value from STRING_SPLIT('$customer',','))";
         $query = $this->db->query($sql);
         return $query;
     }
 
     public function getCustomerFromSales($group = null, $customer = null)
     {
-        // var_dump($group);
-        // var_dump($customer);
-        $sql = "SELECT DISTINCT CardCode, GroupName, CardName AS CustomerName, GroupCode FROM tb_sales";
+        $sql = "select * from CustomerView";
 
         if ($group != null) {
             $group = implode(",", $group);
@@ -447,13 +456,14 @@ class Pic_model extends CI_Model
 
     public function getBudgetActivityReport($budget_code)
     {
-        $sql = "select distinct t1.BudgetCode, t1.BudgetCodeActivity, t1.ActivityName, t1.BudgetActivity,
-        (select sum(Budget_unbooked) from tb_operating_proposal 
-        where BudgetCodeActivity = t1.BudgetCodeActivity) as Used,
-        t1.BudgetActivity - (select sum(Budget_unbooked) from tb_operating_proposal 
-        where BudgetCodeActivity = t1.BudgetCodeActivity) as Saldo
-        from tb_operating_activity t1
-        where BudgetCode = '$budget_code'";
+        // $sql = "select distinct t1.BudgetCode, t1.BudgetCodeActivity, t1.ActivityName, t1.BudgetActivity,
+        // (select sum(Budget_unbooked) from tb_operating_proposal 
+        // where BudgetCodeActivity = t1.BudgetCodeActivity) as Used,
+        // t1.BudgetActivity - (select sum(Budget_unbooked) from tb_operating_proposal 
+        // where BudgetCodeActivity = t1.BudgetCodeActivity) as Saldo
+        // from tb_operating_activity t1
+        // where BudgetCode = '$budget_code'";
+        $sql = "exec getBudgetActivityUsedReport '$budget_code'";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -566,6 +576,7 @@ class Pic_model extends CI_Model
 
     public function insertProposal($post)
     {
+        // var_dump(count($post['customer_code']));
         // var_dump($post);
         // die;
 
@@ -630,14 +641,18 @@ class Pic_model extends CI_Model
         }
 
         //insert customer
-        for ($c = 0; $c < count($post['customer_code']); $c++) {
-            $customer = array(
-                'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
-                'GroupCustomer' => $post['group_code'][$c],
-                'CustomerCode' => $post['customer_code'][$c]
-            );
-            $this->db->insert('tb_proposal_customer', $customer);
-        }
+        $ProposalNumber = $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number;
+        $CustomerCode = implode(",", $post['customer_code']);
+        $sql_insert_customer = "exec insertCustomerProposal '$ProposalNumber','$CustomerCode'";
+        $insert_customer_proposal = $this->db->query($sql_insert_customer);
+        // for ($c = 0; $c < count($post['customer_code']); $c++) {
+        //     $customer = array(
+        //         'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
+        //         'GroupCustomer' => $post['group_code'][$c],
+        //         'CustomerCode' => $post['customer_code'][$c]
+        //     );
+        //     $this->db->insert('tb_proposal_customer', $customer);
+        // }
 
 
         //Insert CustomerGroup
@@ -727,7 +742,6 @@ class Pic_model extends CI_Model
             ];
             $this->db->insert('tb_proposal_group_item', $customer_group_item);
         }
-
     }
 
     public function getTotalBudgetActivity($BudgetCodeActivity)
@@ -737,7 +751,8 @@ class Pic_model extends CI_Model
         return $query->row()->TotalBudgetActivity;
     }
 
-    public function getCustomerProposal($number){
+    public function getCustomerProposal($number)
+    {
         $sql = "select * from tb_proposal_customer t1
         inner join m_customer t2 on t1.CustomerCode = t2.CardCode
         where t1.ProposalNumber = '$number'";
@@ -797,9 +812,8 @@ class Pic_model extends CI_Model
 
     public function getProposalCustomer($number)
     {
-        $sql = "SELECT t1.id, GroupCustomer, t3.GroupName, t2.CustomerName, t1.no_sk FROM tb_proposal_customer t1
-        INNER JOIN m_customer t2 ON t1.CustomerCode = t2.CardCode
-        INNER JOIN m_group t3 ON t1.GroupCustomer = t3.GroupCode
+        $sql = "SELECT t1.id, GroupCustomer, t2.GroupName, t2.CustomerName, t1.no_sk FROM tb_proposal_customer t1
+        INNER JOIN CustomerView t2 ON t1.CustomerCode = t2.CardCode
         WHERE t1.ProposalNumber = '$number'";
         $query = $this->db->query($sql);
         // var_dump($sql);
@@ -1587,7 +1601,7 @@ class Pic_model extends CI_Model
         $brand = $post['brand'];
         $group_customer = implode(",", $post['group_customer']);
         $item_code = implode(",", $post['item_code']);
-        $customer_code = implode(",", $post['customer']);
+        $customer_code = $post['customer'];
         // var_dump($group_customer);
         // var_dump($item_code);
         // var_dump($customer_code);
@@ -1643,9 +1657,9 @@ class Pic_model extends CI_Model
     {
         // $sql = "select t1.no_proposal, t1.customer_code, t2.CustomerName as customer_name, t1.item_code, 
         // t3.FrgnName as barcode, t3.ItemName as item_name, t1.sales_estimation, t1.avg_sales,
-		// CASE WHEN CAST(t1.avg_sales as varchar) = '0' THEN '0' ELSE
-		// CAST(ROUND(((t1.sales_estimation-t1.avg_sales)/t1.avg_sales)*100,0) as varchar)
-		// END as growth
+        // CASE WHEN CAST(t1.avg_sales as varchar) = '0' THEN '0' ELSE
+        // CAST(ROUND(((t1.sales_estimation-t1.avg_sales)/t1.avg_sales)*100,0) as varchar)
+        // END as growth
         // from tb_proposal_customer_item t1
         // inner join m_customer t2 on t1.customer_code = t2.CardCode
         // inner join m_item t3 on t1.item_code = t3.ItemCode
@@ -1657,6 +1671,13 @@ class Pic_model extends CI_Model
         inner join m_group t2 on t1.GroupCustomer = t2.GroupCode
         inner join m_item t3 on t1.ItemCode = t3.ItemCode
         WHERE t1.ProposalNumber = '$number'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getApproved($number)
+    {
+        $sql = "select * from tb_proposal_approved where proposalNumber = '$number'";
         $query = $this->db->query($sql);
         return $query;
     }

@@ -225,17 +225,26 @@
 </style>
 <div id="muncul_loading" class=""></div>
 
-<body class="hold-transition skin-blue-light <?= $this->uri->segment(2) == 'setOperatingActivity' ? '' : 'sidebar-mini' ?> <?= $this->uri->segment(2) == 'ShowDetailBudget' || $this->uri->segment(2) == 'setOperatingActivity' ||
-                                                                                                                                $this->uri->segment(2) == 'createOperating2' ||
-                                                                                                                                $this->uri->segment(2) == 'show_form_proposal_from_sales' ||
-                                                                                                                                $this->uri->segment(2) == 'showFormAddOnTop' ||
-                                                                                                                                $this->uri->segment(2) == 'show_form_create_budget' ? 'sidebar-collapse' : '' ?>" style="height: auto; min-height: 100%;">
+<body class="hold-transition skin-black-light <?= $this->uri->segment(2) == 'setOperatingActivity' ? '' : 'sidebar-mini' ?> <?= $this->uri->segment(2) == 'ShowDetailBudget' || $this->uri->segment(2) == 'setOperatingActivity' ||
+                                                                                                                            $this->uri->segment(2) == 'createOperating2' ||
+                                                                                                                            $this->uri->segment(2) == 'show_form_proposal_from_sales' ||
+                                                                                                                            $this->uri->segment(2) == 'showFormAddOnTop' ||
+                                                                                                                            $this->uri->segment(2) == 'show_form_create_budget' ? 'sidebar-collapse' : '' ?>" style="height: auto; min-height: 100%;">
     <div class="wrapper">
         <header class="main-header">
+
             <a href="" class="logo">
-                <span class="logo-mini"><b>P</b>K</span>
-                <span class="logo-lg"><b>Pandurasa</b> Kharisma </span>
+                <span class="logo-mini">
+                    <img src="<?= base_url() ?>assets/dist/img/pandurasa_kharisma_pt.png" style="max-width:30px;border-radius:5%; padding-bottom:-10px;" alt="">
+                </span>
+                <span class="logo-lg">
+                    <img src="<?= base_url() ?>assets/dist/img/pandurasa_kharisma_pt.png" style="max-width:25px;border-radius:10%; padding-bottom:-10px;" alt="">
+                    <span style="font-size: 14px;">
+                        <b>Pandurasa</b> Kharisma
+                    </span>
+                </span>
             </a>
+            
             <nav class="navbar navbar-static-top">
                 <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                     <span class="sr-only">Toggle navigation</span>
@@ -247,14 +256,14 @@
                     <ul class="nav navbar-nav">
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="<?= base_url() ?>assets/dist/img/user123.png" class="user-image" alt="User Image">
-                                <span class="hidden-xs"><?= $_SESSION['fullname'] ?></span>
+                                <img src="<?= base_url() ?>assets/dist/img/red-user.png" class="user-image" alt="User Image">
+                                <span class="hidden-xs"><?= ucfirst($_SESSION['fullname']) ?></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="user-header">
-                                    <img src="<?= base_url() ?>assets/dist/img/user123.png" class="img-circle" alt="User Image">
+                                    <img src="<?= base_url() ?>assets/dist/img/red-user.png" class="img-circle" alt="User Image">
                                     <p>
-                                        <!-- <= $this->fungsi->user_login()->fullname ?> -->
+                                        <span class=""><?= ucfirst($_SESSION['fullname']) ?></span>
                                     </p>
                                 </li>
                                 <li class="user-footer">
@@ -267,6 +276,8 @@
                     </ul>
                 </div>
             </nav>
+
+
         </header>
 
         <aside class="main-sidebar">

@@ -312,15 +312,15 @@
                                 </tr>
                             </thead>
                             <tbody id="tbodyCustomer">
-                                <?php for ($i = 0; $i < count($_POST['customer']); $i++) { ?>
+                                <?php foreach ($customer->result() as $data) { ?>
                                     <tr>
                                         <td class="CustomerCode_Customer">
-                                            <?= $_POST['customer'][$i] ?>
-                                            <input type="hidden" class="input_group" value="<?= $_POST['group'][$i] ?>">
-                                            <input type="hidden" class="input_customer" value="<?= $_POST['customer'][$i] ?>">
+                                            <?= $data->CardCode ?>
+                                            <input type="hidden" class="input_group" value="<?= $data->GroupCode ?>">
+                                            <input type="hidden" class="input_customer" value="<?= $data->CardCode ?>">
                                         </td>
-                                        <td class="GroupName_Customer"><?= getGroupName($_POST['group'][$i]) ?></td>
-                                        <td class="CustomerName_Customer"><?= getCustomerName($_POST['customer'][$i]) ?></td>
+                                        <td class="GroupName_Customer"><?= $data->GroupName ?></td>
+                                        <td class="CustomerName_Customer"><?= $data->CustomerName ?></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -342,8 +342,17 @@
 <?php $this->view('proposal/modal_set_promo') ?>
 <?php $this->view('footer'); ?>
 <?php
-$customer_code = implode(",", $_POST['customer']);
-$group_code = implode("','", $_POST['group']);
+$CardCode = array();
+$GroupCode = array();
+
+foreach ($customer->result() as $data) {
+    array_push($CardCode, $data->CardCode);
+    array_push($GroupCode, $data->GroupCode);
+}
+
+
+$customer_code = implode(",", $CardCode);
+$group_code = implode("','", $GroupCode);
 // var_dump($customer_code);
 ?>
 
@@ -428,6 +437,7 @@ $group_code = implode("','", $_POST['group']);
         const input_total_costing = document.getElementById("total_costing")
         input_total_costing.value = money(total_costing)
 
+        calculateAllTotalCosting();
         calculate_cost_ratio();
         // console.log(price);
         // console.log(total);
@@ -536,8 +546,6 @@ $group_code = implode("','", $_POST['group']);
         } else {
             input_promo.value = 0
         }
-
-
 
         input_costing.value = !isNaN(costing) ? money(costing) : 0;
         calculate_cost_ratio()
@@ -654,7 +662,7 @@ $group_code = implode("','", $_POST['group']);
         <?php
         // Include the PHP code here
         // PHP code
-        $myArray = $_POST['customer'];
+        $myArray = $customer_code;
         $myArrayJSON = json_encode($myArray);
         echo "var customer = " . $myArrayJSON . ";";
 
@@ -1057,11 +1065,11 @@ $group_code = implode("','", $_POST['group']);
         }
 
 
-        console.log(t_qty_item)
-        console.log(t_group)
-        console.log(t_item_code)
-        console.log(t_sales)
-        console.log(table_detail)
+        // console.log(t_qty_item)
+        // console.log(t_group)
+        // console.log(t_item_code)
+        // console.log(t_sales)
+        // console.log(table_detail)
 
 
 
@@ -1092,14 +1100,14 @@ $group_code = implode("','", $_POST['group']);
         // console.log(json_customer_items)
         // return false
 
-        var input_group = document.querySelectorAll('input.input_group');
-        var input_customer = document.querySelectorAll('input.input_customer');
-        var group_code = [];
-        var customer_code = [];
-        for (var y = 0; y < input_customer.length; y++) {
-            group_code.push(input_group[y].value);
-            customer_code.push(input_customer[y].value);
-        }
+        // var input_group = document.querySelectorAll('input.input_group');
+        // var input_customer = document.querySelectorAll('input.input_customer');
+        // var group_code = [];
+        // var customer_code = [];
+        // for (var y = 0; y < input_customer.length; y++) {
+        //     group_code.push(input_group[y].value);
+        //     customer_code.push(input_customer[y].value);
+        // }
 
         var brand = '<?= $_POST['brand'] ?>';
         var activity = '<?= $_POST['activity'] ?>';
@@ -1177,11 +1185,13 @@ $group_code = implode("','", $_POST['group']);
         }
 
 
-        var customer_code = [];
-        var td_customer_code = document.querySelectorAll('td.CustomerCode_Customer');
-        for (var c = 0; c < td_customer_code.length; c++) {
-            customer_code.push(td_customer_code[c].innerText.replace(/\s/g, ""));
-        }
+        var customer_code = <?php echo json_encode(explode(",", $customer_code)); ?>;
+        // console.log(customer_code);
+        // return false;
+        // var td_customer_code = document.querySelectorAll('td.CustomerCode_Customer');
+        // for (var c = 0; c < td_customer_code.length; c++) {
+        //     customer_code.push(td_customer_code[c].innerText.replace(/\s/g, ""));
+        // }
 
         const duplicates_customer = customer_code.filter((item, index) => index !== customer_code.indexOf(item));
         if (duplicates_customer.length > 0) {
@@ -1202,7 +1212,7 @@ $group_code = implode("','", $_POST['group']);
                 text: 'Semua wajib di isi dengan benar',
             })
             return false;
-        } else if (td_customer_code.length < 1) {
+        } else if (customer_code.length < 1) {
             // alert('Customer belum diisi');
             Swal.fire({
                 icon: 'error',
@@ -1281,7 +1291,7 @@ $group_code = implode("','", $_POST['group']);
 
         Swal.fire({
             icon: 'question',
-            title: 'Anda yakin untuk simpan proposal?',
+            title: 'Anda yakin untuk simpan proposal?\n Total Costing : '+total_costing,
             showDenyButton: false,
             showCancelButton: true,
             confirmButtonText: 'Simpan',
@@ -1300,7 +1310,6 @@ $group_code = implode("','", $_POST['group']);
                     start_date,
                     end_date,
                     budget_code,
-                    group_code,
                     customer_code,
                     avg_sales_type,
                     item_code,

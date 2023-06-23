@@ -5,12 +5,13 @@
 <div class="content-wrapper">
     <section class="content-header">
         <div class="row">
-            <div class="col col-md-6">
-                <h4>Data Proposal</h4>
+            <div class="col col-md-12">
+                <h4>Data Proposal
+                    <a style="display: inline;" href="<?=base_url($_SESSION['page'])?>" class="btn btn-warning btn-sm pull-right">Back</a>
+                </h4>
             </div>
-            <div class="col col-md-6">
-                <a href="<?=base_url($_SESSION['page'])?>" class="btn btn-warning pull-right">Back</a>
-            </div>
+            <!-- <div class="col col-md-6">
+            </div> -->
         </div>
     </section>
     <section class="content">
@@ -44,7 +45,8 @@
                                         <td><?= date('Y-m-d', strtotime($data->EndDatePeriode)) ?></td>
                                         <td><?= ucfirst($data->CreatedBy) ?></td>
                                         <td>
-                                            <span class="label label-<?= $data->Status == 'approved' ? 'success' : ($data->Status == 'open' ? 'info' : 'warning') ?>"><?= ucfirst($data->Status) ?></span>
+                                            <!-- <span class="label label-<?= $data->Status == 'approved' ? 'success' : ($data->Status == 'open' ? 'info' : 'warning') ?>"><?= ucfirst($data->Status) ?></span> -->
+                                            <span class=""><?= ucfirst($data->Status) ?></span>
                                         </td>
                                         <td>
                                             <a href="<?= base_url($_SESSION['page']) . '/showProposalDetail/' . $data->Number ?>" class="btn btn-info btn-xs">Lihat</a>

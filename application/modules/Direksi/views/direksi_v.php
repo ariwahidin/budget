@@ -112,7 +112,7 @@
                         <h3 class="box-title">ANP 2023</h3>
                     </div>
                     <!-- /.box-header -->
-                    <div class="box-body">
+                    <div class="box-body box-responsive">
                         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
                             <div class="row">
                                 <div class="col-sm-6"></div>

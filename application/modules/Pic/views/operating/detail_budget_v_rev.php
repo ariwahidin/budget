@@ -217,13 +217,7 @@
                                     <tr>
                                         <td><?= $no++ ?></td>
                                         <td><?= $bgg->ActivityName ?></td>
-                                        <td>
-                                            <?php
-                                            $percent_activity = number_format(($bgg->BudgetActivity / $budget_detail_header->row()->TotalOperating) * 100);
-                                            $total_percent_activity += $percent_activity;
-                                            ?>
-                                            <?= $percent_activity ?>
-                                        </td>
+                                        <td><?= $bgg->Percent ?></td>
                                         <td><?= number_format($bgg->BudgetActivity) ?></td>
                                         <td><?= number_format($bgg->Used) ?></td>
                                         <td><?= number_format($bgg->Saldo) ?></td>

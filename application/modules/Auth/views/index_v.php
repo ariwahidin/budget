@@ -33,7 +33,9 @@
 <body class="hold-transition login-page">
   <div class="login-box">
     <div class="login-logo">
-      <a href="<?= base_url()?>"><b>Pandurasa</b> Kharisma </a>
+      <span class="logo-lg"><img src="<?= base_url() ?>assets/dist/img/pandurasa_kharisma_pt.png" style="border-radius:20%; max-width:50px;" alt=""></span>
+      <!-- <br> -->
+      <a style="font-size: 28px;" href="<?= base_url() ?>"><b>Pandurasa</b> Kharisma </a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
@@ -42,7 +44,7 @@
       <form action="<?= site_url('auth/auth/process') ?>" method="post">
         <div class="form-group has-feedback">
           <input name="username" class="form-control" placeholder="Username">
-          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+          <span class="glyphicon glyphicon-user form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
           <input type="password" name="password" class="form-control" placeholder="Password" required>

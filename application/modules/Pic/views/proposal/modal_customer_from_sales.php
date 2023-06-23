@@ -81,6 +81,8 @@
                 dataType: "JSON",
                 success: function(response) {
 
+                    console.log(response.customer.length)
+
                     if (response.customer.length > 0) {
                         for (var i = 0; i < response.customer.length; i++) {
                             var tr = document.createElement('tr');

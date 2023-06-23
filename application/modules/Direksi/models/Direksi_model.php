@@ -326,6 +326,10 @@ class Direksi_model extends CI_Model
 
     public function approveProposal($post)
     {
+
+        // var_dump($post);
+        // die;
+
         $number = $post['number'];
         $comment = $post['comment'];
         $username = $_SESSION['username'];
@@ -337,7 +341,10 @@ class Direksi_model extends CI_Model
             'proposalNumber' => $number,
             'approvedBy' => $_SESSION['user_code'],
             'username' => $_SESSION['username'],
-            'approvedDate' => $this->getDate()
+            'approvedDate' => $this->getDate(),
+            'reason' => $comment,
+            'is_approve' => 'y',
+            'created_by' => $_SESSION['user_code']
         );
         $this->db->insert('tb_proposal_approved', $params);
     }
@@ -493,13 +500,15 @@ class Direksi_model extends CI_Model
         return $query;
     }
 
-    public function getAnpForManagement(){
+    public function getAnpForManagement()
+    {
         $sql = "EXEC getAnpForManagement";
         $query = $this->db->query($sql);
         return $query;
     }
 
-    public function getResumeAnp(){
+    public function getResumeAnp()
+    {
         $sql = "select sum(Operating) AS TotalOperating, sum(ProposalCosting) AS TotalProposalCosting, 
         sum(Operating) - sum(ProposalCosting) AS TotalOperatingBalance 
         from view_resumeAnp";

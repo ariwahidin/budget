@@ -214,6 +214,7 @@
             </tr>
         </tfoot>
     </table>
+    <!-- Begin Costing Product-->
     <div style="text-align:left; padding-top:10px;">
         <b style="font-size: 12px;">COSTING</b>
     </div>
@@ -253,6 +254,7 @@
                 </tr>
             <?php } ?>
         </tbody>
+
         <tfoot>
             <tr>
                 <td colspan="2">Total</td>
@@ -275,15 +277,63 @@
             </tr>
         </tfoot>
     </table>
+    <!-- End Costing Product -->
+
+
+    <!-- Begin Costing Other-->
+    <div style="text-align:left; padding-top:10px;">
+        <b style="font-size: 12px;">COSTING</b>
+    </div>
+    <table id="tb">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Description</th>
+                <th>Costing</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $no = 1;
+            $totalCostingOther = 0;
+            foreach ($costing_other->result() as $data) {
+                $totalCostingOther += $data->Costing;
+            ?>
+                <tr>
+                    <td scope="row"><?= $no++ ?></td>
+                    <td style="width:100%;"><?= $data->Desc ?></td>
+                    <td style="text-align: right;"><?= number_format($data->Costing) ?></td>
+                </tr>
+            <?php } ?>
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="2">Total</td>
+                <td style="text-align: right;">
+                    <?= number_format($totalCostingOther); ?>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    <!-- End Costing Other -->
+
+    <div style="text-align:left; padding-top:10px;">
+        <?php
+        $allTotalCosting = $costing + $totalCostingOther;
+        ?>
+        <b style="font-size: 12px;">TOTAL COSTING : <?= number_format($allTotalCosting) ?></b>
+    </div>
+
+    <br>
     <div>
         <table>
             <?php
             if ($target != 0) {
                 $cost_ratio = 0;
-                $cost_ratio = ($costing / $target) * 100;
+                $cost_ratio = ($allTotalCosting / $target) * 100;
             ?>
                 <tr>
-                    <td>COST RATIO <span>(total costing/total target)</span></td>
+                    <td>COST RATIO</td>
                     <td>&nbsp;:&nbsp; <?= round($cost_ratio, 2) ?>%</td>
                 </tr>
             <?php } ?>
@@ -395,34 +445,49 @@
                 <td>
                     Diajukan Oleh:
                 </td>
-                <td>
-                    Diketahui Oleh:
-                </td>
-                <td>
-                    Disetujui Oleh:
-                </td>
-                <td>
-                    Update By:
-                </td>
+                <?php
+                if ($approved->num_rows() > 0) {
+                    foreach ($approved->result() as $data) { ?>
+                        <td>
+                            Disetujui Oleh:
+                        </td>
+                    <?php }
+                } else { ?>
+                    <td>
+                        Disetujui Oleh:
+                    </td>
+                    <td>
+                        Disetujui Oleh:
+                    </td>
+                <?php } ?>
             </tr>
             <tr>
                 <td><br><br><br></td>
-                <td><br><br><br></td>
-                <td><br><br><br></td>
-                <td><br><br><br></td>
+                <?php
+                if ($approved->num_rows() > 0) {
+                    foreach ($approved->result() as $data) { ?>
+                        <td>
+                            <img src="<?= base_url() ?>assets/dist/img/pandurasa_kharisma_pt.png" style="max-width:30px; padding-bottom:-10px;" alt="">
+                            <img src="<?= base_url() ?>assets/dist/img/approved.png" style="max-width:50px; padding-bottom:-10px;" alt="">
+                        </td>
+                    <?php }
+                } else { ?>
+                    <td><br><br><br></td>
+                    <td><br><br><br></td>
+                <?php } ?>
             </tr>
             <tr>
                 <td><?= ucwords($proposal_header->row()->CreatedBy) ?></td>
-                <td>
-                    <?php if ($proposal_header->row()->Status == 'approved') { ?>
-                        <?= ucwords($proposal_header->row()->ApprovedBy) ?>
-                    <?php } ?>
-                    <?php if ($proposal_header->row()->Status == 'cancelled') { ?>
-                        <?= ucwords($proposal_header->row()->CancelBy) ?>
-                    <?php } ?>
-                </td>
-                <td>Management</td>
-                <td>Admin MKT</td>
+
+                <?php
+                if ($approved->num_rows() > 0) {
+                    foreach ($approved->result() as $data) { ?>
+                        <td><?= ucfirst($data->username) ?></td>
+                    <?php }
+                } else { ?>
+                    <td>Management</td>
+                    <td>Management</td>
+                <?php } ?>
             </tr>
         </table>
     </div>
