@@ -212,6 +212,8 @@ class Direksi extends CI_Controller
         $unbooked = $this->db->query("SELECT SUM(Budget_unbooked) AS TotalUnbooked FROM tb_operating_proposal WHERE BudgetCodeActivity = '$BudgetCodeActivity'")->row()->TotalUnbooked;
         $operatingProposal = $this->direksi_model->getOperatingProposal($number);
         $approvedBy = $this->direksi_model->getApprovedBy($number);
+        $costingOther = $this->direksi_model->getCostingOther($number);
+        $itemGroup = $this->direksi_model->getProposalItemGroupDetail($number);
         $data = array(
             'proposal' => $proposal,
             'proposalItem' => $proposalItem,
@@ -221,6 +223,8 @@ class Direksi extends CI_Controller
             'budget_saldo' => $budget_saldo,
             'unbooked' => $unbooked,
             'approvedBy' => $approvedBy,
+            'costingOther' => $costingOther,
+            'itemGroup' => $itemGroup,
         );
         $this->load->view('proposal/data_proposal_detail_v', $data);
     }

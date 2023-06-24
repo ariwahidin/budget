@@ -515,4 +515,19 @@ class Direksi_model extends CI_Model
         $query = $this->db->query($sql);
         return $query;
     }
+
+    public function getCostingOther($ProposalNumber)
+    {
+        $sql = "SELECT * FROM tb_proposal_item_other where ProposalNumber = '$ProposalNumber'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getProposalItemGroupDetail($ProposalNumber)
+    {
+        $sql = "select * from ProposalItemGroupDetailView
+        where ProposalNumber = '$ProposalNumber'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
 }

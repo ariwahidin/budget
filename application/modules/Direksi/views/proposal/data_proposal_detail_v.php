@@ -8,15 +8,17 @@
             <section class="content-header">
                 <div class="row">
                     <div class="col col-md-6">
-                        <h4>Data Proposal Detail</h4>
+                        <h4 style="font-weight: bold;">
+                            Proposal Detail
+                        </h4>
                     </div>
                     <div class="col col-md-6">
-                        <a href="<?=base_url($_SESSION['page'])."/showProposal"?>" class="btn btn-warning btn-sm pull-right">Back</a>
+                        <a href="<?= base_url($_SESSION['page']) . "/showProposal" ?>" class="btn btn-warning btn-sm pull-right">Back</a>
                     </div>
                 </div>
             </section>
             <section class="content">
-                <div class="box box-primary">
+                <div class="box">
                     <div class="row">
                         <div class="box-body">
                             <div class="col-md-4">
@@ -49,10 +51,10 @@
                                         <td>Claim to</td>
                                         <td>&nbsp;:&nbsp;<b><?= ucfirst($proposal->row()->ClaimTo) ?></b></td>
                                     </tr>
-                                    <tr>
-                                        <td>Balance Activity</td>
-                                        <td>&nbsp;:&nbsp;<b><?= number_format(proposal_maked($proposal->row()->Number)->row()->Budget_saldo) ?></b> (<?= $budget_source ?>)</td>
-                                    </tr>
+                                    <!-- <tr>
+                                        <td>Operarting</td>
+                                        <td>&nbsp;:&nbsp;<b><?= number_format(proposal_maked($proposal->row()->Number)->row()->Budget_saldo) ?></b></td>
+                                    </tr> -->
                                     <tr>
                                         <td>Costing</td>
                                         <td>&nbsp;:&nbsp;<b><?= number_format($operatingProposal->row()->TotalCosting) ?></b></td>
@@ -222,14 +224,13 @@
                     <div class="col-md-12">
                         <div class="box">
                             <div class="box-header">
-                                <h3>Items</h3>
+                                <strong>Target And Costing Product Items</strong>
                             </div>
                             <div class="box-body table-responsive">
                                 <table class="table table-responsive table-bordered table-striped">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
-                                            <th>Item Code</th>
                                             <th>Barcode</th>
                                             <th>Item Name</th>
                                             <th>Price</th>
@@ -242,7 +243,7 @@
                                                 <th><?= getActivityName($proposal->row()->Activity) ?> Cost</th>
                                             <?php } ?>
                                             <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
-                                                <th>Promo(%)</th>
+                                                <th>(%)</th>
                                                 <th>Value</th>
                                             <?php } ?>
                                             <th>Costing</th>
@@ -253,7 +254,6 @@
                                         foreach ($proposalItem->result() as $item) { ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
-                                                <td><?= $item->ItemCode ?></td>
                                                 <td><?= $item->Barcode ?></td>
                                                 <td><?= $item->ItemName ?></td>
                                                 <td><?= number_format($item->Price) ?></td>
@@ -277,8 +277,11 @@
                                     </tbody>
                                     <tfooter>
                                         <tr>
-                                            <td></td>
-                                            <td></td>
+                                            <td>
+                                                <b>
+                                                    Total
+                                                </b>
+                                            </td>
                                             <td></td>
                                             <td></td>
                                             <td></td>
@@ -287,7 +290,9 @@
                                                 <td></td>
                                             <?php } ?>
                                             <td id="total_target">
-                                                <?= number_format(total_target($proposal->row()->Number)) ?>
+                                                <b>
+                                                    <?= number_format(total_target($proposal->row()->Number)) ?>
+                                                </b>
                                             </td>
                                             <?php if (activity_is_sales($proposal->row()->Activity) == 'N') { ?>
                                                 <td></td>
@@ -297,35 +302,95 @@
                                                 <td id="total_value"></td>
                                             <?php } ?>
                                             <td id="total_costing">
-                                                <?= number_format(total_costing($proposal->row()->Number)) ?>
+                                                <b>
+                                                    <?= number_format(total_costing($proposal->row()->Number)) ?>
+                                                </b>
                                             </td>
                                         </tr>
                                     </tfooter>
                                 </table>
-                            </div>
-                            <div class="modal-footer">
+
+
+
+
+                                <!-- <div class="modal-footer">
                                 <table>
                                     <tr>
                                         <td>COST RATIO</td>
                                         <td>&nbsp;:&nbsp; <b id="cost_ratio"><?= cost_ratio($proposal->row()->Number) ?></b></td>
                                     </tr>
                                 </table>
+                            </div> -->
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-8">
                         <div class="box">
                             <div class="box-header">
-                                <h3>Customer</h3>
+                                <strong>
+                                    Costing Lain -lain
+                                </strong>
                             </div>
                             <div class="box-body table-responsive">
+
                                 <table class="table table-responsive table-bordered table-striped">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
-                                            <th>Group Code</th>
+                                            <th>Description</th>
+                                            <th>Costing</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $totalCostingOther = 0;
+                                        $no = 1;
+                                        foreach ($costingOther->result() as $data) {
+                                            $totalCostingOther += $data->Costing;
+                                        ?>
+                                            <tr>
+                                                <td style="width: 35px;"><?= $no++ ?></td>
+                                                <td><?= $data->Desc ?></td>
+                                                <td><?= number_format($data->Costing) ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                    <tfooter>
+                                        <tr>
+                                            <td colspan="2">
+                                                <b>
+                                                    Total
+                                                </b>
+                                            </td>
+                                            <td>
+                                                <b>
+                                                    <?= number_format($totalCostingOther) ?>
+                                                </b>
+                                            </td>
+                                        </tr>
+                                    </tfooter>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="box">
+                            <div class="box-header">
+                                <strong>
+                                    Customer
+                                </strong>
+                            </div>
+                            <div class="box-body table-responsive">
+                                <table class="table table-responsive table-bordered table-striped" id="table1">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
                                             <th>Group Name</th>
                                             <th>Customer Name</th>
                                         </tr>
@@ -335,9 +400,38 @@
                                         foreach ($proposalCustomer->result() as $customer) { ?>
                                             <tr>
                                                 <td><?= $num++ ?></td>
-                                                <td><?= $customer->GroupCustomer ?></td>
                                                 <td><?= $customer->GroupName ?></td>
                                                 <td><?= $customer->CustomerName ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="box">
+                            <div class="box-header">
+                                <strong>Detail Item By Group Customer</strong>
+                            </div>
+                            <div class="box-body table-responsive">
+                                <table class="table table-responsive table-bordered table-striped" id="tableDetailItem">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Group Customer</th>
+                                            <th>Item Name</th>
+                                            <th>Qty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $no = 1;
+                                        foreach ($itemGroup->result() as $data) { ?>
+                                            <tr>
+                                                <td><?= $no++ ?></td>
+                                                <td><?= $data->GroupName ?></td>
+                                                <td><?= $data->ItemName ?></td>
+                                                <td><?= $data->Target ?></td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -352,6 +446,10 @@
 </div>
 <?php $this->view('footer') ?>
 <script>
+    $(document).ready(function() {
+        $('#tableDetailItem').DataTable()
+    })
+
     function approve_proposal() {
         var form = new FormData(document.getElementById('form_approve'));
         $.ajax({
