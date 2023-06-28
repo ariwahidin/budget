@@ -1,5 +1,5 @@
-<?php 
-    // var_dump($_SESSION);
+<?php
+// var_dump($_SESSION);
 ?>
 <?php $this->view('header'); ?>
 <div class="content-wrapper">
@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col col-md-12">
                 <h4>Data Proposal
-                    <a style="display: inline;" href="<?=base_url($_SESSION['page'])?>" class="btn btn-warning btn-sm pull-right">Back</a>
+                    <a style="display: inline;" href="<?= base_url($_SESSION['page']) ?>" class="btn btn-warning btn-sm pull-right">Back</a>
                 </h4>
             </div>
             <!-- <div class="col col-md-6">
@@ -18,6 +18,9 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
+                    <!-- <div class="box-header">
+                        <button class="btn btn-info btn-sm pull-right" id="btnReportDetail">Report Detail</button>
+                    </div> -->
                     <div class="box-body">
                         <table class="table table-responsive table-bordered table-striped" id="table_proposal">
                             <thead>
@@ -28,7 +31,9 @@
                                     <th>Activity</th>
                                     <th>Start Periode</th>
                                     <th>End Periode</th>
+                                    <th>Costing</th>
                                     <th>Pic</th>
+                                    <th>Created Date</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -41,9 +46,11 @@
                                         <td><?= $data->Number ?></td>
                                         <td><?= getBrandName($data->BrandCode) ?></td>
                                         <td><?= getActivityName($data->Activity) ?></td>
-                                        <td><?= date('Y-m-d', strtotime($data->StartDatePeriode)) ?></td>
-                                        <td><?= date('Y-m-d', strtotime($data->EndDatePeriode)) ?></td>
+                                        <td><?= date('d M Y', strtotime($data->StartDatePeriode)) ?></td>
+                                        <td><?= date('d M Y', strtotime($data->EndDatePeriode)) ?></td>
+                                        <td style="text-align: right;"><?= number_format($data->TotalCosting) ?></td>
                                         <td><?= ucfirst($data->CreatedBy) ?></td>
+                                        <td><?= date('d M Y', strtotime($data->CreatedDate)) ?></td>
                                         <td>
                                             <!-- <span class="label label-<?= $data->Status == 'approved' ? 'success' : ($data->Status == 'open' ? 'info' : 'warning') ?>"><?= ucfirst($data->Status) ?></span> -->
                                             <span class=""><?= ucfirst($data->Status) ?></span>
@@ -69,5 +76,9 @@
 <script>
     $(document).ready(function() {
         $('#table_proposal').DataTable();
+
+        $('#btnReportDetail').on('click', function() {
+            window.location.href = "<?= base_url($_SESSION['page']) . '/reportDetail' ?>"
+        })
     });
 </script>

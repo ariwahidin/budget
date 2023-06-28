@@ -1096,21 +1096,51 @@ function total_costing($no_proposal)
     return $query->row()->total_costing;
 }
 
-function total_target($no_proposal){
+function total_target($no_proposal)
+{
     $ci = &get_instance();
     $sql = "SELECT SUM([Target]) AS total_target FROM tb_proposal_item WHERE ProposalNumber = '$no_proposal'";
     $query = $ci->db->query($sql);
     return $query->row()->total_target;
 }
 
-function cost_ratio($no_proposal){
-    $cost_ratio = round((total_costing($no_proposal)/total_target($no_proposal)) * 100);
-    return $cost_ratio.'%';
+function cost_ratio($no_proposal)
+{
+    $cost_ratio = round((total_costing($no_proposal) / total_target($no_proposal)) * 100);
+    return $cost_ratio . '%';
 }
 
-function get_avg_sales_qty_per_customer($no_proposal,$customer_code,$item_code){
+function get_avg_sales_qty_per_customer($no_proposal, $customer_code, $item_code)
+{
     $ci = &get_instance();
     $sql = "select * from tb_item_cart where no_proposal = '$no_proposal' and customer_code = '$customer_code' and item_code = '$item_code'";
     $query = $ci->db->query($sql);
     return $query->row()->qty_avg_sales;
+}
+
+function getItemProposal($number)
+{
+    $ci = &get_instance();
+    $sql = "SELECT t1.ItemCode, FrgnName AS Barcode, t3.ItemName, t1.Price,t1.AvgSales, t1.Qty, t1.[Target], t1.Promo, t1.Costing, t1.ListingCost, t1.PromoValue FROM tb_proposal_item t1
+        INNER JOIN m_brand t2 ON t1.BrandCode = t2.BrandCode
+        INNER JOIN m_item t3 ON t1.ItemCode = t3.ItemCode
+        WHERE t1.ProposalNumber = '$number'";
+    $query = $ci->db->query($sql);
+    return $query;
+}
+
+function getProposalCostingOther($number)
+{
+    $ci = &get_instance();
+    $sql = "select * from tb_proposal_item_other where ProposalNumber = '$number'";
+    $query = $ci->db->query($sql);
+    return $query;
+}
+
+function getItemGroup($number)
+{
+    $ci = &get_instance();
+    $sql = "select * from ProposalItemGroupDetailView where ProposalNumber = '$number'";
+    $query = $ci->db->query($sql);
+    return $query;
 }

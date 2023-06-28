@@ -334,6 +334,18 @@
                             <!-- <li <?= $this->uri->segment(2) == 'showPurchase' ? 'class="active"' : '' ?>><a href="<?= site_url($_SESSION['page'] . '/showPurchase') ?>"><i class="fa fa-circle-o"></i> Data Purchase</a></li> -->
                         </ul>
                     </li>
+                    <li class="treeview <?= $this->uri->segment(2) == 'reportDetail'  ? 'active' : '' ?>">
+                        <a href="#">
+                            <i class="fa fa-folder-o"></i>
+                            <span>Report</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li <?= $this->uri->segment(2) == 'reportDetail' ? 'class="active"' : '' ?>><a href="<?= base_url($_SESSION['page']) . '/reportDetail' ?>"><i class="fa fa-circle-o"></i> All Proposal</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </section>
         </aside>

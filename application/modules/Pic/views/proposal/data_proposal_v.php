@@ -34,8 +34,8 @@
                                         <td><?= getBrandName($data->BrandCode)?></td>
                                         <!-- <td></td> -->
                                         <td><?= getActivityName($data->Activity)?></td>
-                                        <td><?= date('Y-m-d',strtotime($data->StartDatePeriode)) ?></td>
-                                        <td><?= date('Y-m-d',strtotime($data->EndDatePeriode)) ?></td>
+                                        <td><?= date('d M Y',strtotime($data->StartDatePeriode)) ?></td>
+                                        <td><?= date('d M Y',strtotime($data->EndDatePeriode)) ?></td>
                                         <td><?= ucfirst($data->CreatedBy)?></td>
                                         <td>
                                             <!-- <span class="label label-<?=$data->Status == 'approved' ? 'success' : ($data->Status == 'open' ? 'info' : 'warning') ?>"><?=ucfirst($data->Status)?></span> -->

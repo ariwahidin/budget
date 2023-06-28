@@ -604,6 +604,7 @@ class Pic extends CI_Controller
         $mechanism = $this->pic_model->getMechanism($number);
         $comment = $this->pic_model->getComment($number);
         $total_costing = $this->pic_model->getTotalCosting($number)->row()->total_costing;
+        $itemGroup = $this->pic_model->getProposalItemGroupDetail($number);
 
         $data = array(
             'proposal' => $proposal,
@@ -614,7 +615,8 @@ class Pic extends CI_Controller
             'objective' => $objective,
             'mechanism' => $mechanism,
             'comment' => $comment,
-            'total_costing' => $total_costing
+            'total_costing' => $total_costing,
+            'itemGroup' => $itemGroup,
         );
 
         $this->load->view('proposal/data_proposal_detail_v', $data);

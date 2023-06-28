@@ -109,7 +109,9 @@
             <div class="col-md-10">
                 <div class="box box-primary">
                     <div class="box-header">
-                        <h3 class="box-title">ANP 2023</h3>
+                        <form action="<?= base_url($_SESSION['page'] . '/downloadExcel') ?>" method="POST" id="formCetakExcel"></form>
+                        <h3 class="box-title">Report Budget A&P</h3>
+                        <button id="btnDownloadExcel" class="btn btn-success btn-sm pull-right">Download Excel</button>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body box-responsive">
@@ -125,9 +127,10 @@
                                             <tr>
                                                 <th>No.</th>
                                                 <th>Brand</th>
+                                                <th>Start Periode</th>
+                                                <th>End Periode</th>
                                                 <th>Operating</th>
-                                                <th>Proposal Cost</th>
-                                                <th>Operating Balance</th>
+                                                <th>Costing</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -136,9 +139,10 @@
                                                 <tr role="row" class="odd">
                                                     <th><?= $no++ ?></th>
                                                     <td><?= $data->BrandName ?></td>
-                                                    <td><?= number_format($data->Operating) ?></td>
-                                                    <td><?= number_format($data->ProposalCosting) ?></td>
-                                                    <td><?= number_format($data->BalanceOperating) ?></td>
+                                                    <td><?= $data->StartPeriode ?></td>
+                                                    <td><?= $data->EndPeriode ?></td>
+                                                    <td><?= number_format($data->TotalOperatingBudget) ?></td>
+                                                    <td><?= number_format($data->TotalCosting) ?></td>
                                                 </tr>
                                             <?php } ?>
                                         </tbody>
@@ -154,3 +158,8 @@
     </section>
 </div>
 <?php $this->view('footer') ?>
+<script>
+    $('#btnDownloadExcel').on('click', function() {
+        $('#formCetakExcel').submit()
+    })
+</script>

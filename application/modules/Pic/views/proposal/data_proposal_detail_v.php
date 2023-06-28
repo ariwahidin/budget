@@ -321,6 +321,36 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col col-md-6">
+                        <div class="box">
+                            <div class="box-header">
+                                <strong>Detail Item By Group Customer</strong>
+                            </div>
+                            <div class="box-body table-responsive">
+                                <table class="table table-responsive table-bordered table-striped" id="tableDetailItem">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Group Customer</th>
+                                            <th>Item Name</th>
+                                            <th>Qty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $no = 1;
+                                        foreach ($itemGroup->result() as $data) { ?>
+                                            <tr>
+                                                <td><?= $no++ ?></td>
+                                                <td><?= $data->GroupName ?></td>
+                                                <td><?= $data->ItemName ?></td>
+                                                <td><?= $data->Target ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -395,6 +425,7 @@
 <script>
     $(document).ready(function() {
         $('.table_customer').DataTable()
+        $('#tableDetailItem').DataTable()
     });
 
     function prosesSK() {

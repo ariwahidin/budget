@@ -23,6 +23,15 @@ class Direksi extends CI_Controller
         $this->load->view('direksi_v', $data);
     }
 
+    public function downloadExcel()
+    {
+        $anp = $this->direksi_model->getAnpForManagement();
+        $data = array(
+            'anp' => $anp,
+        );
+        $this->load->view('report/report_excel', $data);
+    }
+
     public function showActivity()
     {
         $activity = $this->direksi_model->getActivity();
@@ -439,5 +448,14 @@ class Direksi extends CI_Controller
             'ims_value' => $ims_value,
         );
         $this->load->view('operating/detail_budget_v', $data);
+    }
+
+    public function reportDetail()
+    {
+        $proposal = $this->direksi_model->getProposalView();
+        $data = array(
+            'proposal' => $proposal,
+        );
+        $this->load->view('report/report_proposal', $data);
     }
 }

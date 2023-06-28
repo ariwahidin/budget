@@ -1670,7 +1670,7 @@ class Pic_model extends CI_Model
         from tb_proposal_group_item t1
         inner join m_group t2 on t1.GroupCustomer = t2.GroupCode
         inner join m_item t3 on t1.ItemCode = t3.ItemCode
-        WHERE t1.ProposalNumber = '$number'";
+        WHERE t1.ProposalNumber = '$number' order by t2.GroupName asc";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -1678,6 +1678,14 @@ class Pic_model extends CI_Model
     public function getApproved($number)
     {
         $sql = "select * from tb_proposal_approved where proposalNumber = '$number'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getProposalItemGroupDetail($ProposalNumber)
+    {
+        $sql = "select * from ProposalItemGroupDetailView
+        where ProposalNumber = '$ProposalNumber'";
         $query = $this->db->query($sql);
         return $query;
     }

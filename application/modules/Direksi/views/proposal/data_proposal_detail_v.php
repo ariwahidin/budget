@@ -13,7 +13,7 @@
                         </h4>
                     </div>
                     <div class="col col-md-6">
-                        <a href="<?= base_url($_SESSION['page']) . "/showProposal" ?>" class="btn btn-warning btn-sm pull-right">Back</a>
+                        <button class="btn btn-warning btn-sm pull-right" id="btnBack">Back</button>
                     </div>
                 </div>
             </section>
@@ -448,6 +448,9 @@
 <script>
     $(document).ready(function() {
         $('#tableDetailItem').DataTable()
+        $('#btnBack').on('click', function() {
+            history.back()
+        })
     })
 
     function approve_proposal() {

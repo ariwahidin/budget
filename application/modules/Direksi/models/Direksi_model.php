@@ -279,11 +279,12 @@ class Direksi_model extends CI_Model
 
     public function getProposal($number = null)
     {
-        $sql = "SELECT * FROM tb_proposal";
+        $sql = "SELECT t1.*, t2.TotalCosting FROM tb_proposal t1
+		LEFT JOIN tb_operating_proposal t2 on t1.Number = t2.ProposalNumber";
         if ($number != null) {
-            $sql .= " WHERE [Number] = '$number'";
+            $sql .= " WHERE t1.[Number] = '$number'";
         }
-        $sql .= " ORDER BY id DESC";
+        $sql .= " ORDER BY t1.id DESC";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -527,6 +528,13 @@ class Direksi_model extends CI_Model
     {
         $sql = "select * from ProposalItemGroupDetailView
         where ProposalNumber = '$ProposalNumber'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getProposalView()
+    {
+        $sql = "SELECT * FROM ProposalView";
         $query = $this->db->query($sql);
         return $query;
     }
