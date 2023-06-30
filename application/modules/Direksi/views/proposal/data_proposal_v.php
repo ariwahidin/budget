@@ -21,7 +21,7 @@
                     <!-- <div class="box-header">
                         <button class="btn btn-info btn-sm pull-right" id="btnReportDetail">Report Detail</button>
                     </div> -->
-                    <div class="box-body">
+                    <div class="box-body table-responsive">
                         <table class="table table-responsive table-bordered table-striped" id="table_proposal">
                             <thead>
                                 <tr>

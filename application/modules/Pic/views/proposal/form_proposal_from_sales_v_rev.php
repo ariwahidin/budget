@@ -19,7 +19,7 @@
             <div class="col-md-12">
                 <div class="box">
 
-                    <div class="box-body">
+                    <div class="box-body table-responsive">
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -129,7 +129,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="box-body">
+                    <div class="box-body table-responsive">
                         <table class="table table-responseive table-bordered">
                             <thead>
                                 <tr>

@@ -407,8 +407,28 @@ class Pic_model extends CI_Model
         return $query;
     }
 
+    public function getBrandProposalByPic()
+    {
+        $user_code = $this->session->userdata('user_code');
+        $sql = "SELECT DISTINCT t1.BrandCode, t1.BrandName FROM ProposalTarikanExcelView t1 
+        LEFT JOIN tb_pic_brand t2 on t1.BrandCode = t2.BrandCode
+        WHERE t2.UserCode = '$user_code'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getTarikanProposalExcel($post)
+    {
+        $brand_code = $post['brandCode'];
+        $sql = "SELECT * FROM ProposalTarikanExcelView
+        WHERE BrandCode = '$brand_code'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     public function getOperatingBudget($budgetCode)
     {
+        // var_dump($budgetCode);
         $sql = "select sum(OperatingBudget) as BudgetOperating from tb_operating where BudgetCode = '$budgetCode'";
         $query = $this->db->query($sql);
         return $query;
@@ -1194,6 +1214,17 @@ class Pic_model extends CI_Model
         }
         // var_dump($this->db->error());
         return $allocated_budget;
+    }
+
+    public function getBudgetUsed($budget_code)
+    {
+        $sql = "select sum(TotalCosting) as TotalCosting from tb_operating_proposal where BudgetCode = '$budget_code'";
+        $query = $this->db->query($sql);
+        $totalCosting = $query->row()->TotalCosting;
+        if (is_null($totalCosting)) {
+            $totalCosting = 0;
+        }
+        return $totalCosting;
     }
 
     public function getBudgetAllocated($budgetCode)

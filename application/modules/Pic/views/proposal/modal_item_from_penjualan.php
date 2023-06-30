@@ -7,7 +7,7 @@
                 </button>
                 <h4 class="modal-title"><b>PILIH PRODUCT</b></h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body table-responsive">
                 <form id="frm-example" name="frm-example">
                     <table class="table table-bordered table-striped" id="table_item">
                         <thead>

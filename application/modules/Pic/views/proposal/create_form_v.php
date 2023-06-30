@@ -58,7 +58,7 @@
                                 <tr>
                                     <td>Group Customer</td>
                                     <td>
-                                        <select onchange="resetTableCustomer()" name="group_customer_" id="group" class="form-control select2" multiple required>
+                                        <select onchange="resetTableCustomer(this)" name="group_customer_" id="group" class="form-control select2" multiple required>
                                             <option value="">--Pilih Group--</option>
                                             <?php foreach ($group->result() as $member_group) { ?>
                                                 <option value="<?= $member_group->GroupCode ?>"><?= $member_group->GroupName ?></option>
@@ -381,7 +381,7 @@
 
                 input_balance_budget.value = money(response.balance);
                 input_balance_operating.value = money(response.balance);
-                input_allocated_budget.value = money(response.budget_allocated);
+                input_allocated_budget.value = money(response.budget_used);
                 input_budget_booked.value = money(response.budget_booked);
                 input_budget_actual.value = money(response.actual_budget);
                 input_budget_activity.value = money(response.budget_activity);
@@ -405,8 +405,24 @@
         e.parentElement.parentElement.remove();
     }
 
-    function resetTableCustomer() {
-        document.getElementById('tbodyCustomer').innerHTML = '';
+    function resetTableCustomer(input) {
+        var group_selected = $(input).val()
+        var tbodyCustomer = document.getElementById('tbodyCustomer')
+        var trGroupCode = tbodyCustomer.querySelectorAll('tr[data-tr-group-code]')
+
+        // ini untuk menentukan table customer sesuai sama group yang dipilih, jika di table customer tidak mengandung group yang dipilih maka barisnya akan dihapus
+        if (group_selected.length > 0) {
+            if (trGroupCode.length > 0) {
+                trGroupCode.forEach(function(tr) {
+                    var trValue = tr.getAttribute('data-tr-group-code')
+                    if (!group_selected.includes(trValue)) {
+                        tr.remove()
+                    }
+                })
+            }
+        } else {
+            document.getElementById('tbodyCustomer').innerHTML = '';
+        }
     }
 
     function cariCustomer() {

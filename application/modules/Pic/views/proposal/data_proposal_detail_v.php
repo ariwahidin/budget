@@ -143,7 +143,7 @@
                                 <div class="box-header">
                                     <strong>Target and costing product</strong>
                                 </div>
-                                <div class="box-body">
+                                <div class="box-body table-responsive">
                                     <table class="table table-responseive table-bordered table-striped">
                                         <thead>
                                             <tr>

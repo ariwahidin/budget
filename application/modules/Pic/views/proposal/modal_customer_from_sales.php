@@ -81,11 +81,13 @@
                 dataType: "JSON",
                 success: function(response) {
 
-                    console.log(response.customer.length)
+                    // console.log(response.customer.length)
+                    // console.log(response.customer)
 
                     if (response.customer.length > 0) {
                         for (var i = 0; i < response.customer.length; i++) {
                             var tr = document.createElement('tr');
+                            tr.setAttribute('data-tr-group-code', response.customer[i].GroupCode);
                             var tdCustomerCode = document.createElement('td');
                             var tdGroupName = document.createElement('td');
                             var tdCustomerName = document.createElement('td');

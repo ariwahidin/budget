@@ -290,6 +290,7 @@ class Pic extends CI_Controller
                 // $actual_purchase = (float)$this->pic_model->getYtdActualPurchase($_POST['brand'], $budget_code_activity, $_POST['end_date']);
                 // var_dump($actual_purchase);
                 $budget_allocated = $this->pic_model->getBudgetAllocated($budget_code)->row()->budget_total_allocated;
+                $budget_used = $this->pic_model->getBudgetUsed($budget_code);
                 // $anp_vs_target = $this->pic_model->getAnpVsTarget($budget_code)->row()->Anp_Vs_Target;
                 // $operating_vs_anp = $this->pic_model->getOperatingVsAnp($budget_code)->row()->Operating_Vs_Anp;
                 $budgetActivity_vs_Operating = $this->pic_model->getBudgetActivityVsOperating($budget_code_activity)->row()->activity_vs_operating;
@@ -309,12 +310,14 @@ class Pic extends CI_Controller
                     $ims_value = ((float)$ims_value * (float)$budgetActivity_vs_Operating)  - (float)$ims_used;
                 }
 
-                if ($actual_budget < $budget_activity) {
-                    // $balance = $actual_budget - $budget_allocated;
-                    $balance = $operatingBudget - $budget_allocated;
-                } else {
-                    $balance = $operatingBudget - $budget_allocated;
-                }
+                // if ($actual_budget < $budget_activity) {
+                //     // $balance = $actual_budget - $budget_allocated;
+                //     $balance = $operatingBudget - $budget_allocated;
+                // } else {
+                //     $balance = $operatingBudget - $budget_allocated;
+                // }
+
+                $balance = $operatingBudget - $budget_used;
 
 
 
@@ -329,7 +332,8 @@ class Pic extends CI_Controller
                     'total_budget_activity' => $total_budget_activity,
                     'total_operating' => $total_operating,
                     'ims_value' => $ims_value,
-                    'operatingBudget' => $operatingBudget
+                    'operatingBudget' => $operatingBudget,
+                    'budget_used' => $budget_used,
                 );
 
                 echo json_encode($data);
@@ -586,10 +590,23 @@ class Pic extends CI_Controller
     {
         $params['user_code'] = $_SESSION['user_code'];
         $proposal = $this->pic_model->getProposal($params);
+        $brandByPic = $this->pic_model->getBrandProposalByPic();
         $data = array(
             'proposal' => $proposal,
+            'brand' => $brandByPic
         );
         $this->load->view('proposal/data_proposal_v', $data);
+    }
+
+    public function exportResumeProposalToExcel()
+    {
+        $post = $this->input->post();
+        $proposal = $this->pic_model->getTarikanProposalExcel($post);
+        $data = array(
+            'proposal' => $proposal
+        );
+        $this->load->view('report/proposal_excel', $data);
+        // var_dump($proposal->result());
     }
 
     public function showProposalDetail($number)

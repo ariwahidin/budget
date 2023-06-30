@@ -114,7 +114,7 @@
                         <button id="btnDownloadExcel" class="btn btn-success btn-sm pull-right">Download Excel</button>
                     </div>
                     <!-- /.box-header -->
-                    <div class="box-body box-responsive">
+                    <div class="box-body table-responsive">
                         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
                             <div class="row">
                                 <div class="col-sm-6"></div>
