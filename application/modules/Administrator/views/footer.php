@@ -27,5 +27,5 @@
 <script type="text/javascript" src="<?= base_url() ?>assets/js/jquery_dataTables.js"></script>
 <script type="text/javascript" src="<?= base_url() ?>assets/js/select_dataTables.js"></script>
 <script type="text/javascript" src="<?= base_url() ?>assets/js/checkbox_dataTables.js"></script>
-
+<script type="text/javascript" src="<?= base_url() ?>assets/js/sweetalert2.js"></script>
 </html>

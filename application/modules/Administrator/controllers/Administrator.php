@@ -405,4 +405,31 @@ class Administrator extends CI_Controller
             echo "Gagal hapus";
         }
     }
+
+    public function picBrand()
+    {
+        $pic = $this->administrator_model->getPicBrand();
+        $brand = $this->administrator_model->getBrand();
+        $user = $this->administrator_model->getPic();
+        $data = array(
+            'user' => $user,
+            'brand' => $brand,
+            'pic' => $pic
+        );
+        $this->load->view('brand/pic_brand', $data);
+    }
+
+    public function addPicBrand()
+    {
+        $post = $this->input->post();
+
+        $this->administrator_model->addPicBrand($post);
+
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('success', 'Data berhasil disimpan!');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal simpan data!');
+        }
+        redirect(base_url() . $_SESSION['page'] . '/picBrand');
+    }
 }

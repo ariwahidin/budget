@@ -11,7 +11,7 @@
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <button class="btn-info btn-sm pull-right" data-toggle="modal" data-target="#modal-default">Export</button>
+                        <button class="btn-success btn-sm pull-right" data-toggle="modal" data-target="#modal-default">Export excel</button>
                     </div>
                     <div class="box-body table-responsive">
                         <table class="table table-responsive table-bordered table-striped" id="table_proposal">
@@ -69,7 +69,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Export</h4>
+                <h4 class="modal-title">Export to excel</h4>
             </div>
             <form action="<?= base_url($_SESSION['page'] . '/exportResumeProposalToExcel') ?>" method="POST">
                 <div class="modal-body">
@@ -85,7 +85,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success">Download</button>
+                    <button type="submit" class="btn btn-success">Export</button>
                 </div>
             </form>
         </div>

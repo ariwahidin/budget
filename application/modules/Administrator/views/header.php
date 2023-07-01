@@ -64,6 +64,7 @@
     <link type="text/css" href="<?= base_url() ?>assets/css/checkbox_dataTables.css" rel="stylesheet" />
     <link type="text/css" href="<?= base_url() ?>assets/css/jquery_dataTables.css" rel="stylesheet" />
     <link type="text/css" href="<?= base_url() ?>assets/css/select_dataTables.css" rel="stylesheet" />
+    <link type="text/css" href="<?= base_url() ?>assets/css/sweetalert2.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -149,6 +150,9 @@
                             </li>
                             <li <?= $this->uri->segment(2) == 'showActivity' ? 'class="active"' : '' ?>>
                                 <a href="<?= base_url($_SESSION['page'] . '/showActivity') ?>"><i class="fa fa-tag"></i><span>Activity</span></a>
+                            </li>
+                            <li <?= $this->uri->segment(2) == 'picBrand' ? 'class="active"' : '' ?>>
+                                <a href="<?= base_url($_SESSION['page'] . '/picBrand') ?>"><i class="fa fa-tag"></i><span>Pic Brand</span></a>
                             </li>
                         </ul>
                     </li>

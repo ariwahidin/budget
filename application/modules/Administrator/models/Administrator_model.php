@@ -421,9 +421,53 @@ class Administrator_model extends CI_Model
         return $allocated_budget;
     }
 
-    public function getOperatingProposal($number){
+    public function getOperatingProposal($number)
+    {
         $sql = "SELECT * FROM tb_operating_proposal WHERE ProposalNumber = '$number'";
         $query = $this->db->query($sql);
         return $query;
+    }
+
+    public function getPicBrand()
+    {
+        $sql = "select * from tb_pic_brand where UserCode != '-'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getPic()
+    {
+        $sql = "select * from master_user where access_role = 'pic'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function addPicBrand($post)
+    {
+        $user_code = $post['pic'];
+        $brand_code = $post['brand'];
+
+        $condition = array(
+            'UserCode' => $user_code,
+            'BrandCode' => $brand_code
+        );
+
+        $this->db->select('*');
+        $this->db->from('tb_pic_brand');
+        $this->db->where($condition);
+        $query = $this->db->get();
+
+        if ($query->num_rows() < 1) {
+            $user = $this->db->query("select distinct user_code, fullname from master_user where user_code = '$user_code'");
+            $brand = $this->db->query("select distinct BrandCode, BrandName from m_brand where BrandCode = '$brand_code'");
+            $params = array(
+                'UserCode' => $user->row()->user_code,
+                'Pic' => $user->row()->fullname,
+                'BrandCode' => $brand->row()->BrandCode,
+                'BrandName' => $brand->row()->BrandName,
+                'CreatedBy' => $this->session->userdata('user_code')
+            );
+            $this->db->insert('tb_pic_brand', $params);
+        }
     }
 }
