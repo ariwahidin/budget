@@ -373,12 +373,14 @@ function getSumBudgetActivity($codeAnggaran, $activity)
 
 function check_login()
 {
+    // var_dump($_SESSION);
+    // die;
     $ci = &get_instance();
     $username = $ci->session->userdata('username');
     $fullname = $ci->session->userdata('fullname');
     $page = $ci->session->userdata('page');
     if ($username && $fullname && $page) {
-        $sql = "SELECT * FROM master_user WHERE username = '$username' AND [password] = '$fullname' AND [page] = '$page'";
+        $sql = "SELECT * FROM master_user WHERE username = '$username' AND [page] = '$page'";
         $query = $ci->db->query($sql);
         if ($query->row()->page != $ci->uri->segment(1)) {
             redirect('auth/login');

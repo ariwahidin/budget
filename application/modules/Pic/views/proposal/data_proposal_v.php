@@ -11,7 +11,10 @@
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <button class="btn-success btn-sm pull-right" data-toggle="modal" data-target="#modal-default">Export excel</button>
+                        <form action="<?= base_url($_SESSION['page'] . '/exportResumeProposalToExcel') ?>" method="POST">
+                            <button type="submit" class="btn btn-success btn-sm pull-right">Export to excel</button>
+                        </form>
+                        <!-- <button class="btn-success btn-sm pull-right" data-toggle="modal" data-target="#modal-default">Export excel</button> -->
                     </div>
                     <div class="box-body table-responsive">
                         <table class="table table-responsive table-bordered table-striped" id="table_proposal">
@@ -63,7 +66,7 @@
     </section>
 </div>
 
-<div class="modal fade" id="modal-default">
+<!-- <div class="modal fade" id="modal-default">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
@@ -71,26 +74,10 @@
                     <span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Export to excel</h4>
             </div>
-            <form action="<?= base_url($_SESSION['page'] . '/exportResumeProposalToExcel') ?>" method="POST">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="">Brand : </label>
-                        <select class="form-control" name="brandCode" required>
-                            <option value=""></option>
-                            <?php foreach ($brand->result() as $data) { ?>
-                                <option value="<?= $data->BrandCode ?>"><?= $data->BrandName ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success">Export</button>
-                </div>
-            </form>
+            
         </div>
     </div>
-</div>
+</div> -->
 
 <?php $this->view('footer'); ?>
 

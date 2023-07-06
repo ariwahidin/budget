@@ -14,6 +14,7 @@ class Pic extends CI_Controller
     public function index()
     {
         // $this->load->view('pic_v');
+
         redirect(base_url($_SESSION['page']) . '/showProposal');
     }
 
@@ -588,6 +589,7 @@ class Pic extends CI_Controller
 
     public function showProposal()
     {
+        // var_dump($this->session->userdata());
         $params['user_code'] = $_SESSION['user_code'];
         $proposal = $this->pic_model->getProposal($params);
         $brandByPic = $this->pic_model->getBrandProposalByPic();
@@ -1410,5 +1412,23 @@ class Pic extends CI_Controller
         } else {
             echo json_encode(['success' => false]);
         }
+    }
+
+    public function changePasswordPage()
+    {
+        $data = array();
+        $this->load->view('settings/changePasswordPage', $data);
+    }
+
+    public function changePassword()
+    {
+        $post = $this->input->post();
+        $this->pic_model->changePassword($post);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('success', 'Password berhasil diubah');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal ubah password');
+        }
+        redirect(base_url($_SESSION['page'] . '/changePasswordPage'));
     }
 }

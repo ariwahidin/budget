@@ -47,16 +47,20 @@ $style_row = [
 
 
 $excel->setActiveSheetIndex(0)->setCellValue('A1', "NO");
-$excel->setActiveSheetIndex(0)->setCellValue('B1', "NO PROPOSAL");
-$excel->setActiveSheetIndex(0)->setCellValue('C1', "REF CODE");
-$excel->setActiveSheetIndex(0)->setCellValue('D1', "BRAND");
-$excel->setActiveSheetIndex(0)->setCellValue('E1', "ACTIVITY");
+$excel->setActiveSheetIndex(0)->setCellValue('B1', "DATE");
+$excel->setActiveSheetIndex(0)->setCellValue('C1', "PIC");
+$excel->setActiveSheetIndex(0)->setCellValue('D1', "NO PROPOSAL");
+$excel->setActiveSheetIndex(0)->setCellValue('E1', "NO REF");
 $excel->setActiveSheetIndex(0)->setCellValue('F1', "START PERIODE");
 $excel->setActiveSheetIndex(0)->setCellValue('G1', "END PERIODE");
-$excel->setActiveSheetIndex(0)->setCellValue('H1', "COSTING");
-$excel->setActiveSheetIndex(0)->setCellValue('I1', "OBJECTIVE");
-$excel->setActiveSheetIndex(0)->setCellValue('J1', "MECHANISM");
-$excel->setActiveSheetIndex(0)->setCellValue('K1', "COMMENT");
+$excel->setActiveSheetIndex(0)->setCellValue('H1', "OUTLET");
+$excel->setActiveSheetIndex(0)->setCellValue('I1', "BRAND");
+$excel->setActiveSheetIndex(0)->setCellValue('J1', "SKU");
+$excel->setActiveSheetIndex(0)->setCellValue('K1', "ACTIVITY");
+$excel->setActiveSheetIndex(0)->setCellValue('L1', "MECHANICS");
+$excel->setActiveSheetIndex(0)->setCellValue('M1', "TARGET(QTY)");
+$excel->setActiveSheetIndex(0)->setCellValue('N1', "TARGET(VALUE)");
+$excel->setActiveSheetIndex(0)->setCellValue('O1', "COSTING");
 
 
 $excel->getActiveSheet()->getStyle('A1')->applyFromArray($style_col);
@@ -70,6 +74,10 @@ $excel->getActiveSheet()->getStyle('H1')->applyFromArray($style_col);
 $excel->getActiveSheet()->getStyle('I1')->applyFromArray($style_col);
 $excel->getActiveSheet()->getStyle('J1')->applyFromArray($style_col);
 $excel->getActiveSheet()->getStyle('K1')->applyFromArray($style_col);
+$excel->getActiveSheet()->getStyle('L1')->applyFromArray($style_col);
+$excel->getActiveSheet()->getStyle('M1')->applyFromArray($style_col);
+$excel->getActiveSheet()->getStyle('N1')->applyFromArray($style_col);
+$excel->getActiveSheet()->getStyle('O1')->applyFromArray($style_col);
 
 
 
@@ -79,16 +87,20 @@ foreach ($proposal->result() as $data) {
 
 
     $excel->setActiveSheetIndex(0)->setCellValue('A' . $numrow, $no);
-    $excel->setActiveSheetIndex(0)->setCellValue('B' . $numrow, $data->Number);
-    $excel->setActiveSheetIndex(0)->setCellValue('C' . $numrow, $data->NoRef);
-    $excel->setActiveSheetIndex(0)->setCellValue('D' . $numrow, $data->BrandName);
-    $excel->setActiveSheetIndex(0)->setCellValue('E' . $numrow, $data->promo_name);
+    $excel->setActiveSheetIndex(0)->setCellValue('B' . $numrow, $data->CreatedDate);
+    $excel->setActiveSheetIndex(0)->setCellValue('C' . $numrow, $data->CreatedBy);
+    $excel->setActiveSheetIndex(0)->setCellValue('D' . $numrow, $data->Number);
+    $excel->setActiveSheetIndex(0)->setCellValue('E' . $numrow, $data->NoRef);
     $excel->setActiveSheetIndex(0)->setCellValue('F' . $numrow, $data->StartPeriode);
     $excel->setActiveSheetIndex(0)->setCellValue('G' . $numrow, $data->EndPeriode);
-    $excel->setActiveSheetIndex(0)->setCellValue('H' . $numrow, $data->TotalCosting);
-    $excel->setActiveSheetIndex(0)->setCellValue('I' . $numrow, $data->Objective);
-    $excel->setActiveSheetIndex(0)->setCellValue('J' . $numrow, $data->Mechanism);
-    $excel->setActiveSheetIndex(0)->setCellValue('K' . $numrow, $data->Comment);
+    $excel->setActiveSheetIndex(0)->setCellValue('H' . $numrow, $data->GroupName);
+    $excel->setActiveSheetIndex(0)->setCellValue('I' . $numrow, $data->BrandName);
+    $excel->setActiveSheetIndex(0)->setCellValue('J' . $numrow, $data->ItemName);
+    $excel->setActiveSheetIndex(0)->setCellValue('K' . $numrow, $data->promo_name);
+    $excel->setActiveSheetIndex(0)->setCellValue('L' . $numrow, $data->Mechanism);
+    $excel->setActiveSheetIndex(0)->setCellValue('M' . $numrow, $data->TotalQty);
+    $excel->setActiveSheetIndex(0)->setCellValue('N' . $numrow, $data->TotalTarget);
+    $excel->setActiveSheetIndex(0)->setCellValue('O' . $numrow, $data->TotalCosting);
 
 
     $excel->getActiveSheet()->getStyle('A' . $numrow)->applyFromArray($style_row);
@@ -102,6 +114,10 @@ foreach ($proposal->result() as $data) {
     $excel->getActiveSheet()->getStyle('I' . $numrow)->applyFromArray($style_row);
     $excel->getActiveSheet()->getStyle('J' . $numrow)->applyFromArray($style_row);
     $excel->getActiveSheet()->getStyle('K' . $numrow)->applyFromArray($style_row);
+    $excel->getActiveSheet()->getStyle('L' . $numrow)->applyFromArray($style_row);
+    $excel->getActiveSheet()->getStyle('M' . $numrow)->applyFromArray($style_row);
+    $excel->getActiveSheet()->getStyle('N' . $numrow)->applyFromArray($style_row);
+    $excel->getActiveSheet()->getStyle('O' . $numrow)->applyFromArray($style_row);
 
 
     $excel->getActiveSheet()->getColumnDimension('A')->setWidth(4);
@@ -115,6 +131,10 @@ foreach ($proposal->result() as $data) {
     $excel->getActiveSheet()->getColumnDimension('I')->setWidth(15);
     $excel->getActiveSheet()->getColumnDimension('J')->setWidth(15);
     $excel->getActiveSheet()->getColumnDimension('K')->setWidth(15);
+    $excel->getActiveSheet()->getColumnDimension('L')->setWidth(15);
+    $excel->getActiveSheet()->getColumnDimension('M')->setWidth(15);
+    $excel->getActiveSheet()->getColumnDimension('N')->setWidth(15);
+    $excel->getActiveSheet()->getColumnDimension('O')->setWidth(15);
 
     $no++; // Tambah 1 setiap kali looping
     $numrow++; // Tambah 1 setiap kali looping

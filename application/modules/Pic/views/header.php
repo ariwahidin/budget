@@ -78,11 +78,11 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 <style>
-    body {
-        font-family: "Helvetica Neue", Helvetica, Arial, Helvetica, sans-serif;
-        font-size: 1.124em;
-        font-weight: normal;
-    }
+    /* body { */
+    /* font-family: "Helvetica Neue", Helvetica, Arial, Helvetica, sans-serif; */
+    /* font-size: 1.124em; */
+    /* font-weight: normal; */
+    /* } */
 
     .select2-selection__choice {
         background-color: blueviolet !important;
@@ -226,10 +226,10 @@
 <div id="muncul_loading" class=""></div>
 
 <body class="hold-transition skin-black-light <?= $this->uri->segment(2) == 'setOperatingActivity' ? '' : 'sidebar-mini' ?> <?= $this->uri->segment(2) == 'ShowDetailBudget' || $this->uri->segment(2) == 'setOperatingActivity' ||
-                                                                                                                            $this->uri->segment(2) == 'createOperating2' ||
-                                                                                                                            $this->uri->segment(2) == 'show_form_proposal_from_sales' ||
-                                                                                                                            $this->uri->segment(2) == 'showFormAddOnTop' ||
-                                                                                                                            $this->uri->segment(2) == 'show_form_create_budget' ? 'sidebar-collapse' : '' ?>" style="height: auto; min-height: 100%;">
+                                                                                                                                $this->uri->segment(2) == 'createOperating2' ||
+                                                                                                                                $this->uri->segment(2) == 'show_form_proposal_from_sales' ||
+                                                                                                                                $this->uri->segment(2) == 'showFormAddOnTop' ||
+                                                                                                                                $this->uri->segment(2) == 'show_form_create_budget' ? 'sidebar-collapse' : '' ?>" style="height: auto; min-height: 100%;">
     <div class="wrapper">
         <header class="main-header">
 
@@ -244,7 +244,7 @@
                     </span>
                 </span>
             </a>
-            
+
             <nav class="navbar navbar-static-top">
                 <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                     <span class="sr-only">Toggle navigation</span>
@@ -341,6 +341,22 @@
                             <li <?= $this->uri->segment(2) == 'showOperating' || $this->uri->segment(2) == 'lihatOperatingActivity' || $this->uri->segment(2) == 'lihatOperatingActivityDetail' ? 'class="active"' : '' ?>><a href="<?= site_url($_SESSION['page'] . '/showOperating') ?>"><i class="fa fa-circle-o"></i> Budget </a></li>
                             <!-- <li <?= $this->uri->segment(2) == 'showBudgetOperatingPurchase' ? 'class="active"' : '' ?>><a href="<?= site_url($_SESSION['page'] . '/showBudgetOperatingPurchase') ?>"><i class="fa fa-circle-o"></i> Data Budget</a></li> -->
                             <!-- <li <?= $this->uri->segment(2) == 'showPurchase' ? 'class="active"' : '' ?>><a href="<?= site_url($_SESSION['page'] . '/showPurchase') ?>"><i class="fa fa-circle-o"></i> Data Purchase</a></li> -->
+                        </ul>
+                    </li>
+                    <li class="treeview <?= $this->uri->segment(2) == 'changePasswordPage' ? 'active' : '' ?> ">
+                        <a href="#">
+                            <i class="fa fa-folder-o"></i>
+                            <span>Settings</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li <?= $this->uri->segment(2) == 'changePasswordPage' ? 'class="active"' : '' ?>>
+                                <a href="<?= site_url($_SESSION['page'] . '/changePasswordPage') ?>">
+                                    <i class="fa fa-circle-o"></i> Change User Password
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>

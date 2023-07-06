@@ -419,9 +419,9 @@ class Pic_model extends CI_Model
 
     public function getTarikanProposalExcel($post)
     {
-        $brand_code = $post['brandCode'];
-        $sql = "SELECT * FROM ProposalTarikanExcelView
-        WHERE BrandCode = '$brand_code'";
+        $user_code = $this->session->userdata('user_code');
+        $sql = "select * from ProposalTarikanExcelView
+        where UserCode = '$user_code' order by Number DESC";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -1719,5 +1719,16 @@ class Pic_model extends CI_Model
         where ProposalNumber = '$ProposalNumber'";
         $query = $this->db->query($sql);
         return $query;
+    }
+
+    public function changePassword($post)
+    {
+        $params = array(
+            'password' => $post['newPassword'],
+            'updated_date' => $this->getDate(),
+            'updated_by' => $this->session->userdata('user_code'),
+        );
+        $this->db->where('user_code', $this->session->userdata('user_code'));
+        $this->db->update('master_user', $params);
     }
 }
