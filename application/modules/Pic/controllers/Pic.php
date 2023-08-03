@@ -180,6 +180,7 @@ class Pic extends CI_Controller
 
     public function show_form_proposal_from_sales()
     {
+        // var_dump($_POST);
         $json_customer = $_POST['json_customer'];
         $array_customer = json_decode($json_customer, true);
         $customer = $this->pic_model->getCustomerByCardCode($array_customer);
@@ -223,7 +224,6 @@ class Pic extends CI_Controller
         $post = $this->input->post();
         $noDoc = $post['no_doc'];
         $result = $this->pic_model->getNoDoc($noDoc);
-
         $response = array();
 
         if ($result->num_rows() > 0) {
@@ -341,25 +341,44 @@ class Pic extends CI_Controller
             }
 
             if ($_POST['budget_source'] == 'on_top') {
+
                 // var_dump($_POST);
-                //From ON TOP
-                if ($this->pic_model->getBudgetCodeFromOnTop($_POST)->num_rows() < 1) {
+                // From ON TOP
+
+                $budgetCode = $this->pic_model->getBudgetCode($_POST);
+                // var_dump($budgetCode->row()->BudgetCode);
+
+                if ($budgetCode->num_rows() < 1) {
                     echo json_encode(['budget' => 'not_set']);
                     return false;
                 }
-                $budget_code = $this->pic_model->getBudgetCodeFromOnTop($_POST)->row()->BudgetCode;
-                $budget_code_activity = $budget_code . '/' . $_POST['activity'];
-                $get_budget_code_activity = $this->db->query("SELECT * FROM tb_budget_on_top_activity WHERE budget_code = '$budget_code' AND  budget_code_activity ='$budget_code_activity'");
-                if ($get_budget_code_activity->num_rows() < 1) {
+
+                $budgetOnTop = $this->pic_model->getBudgetOnTop($budgetCode->row()->BudgetCode);
+
+                if ($budgetOnTop->num_rows() < 1) {
                     echo json_encode(['budget_on_top' => 'not_set']);
                     return false;
                 }
-                $activity_on_top_percent = (float)$this->db->query("SELECT budget_on_top_percent FROM tb_budget_on_top_activity WHERE budget_code_activity = '$budget_code_activity'")->row()->budget_on_top_percent / 100;
+
+
+
+                $budget_code = $budgetCode->row()->BudgetCode;
+                $total_on_top = $this->pic_model->getTotalOnTop($budget_code);
+                $total_used_on_top = $this->pic_model->getTotalUsedOnTop($budget_code);
+                $balance = $total_on_top - $total_used_on_top;
+                // var_dump($balance);
+                $budget_code_activity = $budget_code . '/' . $_POST['activity'];
+                // $get_budget_code_activity = $this->db->query("SELECT * FROM tb_budget_on_top_activity WHERE budget_code = '$budget_code' AND  budget_code_activity ='$budget_code_activity'");
+                // if ($get_budget_code_activity->num_rows() < 1) {
+                //     echo json_encode(['budget_on_top' => 'not_set']);
+                //     return false;
+                // }
+                // $activity_on_top_percent = (float)$this->db->query("SELECT budget_on_top_percent FROM tb_budget_on_top_activity WHERE budget_code_activity = '$budget_code_activity'")->row()->budget_on_top_percent / 100;
                 // var_dump($activity_on_top_percent);
-                $total_budget_on_top = $this->pic_model->get_total_budget_on_top($budget_code);
-                $total_budget_on_top_allocated = $this->pic_model->get_total_budget_on_top_allocated($budget_code_activity);
-                $total_budget_on_top_booked = $this->pic_model->get_total_budget_on_top_booked($budget_code_activity);
-                $total_budget_on_top_unbooked = (float)$total_budget_on_top_allocated - (float)$total_budget_on_top_booked;
+                // $total_budget_on_top = $this->pic_model->get_total_budget_on_top($budget_code);
+                // $total_budget_on_top_allocated = $this->pic_model->get_total_budget_on_top_allocated($budget_code_activity);
+                // $total_budget_on_top_booked = $this->pic_model->get_total_budget_on_top_booked($budget_code_activity);
+                // $total_budget_on_top_unbooked = (float)$total_budget_on_top_allocated - (float)$total_budget_on_top_booked;
                 // var_dump($total_budget_on_top);
                 // var_dump($total_budget_on_top_allocated);
                 // var_dump($total_budget_on_top_booked);
@@ -367,7 +386,7 @@ class Pic extends CI_Controller
                 // var_dump($get_budget_code_activity->num_rows());
                 // var_dump($budget_code_activity);
 
-                $balance = ((float)($total_budget_on_top) * (float)$activity_on_top_percent) - (float)$total_budget_on_top_allocated;
+                // $balance = ((float)($total_budget_on_top) * (float)$activity_on_top_percent) - (float)$total_budget_on_top_allocated;
                 // var_dump($activity_on_top_percent);
                 // var_dump($activity_on_top_percent);
                 // var_dump($balance);
@@ -375,11 +394,13 @@ class Pic extends CI_Controller
                 // var_dump($total_budget_on_top_allocated);
 
                 $data = array(
-                    'balance' => ($balance),
-                    'budget_code' => $budget_code,
+                    'balance' => $balance,
+                    'budget_used' => $total_used_on_top,
+                    'operatingBudget' => $total_on_top,
+                    'budget_code' => $budgetCode->row()->BudgetCode,
                     'budget_code_activity' => $budget_code_activity,
-                    'budget_allocated' => $total_budget_on_top_unbooked,
-                    'budget_booked' => $total_budget_on_top_booked,
+                    'budget_allocated' => $total_used_on_top,
+                    'budget_booked' => $total_used_on_top,
                     'actual_budget' => 0,
                     'budget_activity' => 0,
                     'total_budget_activity' => 0,
@@ -903,6 +924,56 @@ class Pic extends CI_Controller
         $this->load->view('operating/detail_budget_v_rev', $data);
     }
 
+    public function loadCreateOnTop()
+    {
+        $budget_code = $this->input->post('budget_code');
+        $data = array(
+            'month' => $this->pic_model->functionGetMonthBudget($budget_code),
+            'budget_code' => $budget_code,
+        );
+        $this->load->view('operating/modal_create_budget_ontop', $data);
+    }
+
+    public function loadModalEditOnTop()
+    {
+        $id = $this->input->post('id');
+        $budget = $this->pic_model->getBudgetOnTopById($id);
+        // var_dump($budget->result());
+        $data = array(
+            'budget' => $budget
+        );
+        $this->load->view('operating/modal_edit_budget_ontop', $data);
+    }
+
+    public function editOnTop()
+    {
+        $post = $this->input->post();
+        $this->pic_model->editOnTop($post);
+        if ($this->db->affected_rows() > 0) {
+            $response = array('success' => true);
+        } else {
+            $response = array('success' => false);
+        }
+        echo json_encode($response);
+    }
+
+    public function loadTableOnTop()
+    {
+        $budget_code = $this->input->post('budget_code');
+        $budget = $this->pic_model->getBudgetOnTop($budget_code);
+        $data = array(
+            'budget_code' => $budget_code,
+            'budget' => $budget
+        );
+        $this->load->view('operating/table_budget_ontop', $data);
+    }
+
+    public function loadTableOnTopResume()
+    {
+        $data = array();
+        $this->load->view('operating/table_budget_ontop_resume', $data);
+    }
+
     public function getItem()
     {
         $item_code = implode("','", $_POST["item_code"]);
@@ -911,6 +982,22 @@ class Pic extends CI_Controller
             'item' => $item->result(),
         ];
         echo json_encode($params);
+    }
+
+    public function createBudgetOnTop()
+    {
+        $post = $this->input->post();
+        $create = $this->pic_model->createBudgetOnTop($post);
+        if ($this->db->affected_rows() > 0) {
+            $response = array(
+                'success' => true
+            );
+        } else {
+            $response = array(
+                'success' => false
+            );
+        }
+        echo json_encode($response);
     }
 
     public function showModalItemFromPenjualan()

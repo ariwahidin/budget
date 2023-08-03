@@ -300,49 +300,73 @@ class Pic_model extends CI_Model
         //     $result = $this->db->query($sql);
         // }
 
-        $sql = "select * from 
+        // $sql = "select * from 
+        // (
+        // select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode,
+        // ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, 
+        // Barcode collate SQL_Latin1_General_CP850_CI_AS as Barcode,
+        // CodeBrand as CodeBrand,
+        // BRAND collate SQL_Latin1_General_CP850_CI_AS as BrandName, 
+        // SUM(Quantity) as Quantity, 
+        // AVG(Price) as Price 
+        // from tb_sales 
+        // WHERE CardCode collate SQL_Latin1_General_CP850_CI_AS IN (select value FROM  STRING_SPLIT('$customer', ','))
+        // AND [Month] between '$start' and '$end'
+        // AND CodeBrand = '$brand' 
+        // group by ItemCode, ItemName, Barcode, CodeBrand, BRAND 
+        // union
+        // select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode,
+        // ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, 
+        // FRGNNAME collate SQL_Latin1_General_CP850_CI_AS as Barcode,
+        // BrandCode as CodeBrand,
+        // BrandName collate SQL_Latin1_General_CP850_CI_AS as BrandName, 
+        // '0' as Quantity,
+        // Price 
+        // from tb_item 
+        // WHERE ItemCode collate SQL_Latin1_General_CP850_CI_AS NOT IN(
+        // select distinct ItemCode from tb_sales 
+        // WHERE CardCode  IN (select value FROM  STRING_SPLIT('$customer', ',')) 
+        // AND [Month] between '$start' and '$end'
+        // AND CodeBrand = '$brand'
+        // )
+        // AND tb_item.BrandCode = '$brand'
+        // )ss";
+
+        $sql = "select * from
         (
-        select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode,
+        select t2.ItemCode, t2.ItemName, t2.FrgnName as Barcode, t2.BrandCode, t3.BrandName,
+        case when ss.Quantity IS NULL then 0 else ss.Quantity end AS Quantity, t2.Price  
+        from ( select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode, 
         ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, 
-        Barcode collate SQL_Latin1_General_CP850_CI_AS as Barcode,
-        CodeBrand as CodeBrand,
-        BRAND collate SQL_Latin1_General_CP850_CI_AS as BrandName, 
-        SUM(Quantity) as Quantity, 
-        AVG(Price) as Price 
-        from tb_sales 
-        WHERE CardCode collate SQL_Latin1_General_CP850_CI_AS IN (select value FROM  STRING_SPLIT('$customer', ','))
-        AND [Month] between '$start' and '$end'
-        AND CodeBrand = '$brand' 
-        group by ItemCode, ItemName, Barcode, CodeBrand, BRAND 
-        union
-        select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode,
-        ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, 
-        FRGNNAME collate SQL_Latin1_General_CP850_CI_AS as Barcode,
-        BrandCode as CodeBrand,
-        BrandName collate SQL_Latin1_General_CP850_CI_AS as BrandName, 
-        '0' as Quantity,
-        Price 
-        from tb_item 
-        WHERE ItemCode collate SQL_Latin1_General_CP850_CI_AS NOT IN(
-        select distinct ItemCode from tb_sales 
-        WHERE CardCode  IN (select value FROM  STRING_SPLIT('$customer', ',')) 
-        AND [Month] between '$start' and '$end'
-        AND CodeBrand = '$brand'
-        )
-        AND tb_item.BrandCode = '$brand'
-        )ss";
+        Barcode collate SQL_Latin1_General_CP850_CI_AS as Barcode, CodeBrand as CodeBrand, 
+        BRAND collate SQL_Latin1_General_CP850_CI_AS as BrandName, SUM(Quantity) as Quantity, 
+        AVG(Price) as Price from tb_sales 
+        WHERE CardCode collate SQL_Latin1_General_CP850_CI_AS IN (select value FROM STRING_SPLIT('$customer', ',')) 
+        AND [Month] between '$start' and '$end' AND CodeBrand = '$brand' group by ItemCode, ItemName, Barcode, 
+        CodeBrand, BRAND union select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode, 
+        ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, FRGNNAME collate SQL_Latin1_General_CP850_CI_AS as Barcode, 
+        BrandCode as CodeBrand, BrandName collate SQL_Latin1_General_CP850_CI_AS as BrandName, '0' as Quantity, Price 
+        from tb_item WHERE ItemCode collate SQL_Latin1_General_CP850_CI_AS NOT IN( select distinct ItemCode from tb_sales 
+        WHERE CardCode IN (select value FROM STRING_SPLIT('$customer', ',')) AND [Month] between '$start' and '$end' 
+        AND CodeBrand = '$brand' ) 
+        AND tb_item.BrandCode = '$brand' )ss 
+        --order by ss.Quantity DESC
+        RIGHT JOIN m_item t2 ON ss.ItemCode = t2.ItemCode 
+        INNER JOIN m_brand t3 ON t2.BrandCode = t3.BrandCode
+        where t2.BrandCode = '$brand'
+        )xx";
 
         if ($item != null) {
-            $sql .= " WHERE ss.ItemCode IN (select value FROM  STRING_SPLIT('$item', ','))";
+            $sql .= " WHERE xx.ItemCode IN (select value FROM  STRING_SPLIT('$item', ','))";
         }
 
         if (count($barcode) > 0 || $barcode != null) {
             $barcode = implode(",", $barcode);
             // var_dump($barcode);
-            $sql .= " WHERE ss.Barcode NOT IN (select value FROM  STRING_SPLIT('$barcode', ','))";
+            $sql .= " WHERE xx.Barcode NOT IN (select value FROM  STRING_SPLIT('$barcode', ','))";
         }
 
-        $sql .= " order by ss.Quantity DESC";
+        $sql .= " order by xx.Quantity DESC";
         $result = $this->db->query($sql);
         // print_r($sql);
         // die;
@@ -497,17 +521,92 @@ class Pic_model extends CI_Model
         $query = $this->db->query($sql);
         return $query;
     }
-    public function getBudgetCodeFromOnTop($post)
+
+    public function functionGetMonthBudget($budget_code)
     {
-        $brand_code = $post['brand'];
-        $end_date = $post['end_date'];
-        $activity = $post['activity'];
-        $sql = "SELECT t1.brand_code, t1.budget_code AS BudgetCode, t1.[month], t2.id_activity as ActivityCode FROM tb_budget_on_top t1
-        INNER JOIN tb_budget_on_top_activity t2 on t1.budget_code = t2.budget_code 
-        WHERE t1.brand_code = '$brand_code' AND year([month]) = year('$end_date') 
-        AND month([Month]) = month('$end_date') AND t2.id_activity = '$activity '";
+        $sql = "select [Month] from tb_operating where BudgetCode = '$budget_code'
+        order by [Month] asc";
         $query = $this->db->query($sql);
         return $query;
+    }
+
+    public function getBudgetOnTopById($id)
+    {
+        $sql = "select * from tb_budget_on_top where id = '$id'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function editOnTop($post)
+    {
+        $data = array(
+            'budget_on_top' => $post['newOnTop'],
+            'update_by' => $this->session->userdata('user_code'),
+            'update_date' => $this->getDate(),
+        );
+        $this->db->where('id', $post['id']);
+        $this->db->update('tb_budget_on_top', $data);
+    }
+
+    public function getBudgetOnTop($budgetCode)
+    {
+        // $brand_code = $post['brand'];
+        // $end_date = $post['end_date'];
+        // $activity = $post['activity'];
+        // var_dump($post);
+
+        $sql = "select * from tb_budget_on_top where budget_code = '$budgetCode'";
+        $query = $this->db->query($sql);
+        return $query;
+
+
+
+
+
+        // $sql = "SELECT t1.brand_code, t1.budget_code AS BudgetCode, t1.[month], t2.id_activity as ActivityCode FROM tb_budget_on_top t1
+        // INNER JOIN tb_budget_on_top_activity t2 on t1.budget_code = t2.budget_code 
+        // WHERE t1.brand_code = '$brand_code' AND year([month]) = year('$end_date') 
+        // AND month([Month]) = month('$end_date') AND t2.id_activity = '$activity '";
+        // $query = $this->db->query($sql);
+        // return $query;
+    }
+
+    public function getTotalOnTop($budgetCode)
+    {
+        $sql = "SELECT SUM(budget_on_top) as totalOnTop FROM tb_budget_on_top WHERE budget_code = '$budgetCode'";
+        $query = $this->db->query($sql);
+        return $query->row()->totalOnTop;
+    }
+
+    public function getTotalUsedOnTop($budetCode)
+    {
+        $sql = "select CASE WHEN sum(TotalCosting) is null THEN 0 ELSE sum(TotalCosting) END as TotalCostingOnTop
+        from tb_operating_proposal 
+        where BudgetCode = '$budetCode' and Budget_type = 'on_top'";
+        $query = $this->db->query($sql);
+        return $query->row()->TotalCostingOnTop;
+    }
+
+    public function createBudgetOnTop($post)
+    {
+        // var_dump($post);
+        $budget_code = $post['budget_code'];
+        $brand_code = $this->db->query("select distinct BrandCode from tb_operating where BudgetCode = '$budget_code'")->row()->BrandCode;
+        $data = array();
+        for ($i = 0; $i < count($post['month']); $i++) {
+            array_push(
+                $data,
+                array(
+                    'brand_code' => $brand_code,
+                    'budget_code' => $budget_code,
+                    'month' => $post['month'][$i],
+                    'budget_on_top' => $post['budget'][$i],
+                    'created_by' => $this->session->userdata('user_code'),
+                    'created_date' => $this->getDate()
+                )
+            );
+        }
+        $this->db->insert_batch('tb_budget_on_top', $data);
     }
 
     public function getYTDBudgetActivity($budget_code, $end_date_proposal)
@@ -530,7 +629,7 @@ class Pic_model extends CI_Model
 
     public function getYTDAllocatedBudget($budget_code_activity)
     {
-        $sql = "SELECT SUM(AllocatedBudget) AS YtdAllocatedBudget FROM tb_operating_proposal WHERE BudgetCodeActivity = '$budget_code_activity'";
+        $sql = "SELECT SUM(AllocatedBudget) AS YtdAllocatedBudget FROM tb_operating_proposal WHERE BudgetCodeActivity = '$budget_code_activity' and Budget_type = 'operating'";
         $query = $this->db->query($sql)->row()->YtdAllocatedBudget;
         if ($query == NULL) {
             return 0;
@@ -605,12 +704,13 @@ class Pic_model extends CI_Model
         $username = $_SESSION['username'];
         $user_code = $_SESSION['user_code'];
         $date = $this->getDate();
-        $budget_code_activity = $post['budget_code'];
-        if ($post['budget_type'] == 'on_top') {
-            $budget_code = $this->db->query("SELECT budget_code FROM tb_budget_on_top_activity WHERE budget_code_activity = '$budget_code_activity'")->row()->budget_code;
-        } else {
-            $budget_code = $this->db->query("SELECT BudgetCode FROM tb_operating_activity WHERE BudgetCodeActivity = '$budget_code_activity'")->row()->BudgetCode;
-        }
+        $budget_code = $post['budget_code'];
+        $budget_code_activity = $post['budget_code_activity'];
+        // if ($post['budget_type'] == 'on_top') {
+        //     $budget_code = $this->db->query("SELECT budget_code FROM tb_budget_on_top_activity WHERE budget_code_activity = '$budget_code_activity'")->row()->budget_code;
+        // } else {
+        //     $budget_code = $this->db->query("SELECT BudgetCode FROM tb_operating_activity WHERE BudgetCodeActivity = '$budget_code_activity'")->row()->BudgetCode;
+        // }
         //insert proposal
         $params = array(
             'Number' => $number,
@@ -1218,7 +1318,7 @@ class Pic_model extends CI_Model
 
     public function getBudgetUsed($budget_code)
     {
-        $sql = "select sum(TotalCosting) as TotalCosting from tb_operating_proposal where BudgetCode = '$budget_code'";
+        $sql = "select sum(TotalCosting) as TotalCosting from tb_operating_proposal where BudgetCode = '$budget_code' and Budget_type = 'operating'";
         $query = $this->db->query($sql);
         $totalCosting = $query->row()->TotalCosting;
         if (is_null($totalCosting)) {
@@ -1229,7 +1329,7 @@ class Pic_model extends CI_Model
 
     public function getBudgetAllocated($budgetCode)
     {
-        $sql = "select SUM(Budget_allocated) as budget_total_allocated from tb_operating_proposal where BudgetCode = '$budgetCode'";
+        $sql = "select SUM(Budget_allocated) as budget_total_allocated from tb_operating_proposal where BudgetCode = '$budgetCode'and Budget_type = 'operating'";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -1277,7 +1377,7 @@ class Pic_model extends CI_Model
 
     public function get_detail_budget($budget_code)
     {
-        $sql = "SELECT *, [PrincipalAnpIDR] AS TargetAnp FROM tb_operating WHERE BudgetCode = '$budget_code'";
+        $sql = "SELECT *, [PrincipalAnpIDR] AS TargetAnp FROM tb_operating WHERE BudgetCode = '$budget_code' ORDER BY [Month] ASC";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -1288,6 +1388,8 @@ class Pic_model extends CI_Model
         $query = $this->db->query($sql);
         return $query->row()->TotalAnp;
     }
+
+
 
     public function getTotalTarget($budget_code)
     {
@@ -1397,23 +1499,23 @@ class Pic_model extends CI_Model
         return $query;
     }
 
-    public function simpanBudgetOnTop($post)
-    {
-        $budget_code = $_POST['budget_code'];
-        // $cek_ontop_exist = $this->db->query("SELECT * FROM tb_budget_on_top WHERE budget_code = '$budget_code'")->num_rows();
-        for ($i = 0; $i < count($post['month']); $i++) {
-            $params = array(
-                'brand_code' => $this->getBrandBudget($budget_code)->row()->BrandCode,
-                'brand_name' => $this->getBrandBudget($budget_code)->row()->BrandName,
-                'budget_code' => $budget_code,
-                'month' => $post['month'][$i],
-                'budget_on_top' => (float)str_replace(',', '', $post['on_top'][$i]),
-                'created_by' => $_SESSION['username'],
-                'created_date' => $this->getDate(),
-            );
-            $this->db->insert('tb_budget_on_top', $params);
-        }
-    }
+    // public function simpanBudgetOnTop($post)
+    // {
+    //     $budget_code = $_POST['budget_code'];
+    //     // $cek_ontop_exist = $this->db->query("SELECT * FROM tb_budget_on_top WHERE budget_code = '$budget_code'")->num_rows();
+    //     for ($i = 0; $i < count($post['month']); $i++) {
+    //         $params = array(
+    //             'brand_code' => $this->getBrandBudget($budget_code)->row()->BrandCode,
+    //             'brand_name' => $this->getBrandBudget($budget_code)->row()->BrandName,
+    //             'budget_code' => $budget_code,
+    //             'month' => $post['month'][$i],
+    //             'budget_on_top' => (float)str_replace(',', '', $post['on_top'][$i]),
+    //             'created_by' => $_SESSION['username'],
+    //             'created_date' => $this->getDate(),
+    //         );
+    //         $this->db->insert('tb_budget_on_top', $params);
+    //     }
+    // }
 
     public function get_total_budget_on_top($budget_code)
     {

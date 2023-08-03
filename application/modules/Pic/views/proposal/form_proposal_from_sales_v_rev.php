@@ -1113,7 +1113,8 @@ $group_code = implode("','", $GroupCode);
         var activity = '<?= $_POST['activity'] ?>';
         var start_date = '<?= $_POST['start_date'] ?>';
         var end_date = '<?= $_POST['end_date'] ?>';
-        var budget_code = '<?= $_POST['budget_code_activity'] ?>';
+        var budget_code = '<?= $_POST['budget_code'] ?>';
+        var budget_code_activity = '<?= $_POST['budget_code_activity'] ?>';
         var ims_saldo = '<?= str_replace(',', '', $_POST['ims_value']) ?>';
         var budget_saldo = '<?= (float)str_replace(',', '', $_POST['balance_budget']) ?>';
         var avg_sales_type = '<?= $_POST['avg_sales'] ?>';
@@ -1310,6 +1311,7 @@ $group_code = implode("','", $GroupCode);
                     start_date,
                     end_date,
                     budget_code,
+                    budget_code_activity,
                     customer_code,
                     avg_sales_type,
                     item_code,

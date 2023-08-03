@@ -8,20 +8,6 @@
 // var_dump($_SESSION['page']);
 ?>
 <?php $this->view('header') ?>
-<style>
-    .modal-dialog {
-        width: 100%;
-        /* height: 100%; */
-        /* margin: 0; */
-        /* padding: 0; */
-    }
-
-    .modal-content {
-        height: auto;
-        min-height: 100%;
-        /* border-radius: 0; */
-    }
-</style>
 <section class="content-wrapper">
 
     <section class="content-header">
@@ -40,7 +26,7 @@
             <div class="col-md-12">
                 <div class="box box-primary">
                     <div class="box-header">
-                        <table>
+                        <table style="font-size:12px;">
                             <tr>
                                 <td>Brand</td>
                                 <td>&nbsp;:&nbsp; <?= getBrandName($budget_detail->row()->BrandCode) ?></td>
@@ -116,7 +102,7 @@
                         </table>
                     </div>
                     <div class="box-body table-responsive">
-                        <table class="table table-responsive table-bordered table-striped">
+                        <table class="table table-responsive table-bordered table-striped" style="font-size:12px;">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -180,18 +166,14 @@
                 </div>
             </div>
         </div>
-    </section>
-
-    <section class="content-header">
-        <h4>Activity</h4>
-    </section>
-
-    <section class="content">
         <div class="row">
             <div class="col-md-8">
                 <div class="box box-primary">
+                    <div class="box-header">
+                        <b>Activity A&P</b>
+                    </div>
                     <div class="box-body table-responsive">
-                        <table class="table table-responsive table-bordered table-striped" id="table1">
+                        <table class="table table-responsive table-bordered table-striped" style="font-size:12px" id="table1">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -261,408 +243,21 @@
                 </div>
             </div>
         </div>
+
+        <!-- On Top -->
+        <div class="row">
+            <div class="col col-md-4" id="divOntop">
+            </div>
+            <div class="col col-md-3" id="divOnTopResume">
+            </div>
+        </div>
     </section>
-
-    <!-- <section class="content-header">
-        <h1>Sales</h1>
-    </section> -->
-
-    <!-- <section class="content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-body table-responsive">
-                        <table class="table table-responsive table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>YTD</th>
-                                    <?php foreach ($budget_detail->result() as $data) { ?>
-                                        <th><?= date('M-Y', strtotime($data->Month)) ?></th>
-                                    <?php } ?>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Actual Sales</td>
-                                    <td><?= number_format(getTotalActualSales($budget_detail->row()->BrandCode, $budget_detail->result()[0]->Month, $budget_detail->result()[11]->Month)) ?></td> -->
-    <?php foreach ($budget_detail->result() as $data) { ?>
-        <!-- <td><?= $data->BrandCode . '#' . $data->Month ?></td> -->
-        <!-- <td><?= number_format(getActualSalesPerMonth($data->BrandCode, $data->Month)) ?></td>
-                                    <?php } ?>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
-
-        <!-- <section class="content-header">
-        <h1>Budget On Top
-            <?php if (get_on_top_is_exists($budget_code)->num_rows() < 1) { ?>
-                <a class="btn btn-primary btn-xs" href="<?= base_url($_SESSION['page'] . '/showFormAddOnTop/' . $budget_code); ?>">Add Budget On Top</a>
-            <?php } ?>
-            <?php if (get_on_top_activity_is_exists($budget_code)->num_rows() > 1) { ?>
-                <button class="btn btn-warning btn-xs" data-toggle="modal" data-target="#exampleModal">Edit</button>
-            <?php } ?>
-            <?php if (get_on_top_is_exists($budget_code)->num_rows() > 1 && get_on_top_activity_is_exists($budget_code)->num_rows() < 1) { ?>
-                <a href="<?= base_url($_SESSION['page'] . '/set_on_top_activity/' . $budget_code) ?>" class="btn btn-primary btn-xs">Add Activity</a>
-            <?php } ?>
-        </h1>
-    </section> -->
-
-        <section class="content">
-            <!-- <div class="row">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-body table-responsive">
-                        <table class="table table-responsive table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Total</th>
-                                    <?php foreach ($budget_detail->result() as $data) { ?>
-                                        <th><?= date('M-Y', strtotime($data->Month)) ?></th>
-                                    <?php } ?>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Budget On Top</td>
-                                    <td><?= number_format(get_total_on_top($budget_code)) ?></td>
-                                    <?php foreach (budget_on_top($budget_code)->result() as $data) { ?>
-                                        <td><?= number_format($data->budget_on_top) ?></td>
-                                    <?php } ?>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2 class="modal-title" id="exampleModalLabel">Update Budget On Top</h2>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body table-responsive">
-                            <form id="form_edit_on_top">
-                                <table class="table table-responsive table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Total</th>
-                                            <?php foreach ($budget_detail->result() as $data) { ?>
-                                                <th><?= date('M-Y', strtotime($data->Month)) ?></th>
-                                            <?php } ?>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td style="padding : 0px !important">
-                                                <input id="total_on_top" class="form-control" type="text" value="<?= number_format(get_total_on_top($budget_code)) ?>" readonly>
-                                            </td>
-                                            <?php foreach (budget_on_top($budget_code)->result() as $data) { ?>
-
-                                                <input name="budget_code[]" type="hidden" value="<?= $data->budget_code ?>">
-                                                <input name="month[]" type="hidden" value="<?= $data->month ?>">
-                                                <td style="padding : 0px !important">
-                                                    <input onkeypress="javascript:return isNumber(event)" onkeyup="reset_to_zero(this);formatNumber(this); calculate_total_on_top();" type="text" name="budget_on_top[]" class="form-control on_top" value="<?= number_format($data->budget_on_top) ?>">
-                                                </td>
-                                            <?php } ?>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button onclick="edit_on_top()" type="button" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- <section class="content-header">
-        <h1>Target Activity</h1>
-    </section>
-
-    <section class="content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-header">
-                    </div>
-                    <div class="box-body table-responsive">
-                        <table class="table table-responsive table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Activity (<?= get_target_activity_percent($budget_code) ?>)</th>
-                                    <th>Total</th>
-                                    <?php foreach ($budget_detail->result() as $data) { ?>
-                                        <th><?= date('M-Y', strtotime($data->Month)) ?></th>
-                                    <?php } ?>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($activity->result() as $member_activity) { ?>
-                                    <tr>
-                                        <td><?= $member_activity->ActivityName ?> (<?= round(getPercentBudgetActivity($member_activity->BudgetCodeActivity) * 100) ?>%)</td>
-                                        <td><?= number_format(getTotalOperatingActivity($member_activity->BudgetCodeActivity)) ?></td>
-                                        <?php foreach ($budget_detail->result() as $member_budget) { ?>
-                                            <td>
-                                                <?php
-                                                $brand = $member_activity->BrandCode;
-                                                $activity_code = $member_activity->ActivityCode;
-                                                $month = $member_budget->Month;
-                                                ?>
-                                                <?= number_format(getOperatingActivity($brand, $activity_code, $month)) ?>
-                                            </td>
-                                        <?php } ?>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
-
-        <!-- <section class="content-header">
-        <h1>Target Activity On Top</h1>
-    </section>
-
-    <section class="content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-header">
-                    </div>
-                    <div class="box-body table-responsive">
-                        <table class="table table-responsive table-bordered table-striped" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>Activity (<?= get_on_top_target_activity_percent($budget_code) ?>)</th>
-                                    <th>Total</th>
-                                    <?php foreach ($budget_detail->result() as $data) { ?>
-                                        <th><?= date('M-Y', strtotime($data->Month)) ?></th>
-                                    <?php } ?>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach (budget_on_top_activity($budget_code)->result() as $on_top_activity) { ?>
-                                    <tr>
-                                        <td><?= getActivityName($on_top_activity->id_activity) ?> (<?= $on_top_activity->budget_on_top_percent ?>%)</td>
-                                        <td><?= number_format($on_top_activity->on_top_activity) ?></td>
-                                        <?php foreach (get_on_top_per_activity_permonth($on_top_activity->budget_code_activity)->result() as $data) { ?>
-                                            <td><?= number_format($data->on_top_activity) ?></td>
-                                        <?php } ?>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
-
-        <!-- <section class="content-header">
-        <h1>A&P Tracking</h1>
-    </section>
-
-    <section class="content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-body table-responsive">
-                        <table class="table table-responsive table-striped" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>A&P Tracking</th>
-                                    <?php foreach (getMonthBudget($budget_code)->result() as $mth) { ?>
-                                        <th><?= date('M-Y', strtotime($mth->month)) ?></th>
-                                    <?php } ?>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>A&P Actual</td>
-                                    <?php foreach (getMonthBudget($budget_code)->result() as $mth) { ?>
-                                        <td><?= number_format(getActualPurchasePerMonth($brand_code, $mth->month) * $target_anp) ?></td>
-                                    <?php } ?>
-                                </tr>
-                                <tr>
-                                    <td>A&P On Top</td>
-                                    <?php foreach (getMonthBudget($budget_code)->result() as $mth) { ?>
-                                        <td><?= number_format(get_budget_on_top_permonth($brand_code, $mth->month)) ?></td>
-                                    <?php } ?>
-                                </tr>
-                                <tr>
-                                    <td>IMS Actual</td>
-                                    <?php foreach (getMonthBudget($budget_code)->result() as $mth) { ?>
-                                        <td><?= number_format(getActualIMSPermonth($brand_code, $mth->month, $ims_percent, $is_ims)) ?></td>
-                                    <?php } ?>
-                                </tr>
-                                <tr>
-                                    <td>Operating Budget</td>
-                                    <?php foreach (getMonthBudget($budget_code)->result() as $mth) { ?>
-                                        <td><?= number_format(get_operating_permonth($brand_code, $mth->month)) ?></td>
-                                    <?php } ?>
-                                </tr> -->
-        <!-- <tr>
-                                    <td>A&P Booked</td>
-                                    <?php foreach (getMonthBudget($budget_code)->result() as $mth) { ?>
-                                        <td><?= number_format(get_anp_booked_permonth($budget_code, $mth->month)) ?></td>
-                                    <?php } ?>
-                                </tr> -->
-        <!-- </tbody>
-                        </table>
-                    </div> -->
-        <!-- <div class="box-footer">
-                        <div class="col-md-3">
-                            <table class="table table-hover">
-                                <tr>
-                                    <td> YTD A&P Actual <b>(<?= date('M-Y') ?>)</b></td>
-                                    <td>&nbsp;:&nbsp; 12.000.000</td>
-                                </tr>
-                                <tr>
-                                    <td> YTD On Top <b>(<?= date('M-Y') ?>)</b></td>
-                                    <td>&nbsp;:&nbsp; 15.000.000 </td>
-                                </tr>
-                                <tr>
-                                    <td> YTD IMS Actual <b>(<?= date('M-Y') ?>)</b></td>
-                                    <td>&nbsp;:&nbsp; 15.000.000 </td>
-                                </tr>
-                                <tr>
-                                    <td> YTD Opertaing <b>(<?= date('M-Y') ?>)</b></td>
-                                    <td>&nbsp;:&nbsp; 15.000.000 </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-md-4">
-                            <table>
-                                <tr>
-                                    <td> Total A&P Actual</td>
-                                    <td>&nbsp;:&nbsp; 12.000.000</td>
-                                </tr>
-                                <tr>
-                                    <td> Total On Top</td>
-                                    <td>&nbsp;:&nbsp; 15.000.000 </td>
-                                </tr>
-                                <tr>
-                                    <td> Total IMS Actual</td>
-                                    <td>&nbsp;:&nbsp; 15.000.000 </td>
-                                </tr>
-                                <tr>
-                                    <td> Total Opertaing </td>
-                                    <td>&nbsp;:&nbsp; 15.000.000 </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div> -->
-        <!-- </div>
-            </div>
-        </div>
-    </section> -->
-
-
-
-        <!-- <section class="content-header">
-        <h1>Proposal Tracking On Actual Purchase</h1>
-    </section>
-
-    <section class="content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-body table-responsive">
-                        <table class="table table-responsive table-bordered table-striped" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>Activity (<?= get_target_activity_percent($budget_code) ?>)</th>
-                                    <th>Budget <?= date('Y', strtotime($budget_detail->result()[11]->Month)) ?></th>
-                                    <th>YTD <?= date('M-Y') ?></th>
-                                    <th>Balance</th>
-                                    <?php foreach ($budget_detail->result() as $data) { ?>
-                                        <th><?= date('M-Y', strtotime($data->Month)) ?></th>
-                                    <?php } ?>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($activity->result() as $member_activity) { ?>
-                                    <tr>
-                                        <td width="auto"><?= $member_activity->ActivityName ?> (<?= round(getPercentBudgetActivity($member_activity->BudgetCodeActivity) * 100) ?>%)</td>
-                                        <td><?= number_format($total_actual_anp * getPercentBudgetActivity($member_activity->BudgetCodeActivity)) ?></td>
-                                        <td><?= number_format(getTotalBudgetBookedActivity($member_activity->BudgetCodeActivity)) ?></td>
-                                        <td> <?= number_format(($total_actual_anp * getPercentBudgetActivity($member_activity->BudgetCodeActivity)) - (getTotalBudgetBookedActivity($member_activity->BudgetCodeActivity))) ?></td>
-                                        <?php foreach ($budget_detail->result() as $member_budget) { ?>
-                                            <td><?= number_format(getBudgetBookedActivityPermonth($member_activity->BudgetCodeActivity, $member_budget->Month)) ?></td>
-                                        <?php } ?>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
-
-        <!-- <section class="content-header">
-        <h1>Proposal Tracking On Top</h1>
-    </section> -->
-
-        <!-- <section class="content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-body table-responsive">
-                        <table class="table table-responsive table-bordered table-striped" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>Activity (<?= get_on_top_target_activity_percent($budget_code) ?>)</th>
-                                    <th>Budget <?= date('Y', strtotime($budget_detail->result()[11]->Month)) ?></th>
-                                    <th>YTD <?= date('M-Y') ?></th>
-                                    <th>Balance</th>
-                                    <?php foreach ($budget_detail->result() as $data) { ?>
-                                        <th><?= date('M-Y', strtotime($data->Month)) ?></th>
-                                    <?php } ?>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach (budget_on_top_activity($budget_code)->result() as $on_top_activity) { ?>
-                                    <tr>
-                                        <td><?= getActivityName($on_top_activity->id_activity) ?> (<?= $on_top_activity->budget_on_top_percent ?>%)</td>
-                                        <td><?= number_format((float)get_total_on_top($budget_code) * ((float)$on_top_activity->budget_on_top_percent / 100)) ?></td>
-                                        <td><?= number_format(booked_on_top_per_activity($on_top_activity->budget_code_activity)) ?></td>
-                                        <td><?= number_format(((float)get_total_on_top($budget_code) * ((float)$on_top_activity->budget_on_top_percent / 100) - (booked_on_top_per_activity($on_top_activity->budget_code_activity)))) ?></td>
-                                        <?php foreach (budget_on_top($budget_code)->result() as $otp) { ?>
-                                            <td><?= number_format(get_on_top_booked_per_activity_permonth($budget_code, $on_top_activity->id_activity, $otp->month)) ?></td>
-                                        <?php } ?>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
-
 </section>
+<div id="modalLoadOnTop"></div>
+<div id="modalLoadEditOnTop"></div>
 <?php $this->view('footer') ?>
 <script type="text/javascript">
     $(document).ready(function() {
-
         $('.table-target-activity').DataTable({
             // scrollX: true,
         })
@@ -670,7 +265,142 @@
         $('.table-tracking-proposal').DataTable({
             // scrollX: true,
         });
+
+        $('#divOntop').load("<?= base_url($_SESSION['page']) ?>/loadTableOnTop", {
+            budget_code: "<?= $budget_code ?>"
+        })
+
+        $('#divOnTopResume').load("<?= base_url($_SESSION['page']) ?>/loadTableOnTopResume", {
+            budget_code: "<?= $budget_code ?>"
+        })
     });
+
+    function loadModalEditOnTop(button) {
+        const id = $(button).data('id')
+        $('#modalLoadEditOnTop').load("<?= base_url($_SESSION['page']) ?>/loadModalEditOnTop", {
+            id
+        }, function() {
+            $('#modal-edit-on-top').modal('show')
+        })
+    }
+
+    function editOnTop(button) {
+        const id = $(button).data('id')
+        var oldOnTop = $('#old-on-top').val()
+        var newOnTop = $('#new-on-top').val()
+        if (parseFloat(newOnTop) > parseFloat(oldOnTop)) {
+            $.ajax({
+                url: "<?= base_url($_SESSION['page']) ?>/editOnTop",
+                method: "POST",
+                data: {
+                    id,
+                    oldOnTop,
+                    newOnTop
+                },
+                dataType: "JSON",
+                success: function(response) {
+                    if (response.success == true) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Berhasil edit data',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function() {
+                            $('#divOntop').load("<?= base_url($_SESSION['page']) ?>/loadTableOnTop", {
+                                budget_code: "<?= $budget_code ?>"
+                            })
+                            $('#modal-edit-on-top').modal('hide')
+                        })
+                    } else {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Gagal edit data',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                }
+            })
+        } else {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'New value harus lebih besar',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    }
+
+    function loadModalCreateOnTop(button) {
+        const budget_code = $(button).data('budget-code')
+        $('#modalLoadOnTop').load("<?= base_url($_SESSION['page']) ?>/loadCreateOnTop", {
+            budget_code
+        }, function() {
+            $('#modal-create-on-top').modal('show')
+        })
+    }
+
+    function createOnTop(button) {
+        var budgetData = {};
+        // Loop melalui setiap inputan dengan kelas "budget"
+        var month = []
+        var budget = []
+        $(".budget").each(function() {
+            var data_month = $(this).data("month"); // Mendapatkan bulan dari atribut data-month
+            var data_budget = $(this).val(); // Mendapatkan nilai budget dari inputan
+            month.push(data_month)
+            budget.push(data_budget)
+            // budgetData[month] = budget; // Menambahkan data budget ke objek budgetData
+        });
+
+        budgetData["month"] = month
+        budgetData["budget"] = budget
+        budgetData["budget_code"] = $(button).data('budget-code')
+        // Melakukan permintaan AJAX untuk mengirim data ke server
+        $.ajax({
+            url: "<?= base_url($_SESSION['page']) ?>/createBudgetOnTop", // Ganti dengan URL server Anda
+            method: "POST", // Jika ingin menggunakan metode POST
+            data: budgetData,
+            dataType: "json", // Tipe data yang diharapkan dari respons server (json dalam contoh ini)
+            success: function(response) {
+                // Fungsi ini akan dipanggil ketika respons dari server diterima dengan sukses
+                // Tangani respons dari server jika perlu
+                //console.log(response);
+                if (response.success == true) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Data berhasil Disimpan',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then((result) => {
+                        $('#divOntop').load("<?= base_url($_SESSION['page']) ?>/loadTableOnTop", {
+                            budget_code: "<?= $budget_code ?>"
+                        })
+                        $('#modal-create-on-top').modal('hide')
+                    })
+                } else {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Gagal simpan data',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            },
+            error: function(xhr, status, error) {
+                // Fungsi ini akan dipanggil jika ada kesalahan saat melakukan permintaan AJAX
+                // Tangani kesalahan di sini, jika perlu
+                //console.error("Kesalahan saat mengirim data ke server:", error);
+            }
+        });
+    }
+
+    $(document).ready();
 
     function calculate_total_on_top() {
         var input_total_on_top = document.getElementById('total_on_top');

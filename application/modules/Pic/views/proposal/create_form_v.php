@@ -108,7 +108,7 @@
                                         <select onchange="getBudget();" name="budget_source" id="budget_source" class="form-control" required>
                                             <option value="">--Pilih--</option>
                                             <option value="anp">A&P</option>
-                                            <!-- <option value="on_top">On Top</option> -->
+                                            <option value="on_top">On Top</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -128,6 +128,7 @@
                                     <td>
                                         <input type="text" class="form-control" name="balance_budget" value="0" id="balance_budget" readonly required>
                                         <input type="hidden" id="balance_operating" require>
+                                        <input type="hidden" name="budget_code" id="budget_code" required>
                                         <input type="hidden" name="budget_code_activity" id="budget_code_activity" required>
                                         <input type="hidden" name="total_budget_activity" id="total_budget_activity" required>
                                         <input type="hidden" name="total_operating" id="total_operating" required>
@@ -305,6 +306,7 @@
         var input_budget_booked = document.getElementById('budget_booked').value = '';
         var input_budget_activity = document.getElementById('budget_activity').value = '';
         var input_budget_actual = document.getElementById('budget_actual').value = '';
+        var input_budget_code = document.getElementById('budget_code').value = '';
         var input_budget_code_activity = document.getElementById('budget_code_activity').value = '';
         var input_total_budget_activity = document.getElementById('total_budget_activity').value = '';
         var input_total_operating = document.getElementById('total_operating').value = '';
@@ -336,6 +338,7 @@
         var input_allocated_budget = document.getElementById('allocated_budget');
         var input_budget_activity = document.getElementById('budget_activity');
         var input_budget_actual = document.getElementById('budget_actual');
+        var input_budget_code = document.getElementById('budget_code');
         var input_budget_code_activity = document.getElementById('budget_code_activity');
         var input_total_budget_activity = document.getElementById('total_budget_activity');
         var input_total_operating = document.getElementById('total_operating');
@@ -385,6 +388,7 @@
                 input_budget_booked.value = money(response.budget_booked);
                 input_budget_actual.value = money(response.actual_budget);
                 input_budget_activity.value = money(response.budget_activity);
+                input_budget_code.value = response.budget_code;
                 input_budget_code_activity.value = response.budget_code_activity;
                 input_total_budget_activity.value = money(response.total_budget_activity);
                 input_total_operating.value = money(response.total_operating);
