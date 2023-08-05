@@ -306,6 +306,7 @@
         var input_budget_booked = document.getElementById('budget_booked').value = '';
         var input_budget_activity = document.getElementById('budget_activity').value = '';
         var input_budget_actual = document.getElementById('budget_actual').value = '';
+        var input_balance_operating = document.getElementById('balance_operating').value = '';
         var input_budget_code = document.getElementById('budget_code').value = '';
         var input_budget_code_activity = document.getElementById('budget_code_activity').value = '';
         var input_total_budget_activity = document.getElementById('total_budget_activity').value = '';
@@ -380,7 +381,7 @@
                     return false;
                 }
 
-                console.log(response)
+                // console.log(response)
 
                 input_balance_budget.value = money(response.balance);
                 input_balance_operating.value = money(response.balance);
@@ -401,6 +402,8 @@
                 } else if (budget_source == 'on_top') {
                     resetIms()
                 }
+
+                
             }
         })
     }

@@ -432,4 +432,11 @@ class Administrator extends CI_Controller
         }
         redirect(base_url() . $_SESSION['page'] . '/picBrand');
     }
+
+    public function loadMasterUser(){
+        $user = $this->administrator_model->getAllUsers();
+        $data = array(
+            'user' => $user
+        );
+    }
 }

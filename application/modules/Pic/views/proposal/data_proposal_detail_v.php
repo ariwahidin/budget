@@ -1,10 +1,7 @@
-<!-- <?php var_dump(activity_is_sales($proposal->row()->Activity)) ?> -->
 <?php $this->view('header') ?>
 <div class="content-wrapper">
     <div class="row">
-
         <div class="col-md-12">
-
             <section class="content-header">
                 <?php
                 $this->view('messages');
@@ -297,7 +294,7 @@
                                 <strong>Customer</strong>
                             </div>
                             <div class="box-body">
-                                <table class="table table-responseive table-bordered table-striped table_customer">
+                                <table class="table table-responseive table-bordered table-striped table_customer" style="font-size: 12px;">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
@@ -371,15 +368,14 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Customer</h4>
+                <h4 class="modal-title">Customers</h4>
             </div>
             <form action="<?= base_url($_SESSION['page']) . '/prosesNoSk' ?>" method="POST" id="formProsesNoSk">
                 <input type="hidden" name="no_proposal" value="<?= $proposal->row()->Number ?>">
                 <div class="modal-body">
-                    <!-- <p>One fine body&hellip;</p> -->
                     <div class="box box-primary">
                         <div class="box-body">
-                            <table class="table">
+                            <table class="table" style="font-size: 12px;">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -418,7 +414,6 @@
         </div>
         <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
 </div>
 
 <?php $this->view('footer') ?>

@@ -129,6 +129,8 @@ class Direksi_model extends CI_Model
             MAX([month]) AS EndPeriode, t2.BrandName,
             SUM([PrincipalTargetIDR]) AS PrincipalTarget,
             SUM([PrincipalAnpIDR]) AS TargetAnp,
+            SUM([PKTargetIDR]) AS PKTarget,
+            SUM([PKAnpIDR]) AS PKAnp,
             SUM(OperatingBudget) AS OperatingBudget FROM
             (SELECT * FROM tb_operating)ss
             INNER JOIN m_brand t2 ON ss.BrandCode = t2.BrandCode
@@ -537,5 +539,112 @@ class Direksi_model extends CI_Model
         $sql = "SELECT * FROM ProposalView";
         $query = $this->db->query($sql);
         return $query;
+    }
+
+
+    public function getBudgetOperating($budget_code)
+    {
+        $sql = "select
+        BrandName,
+        [Month] as Periode,
+        PrincipalTargetIDR as PrincipalTarget,
+        PrincipalAnpIDR as AnpPrincipal,
+        PKTargetIDR,
+        PKAnpIDR,
+        OperatingBudget
+        from tb_operating where BudgetCode = '$budget_code'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getIncomingFund($budget_code)
+    {
+        $sql = "select * from tb_incoming_fund where budget_code = '$budget_code'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function simpanFund($post)
+    {
+        $params = array(
+            'budget_code' => $post['budget_code'],
+            'value' => $post['value'],
+            'note' => $post['note'],
+            'created_at' => $this->session->userdata('user_code')
+        );
+        // var_dump($params);
+        $this->db->insert('tb_incoming_fund', $params);
+    }
+
+    public function getBudgetOnTopById($id)
+    {
+        $sql = "select * from tb_budget_on_top where id = '$id'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getBudgetOnTop($budgetCode)
+    {
+        $sql = "select * from tb_budget_on_top where budget_code = '$budgetCode'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function totalOnTop($budgetCode)
+    {
+        $sql = "select case when sum(budget_on_top) is null then 0 else sum(budget_on_top) end as TotalOnTop from [dbo].[tb_budget_on_top] 
+        where budget_code = '$budgetCode'";
+        $query = $this->db->query($sql);
+        return $query->row()->TotalOnTop;
+    }
+
+    public function totalCostingOnTop($budgetCode)
+    {
+        $sql = "select case when sum(TotalCosting) is null then 0 else sum(TotalCosting) end as TotalCostingOnTop 
+        from tb_operating_proposal where BudgetCode = '$budgetCode' and Budget_type = 'on_top'";
+        $query = $this->db->query($sql);
+        return $query->row()->TotalCostingOnTop;
+    }
+
+    public function editOnTop($post)
+    {
+        $data = array(
+            'budget_on_top' => $post['newOnTop'],
+            'update_by' => $this->session->userdata('user_code'),
+            'update_date' => $this->getDate(),
+        );
+        $this->db->where('id', $post['id']);
+        $this->db->update('tb_budget_on_top', $data);
+    }
+
+    public function functionGetMonthBudget($budget_code)
+    {
+        $sql = "select [Month] from tb_operating where BudgetCode = '$budget_code'
+        order by [Month] asc";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+
+    public function createBudgetOnTop($post)
+    {
+        // var_dump($post);
+        $budget_code = $post['budget_code'];
+        $brand_code = $this->db->query("select distinct BrandCode from tb_operating where BudgetCode = '$budget_code'")->row()->BrandCode;
+        $data = array();
+        for ($i = 0; $i < count($post['month']); $i++) {
+            array_push(
+                $data,
+                array(
+                    'brand_code' => $brand_code,
+                    'budget_code' => $budget_code,
+                    'month' => $post['month'][$i],
+                    'budget_on_top' => $post['budget'][$i],
+                    'created_by' => $this->session->userdata('user_code'),
+                    'created_date' => $this->getDate()
+                )
+            );
+        }
+        $this->db->insert_batch('tb_budget_on_top', $data);
     }
 }

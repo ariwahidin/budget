@@ -11,6 +11,13 @@ class Direksi extends CI_Controller
         $this->load->model(['direksi_model']);
     }
 
+    public function render($view, array $data = NULL)
+    {
+        $this->load->view('header');
+        $this->load->view($view, $data);
+        $this->load->view('footer');
+    }
+
     public function index()
     {
         $anp = $this->direksi_model->getAnpForManagement();
@@ -457,5 +464,114 @@ class Direksi extends CI_Controller
             'proposal' => $proposal,
         );
         $this->load->view('report/report_proposal', $data);
+    }
+
+    public function loadDetailBudget()
+    {
+        $budgetCode = $this->input->post('budget_code');
+        $operating = $this->direksi_model->getBudgetOperating($budgetCode);
+        $data = array(
+            'budget_code' => $budgetCode,
+            'operating' => $operating
+        );
+
+        $this->render('operating/detail_budget', $data);
+    }
+
+    public function loadTableFund()
+    {
+        $budget_code = $this->input->post('budget_code');
+        $budget = $this->direksi_model->getIncomingFund($budget_code);
+        $data = array(
+            'budget' => $budget
+        );
+        $this->load->view('operating/table_fund', $data);
+    }
+
+    public function simpanFund()
+    {
+        $post = $this->input->post();
+        $this->direksi_model->simpanFund($post);
+        if ($this->db->affected_rows() > 0) {
+            $response = array('success' => true);
+        } else {
+            $response = array('success' => false);
+        }
+        echo json_encode($response);
+    }
+
+    public function loadTableOnTop()
+    {
+        $budget_code = $this->input->post('budget_code');
+        $budget = $this->direksi_model->getBudgetOnTop($budget_code);
+        $data = array(
+            'budget_code' => $budget_code,
+            'budget' => $budget
+        );
+        $this->load->view('operating/table_budget_ontop', $data);
+    }
+
+    public function loadTableOnTopResume()
+    {
+        // var_dump($_POST);
+        $budget_code = $this->input->post('budget_code');
+        $total_on_top = $this->direksi_model->totalOnTop($budget_code);
+        $totalCostingOnTop = $this->direksi_model->totalCostingOnTop($budget_code);
+        $balanceOnTop = $total_on_top - $totalCostingOnTop;
+        $data = array(
+            'totalOnTop' => $total_on_top,
+            'totalCostingOnTop' => $totalCostingOnTop,
+            'balanceOnTop' => $balanceOnTop
+        );
+        $this->load->view('operating/table_budget_ontop_resume', $data);
+    }
+
+    public function loadCreateOnTop()
+    {
+        $budget_code = $this->input->post('budget_code');
+        $data = array(
+            'month' => $this->direksi_model->functionGetMonthBudget($budget_code),
+            'budget_code' => $budget_code,
+        );
+        $this->load->view('operating/modal_create_budget_ontop', $data);
+    }
+
+    public function loadModalEditOnTop()
+    {
+        $id = $this->input->post('id');
+        $budget = $this->direksi_model->getBudgetOnTopById($id);
+        // var_dump($budget->result());
+        $data = array(
+            'budget' => $budget
+        );
+        $this->load->view('operating/modal_edit_budget_ontop', $data);
+    }
+
+    public function editOnTop()
+    {
+        $post = $this->input->post();
+        $this->direksi_model->editOnTop($post);
+        if ($this->db->affected_rows() > 0) {
+            $response = array('success' => true);
+        } else {
+            $response = array('success' => false);
+        }
+        echo json_encode($response);
+    }
+
+    public function createBudgetOnTop()
+    {
+        $post = $this->input->post();
+        $create = $this->direksi_model->createBudgetOnTop($post);
+        if ($this->db->affected_rows() > 0) {
+            $response = array(
+                'success' => true
+            );
+        } else {
+            $response = array(
+                'success' => false
+            );
+        }
+        echo json_encode($response);
     }
 }

@@ -310,6 +310,9 @@
                             $('#divOntop').load("<?= base_url($_SESSION['page']) ?>/loadTableOnTop", {
                                 budget_code: "<?= $budget_code ?>"
                             })
+                            $('#divOnTopResume').load("<?= base_url($_SESSION['page']) ?>/loadTableOnTopResume", {
+                                budget_code: "<?= $budget_code ?>"
+                            })
                             $('#modal-edit-on-top').modal('hide')
                         })
                     } else {

@@ -537,6 +537,22 @@ class Pic_model extends CI_Model
         return $query;
     }
 
+    public function totalOnTop($budgetCode)
+    {
+        $sql = "select case when sum(budget_on_top) is null then 0 else sum(budget_on_top) end as TotalOnTop from [dbo].[tb_budget_on_top] 
+        where budget_code = '$budgetCode'";
+        $query = $this->db->query($sql);
+        return $query->row()->TotalOnTop;
+    }
+
+    public function totalCostingOnTop($budgetCode)
+    {
+        $sql = "select case when sum(TotalCosting) is null then 0 else sum(TotalCosting) end as TotalCostingOnTop 
+        from tb_operating_proposal where BudgetCode = '$budgetCode' and Budget_type = 'on_top'";
+        $query = $this->db->query($sql);
+        return $query->row()->TotalCostingOnTop;
+    }
+
     public function editOnTop($post)
     {
         $data = array(
@@ -919,12 +935,15 @@ class Pic_model extends CI_Model
 
     public function getTotalCosting($number)
     {
-        $sql = "select sum(ss.costing) as total_costing from
-        (
-        select costing from tb_proposal_item where ProposalNumber = '$number'
-        union
-        select costing from tb_proposal_item_other where ProposalNumber = '$number'
-        )ss";
+        // $sql = "select sum(ss.costing) as total_costing from
+        // (
+        // select costing from tb_proposal_item where ProposalNumber = '$number'
+        // union
+        // select costing from tb_proposal_item_other where ProposalNumber = '$number'
+        // )ss";
+
+        $sql = "select (select case when sum(Costing) is null then 0 else sum(Costing) end from tb_proposal_item where ProposalNumber = '$number')
+        + (select case when sum(costing) is null then 0 else sum(costing) end from tb_proposal_item_other where ProposalNumber = '$number') as total_costing";
 
         $query = $this->db->query($sql);
         return $query;

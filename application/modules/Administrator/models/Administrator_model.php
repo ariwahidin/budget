@@ -470,4 +470,11 @@ class Administrator_model extends CI_Model
             $this->db->insert('tb_pic_brand', $params);
         }
     }
+
+    public function getAllUsers()
+    {
+        $sql = "select * from master_user";
+        $query = $this->db->query($sql);
+        return $query;
+    }
 }

@@ -970,7 +970,16 @@ class Pic extends CI_Controller
 
     public function loadTableOnTopResume()
     {
-        $data = array();
+        // var_dump($_POST);
+        $budget_code = $this->input->post('budget_code');
+        $total_on_top = $this->pic_model->totalOnTop($budget_code);
+        $totalCostingOnTop = $this->pic_model->totalCostingOnTop($budget_code);
+        $balanceOnTop = $total_on_top - $totalCostingOnTop;
+        $data = array(
+            'totalOnTop' => $total_on_top,
+            'totalCostingOnTop' => $totalCostingOnTop,
+            'balanceOnTop' => $balanceOnTop
+        );
         $this->load->view('operating/table_budget_ontop_resume', $data);
     }
 
