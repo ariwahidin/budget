@@ -397,11 +397,11 @@
 
                 inputOperatingBudget.value = money(response.operatingBudget);
                 // console.log(response.balance);
-                if (response.balance < 1000000) {
-                    tr_use_ims.style.display = 'revert';
-                } else if (budget_source == 'on_top') {
-                    resetIms()
-                }
+                // if (response.balance < 1000000) {
+                //     tr_use_ims.style.display = 'revert';
+                // } else if (budget_source == 'on_top') {
+                //     resetIms()
+                // }
 
                 
             }

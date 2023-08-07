@@ -11,6 +11,13 @@ class Administrator extends CI_Controller
         $this->load->model(['administrator_model']);
     }
 
+    public function render($view, array $data = NULL)
+    {
+        $this->load->view('header');
+        $this->load->view($view, $data);
+        $this->load->view('footer');
+    }
+
     public function index()
     {
         $this->load->view('administrator_v');
@@ -433,10 +440,40 @@ class Administrator extends CI_Controller
         redirect(base_url() . $_SESSION['page'] . '/picBrand');
     }
 
-    public function loadMasterUser(){
+    public function user()
+    {
         $user = $this->administrator_model->getAllUsers();
+        $page = $this->administrator_model->getDepartment();
         $data = array(
-            'user' => $user
+            'user' => $user,
+            'page' => $page
         );
+        $this->render('user/user_index', $data);
+    }
+
+    public function simpanUser()
+    {
+        $post = $this->input->post();
+        $usernameExists = $this->administrator_model->getUsername($post['username']);
+        if ($usernameExists->num_rows() > 0) {
+            $response = array(
+                'success' => false,
+                'message' => "User sudah ada, mohon cari username lain"
+            );
+        } else {
+            $this->administrator_model->addUser($post);
+            if ($this->db->affected_rows() > 0) {
+                $response = array(
+                    'success' => true,
+                    'message' => "Berhasi simpan data"
+                );
+            } else {
+                $response = array(
+                    'success' => false,
+                    'message' => "Gagal simpan data"
+                );
+            }
+        }
+        echo json_encode($response);
     }
 }

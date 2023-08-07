@@ -1300,7 +1300,7 @@ $group_code = implode("','", $GroupCode);
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-
+                loadingShow();
                 $.post("<?= base_url($_SESSION['page']) . '/simpanProposalRev' ?>", {
                     t_qty_item,
                     t_group,
@@ -1343,6 +1343,7 @@ $group_code = implode("','", $GroupCode);
                     other_cost: cost_other,
                 }, function(result) {
                     if (result.success == true) {
+                        loadingHide()
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',

@@ -477,4 +477,54 @@ class Administrator_model extends CI_Model
         $query = $this->db->query($sql);
         return $query;
     }
+
+    public function getDepartment()
+    {
+        $sql = "select * from m_department";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getUsername($username)
+    {
+        $sql = "select * from master_user where username = '$username'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function generateUserCode($page)
+    {
+
+        $prefix = $this->db->query("select code from m_department where page = '$page'")->row()->code;
+
+        $sqlNumber = "SELECT FORMAT(MAX(SUBSTRING(user_code,3,5))+1, 'd3') as code from master_user
+        WHERE SUBSTRING(user_code,1,2) = '$prefix'";
+
+        $queryNumber = $this->db->query($sqlNumber);
+
+        if (is_null($queryNumber->row()->code)) {
+            $number = "001";
+        } else {
+            $number = $queryNumber->row()->code;
+        }
+
+        return $prefix . $number;
+    }
+
+    public function addUser($post)
+    {
+        $user_code = $this->generateUserCode($post['page']);
+        $data = array(
+            'user_code' => $user_code,
+            'username' => $post['username'],
+            'fullname' => $post['fullname'],
+            'password' => $post['password'],
+            'page' => $post['page'],
+            'access_role' => $post['page'],
+            'created_by' => $this->session->userdata('user_code'),
+            'created_date' => $this->getDate(),
+        );
+
+        $this->db->insert('master_user', $data);
+    }
 }

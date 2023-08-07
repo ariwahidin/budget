@@ -13,10 +13,6 @@
                                 <tr>
                                     <th>No.</th>
                                     <th>No Proposal</th>
-                                    <th>Brand</th>
-                                    <th>Activity</th>
-                                    <th>Start Periode</th>
-                                    <th>End Periode</th>
                                     <th>Pic</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -28,10 +24,6 @@
                                     <tr>
                                         <td><?= $no++ ?></td>
                                         <td><?= $data->Number ?></td>
-                                        <td><?= getBrandName($data->BrandCode) ?></td>
-                                        <td><?= getActivityName($data->Activity) ?></td>
-                                        <td><?= date('Y-m-d', strtotime($data->StartDatePeriode)) ?></td>
-                                        <td><?= date('Y-m-d', strtotime($data->EndDatePeriode)) ?></td>
                                         <td><?= ucfirst($data->CreatedBy) ?></td>
                                         <td>
                                             <span class="label label-<?= $data->Status == 'approved' ? 'success' : ($data->Status == 'open' ? 'info' : 'warning') ?>"><?= ucfirst($data->Status) ?></span>
