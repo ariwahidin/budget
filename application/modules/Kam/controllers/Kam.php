@@ -67,4 +67,14 @@ class Kam extends CI_Controller
         }
         redirect(base_url($_SESSION['page'] . '/changePasswordPage'));
     }
+
+    public function loadModalInputSKP()
+    {
+        $number = $this->input->post('number');
+        $data = array(
+            'number' => $number,
+            'group' => $this->kam_model->getProposalGroup($number)
+        );
+        $this->load->view('proposal/modal_input_skp', $data);
+    }
 }

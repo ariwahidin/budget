@@ -1,7 +1,4 @@
 <?php
-
-use BaconQrCode\Renderer\Color\Rgb;
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Kam_model extends CI_Model

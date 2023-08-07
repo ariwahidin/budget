@@ -1,6 +1,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <strong>Detail Proposal</strong>
+        <button onclick="loadModalInputSKP(this)" data-number="<?= $number ?>" class="btn btn-primary btn-sm pull-right">Input SKP</button>
     </section>
     <section class="content">
         <div class="row">
@@ -279,3 +280,14 @@
         </div>
     </section>
 </div>
+<div id="modalInputSKP"></div>
+<script>
+    function loadModalInputSKP(button) {
+        let number = $(button).data('number')
+        $('#modalInputSKP').load("<?= base_url($_SESSION['page']) ?>/loadModalInputSKP", {
+            number
+        }, function() {
+            $('#modal-input-skp').modal('show')
+        })
+    }
+</script>
