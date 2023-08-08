@@ -221,6 +221,10 @@ class Pic_model extends CI_Model
 
     public function getCustomerFromSales($group = null, $customer = null)
     {
+
+        // var_dump($group);
+        // var_dump($customer);
+
         $sql = "select * from CustomerView";
 
         if ($group != null) {
@@ -229,9 +233,10 @@ class Pic_model extends CI_Model
         }
 
         if ($customer != null) {
-            // $customer = implode(",", $customer);
+            $customer = implode(",", $customer);
             $sql .= " AND CardCode NOT IN(select value FROM  STRING_SPLIT('$customer', ','))";
         }
+
 
         $query = $this->db->query($sql);
         return $query;
@@ -712,7 +717,7 @@ class Pic_model extends CI_Model
     public function insertProposal($post)
     {
         // var_dump(count($post['customer_code']));
-        // var_dump($post);
+        $post['customer_code'] = json_decode($post['customer_code'], true);
         // die;
 
         $customer_group = array_values(array_unique($post['t_group']));
@@ -859,13 +864,13 @@ class Pic_model extends CI_Model
         }
 
         //insert customer group
-        for ($i = 0; $i < count($customer_group); $i++) {
-            $customer_groups = [
-                'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
-                'GroupCustomer' => $customer_group[$i],
-            ];
-            $this->db->insert('tb_proposal_group', $customer_groups);
-        }
+        // for ($i = 0; $i < count($customer_group); $i++) {
+        //     $customer_groups = [
+        //         'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
+        //         'GroupCustomer' => $customer_group[$i],
+        //     ];
+        //     $this->db->insert('tb_proposal_group', $customer_groups);
+        // }
 
         //insert item sales detail by group
         for ($i = 0; $i < count($post['t_qty_item']); $i++) {
@@ -1438,6 +1443,13 @@ class Pic_model extends CI_Model
     public function getGroupFromSales()
     {
         $sql = "SELECT DISTINCT GroupCode, GroupName FROM tb_sales";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getGroupMaster()
+    {
+        $sql = "SELECT DISTINCT GroupCode, GroupName FROM m_group";
         $query = $this->db->query($sql);
         return $query;
     }

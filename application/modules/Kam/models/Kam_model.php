@@ -16,8 +16,6 @@ class Kam_model extends CI_Model
         return $date->format('Y-m-d H:i:s');
     }
 
-
-
     public function changePassword($post)
     {
         $params = array(
@@ -94,12 +92,54 @@ class Kam_model extends CI_Model
         return $query;
     }
 
+    public function getProposalSKP($number)
+    {
+        $sql = "select distinct t1.ProposalNumber, t2.GroupCode, t2.GroupName, t3.NoSKP, t3.Ket
+        from tb_proposal_group t1
+        inner join m_group t2 on t1.GroupCustomer = t2.GroupCode
+        left join tb_proposal_skp t3 on t1.ProposalNumber = t3.ProposalNumber and t2.GroupCode = t3.GroupCode
+        where t1.ProposalNumber = '$number'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     public function getCustomerProposal($number)
     {
         $sql = "select t1.id, t1.ProposalNumber, t1.CustomerCode, t2.CustomerName
         from tb_proposal_customer t1
         inner join m_customer t2 on t1.CustomerCode = t2.CardCode
         where ProposalNumber = '$number'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function insert_skp($array)
+    {
+        $params = array();
+        $i = 0;
+        foreach ($array['group'] as $key => $value) {
+            array_push($params, array(
+                'ProposalNumber' => $array['number'],
+                'GroupCode' => $value,
+                'NoSKP' => $array['skp'][$i],
+                'Ket' => $array['ket'][$i],
+                'CreatedBy' => $this->session->userdata('user_code'),
+                'CreatedAt' => $this->getDate(),
+            ));
+            $i++;
+        }
+
+        $this->db->insert_batch('tb_proposal_skp', $params);
+    }
+
+    public function update_skp($array)
+    {
+        var_dump($array);
+    }
+
+    public function getSKP($number)
+    {
+        $sql = "select id from tb_proposal_skp where ProposalNumber = '$number'";
         $query = $this->db->query($sql);
         return $query;
     }

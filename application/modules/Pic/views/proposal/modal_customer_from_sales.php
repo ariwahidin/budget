@@ -71,16 +71,17 @@
             customer_code = selected_customer.split(',');
             var tbodyCustomer = document.getElementById('tbodyCustomer');
             // console.log(customer_code);
-
+            // console.log(customer_code.length);
+            // return false
+            loadingShow()
             $.ajax({
                 url: "<?= base_url($_SESSION['page']) . '/getCustomer' ?>",
                 type: "POST",
                 data: {
-                    customer_code
+                    customer_code : JSON.stringify(customer_code)
                 },
                 dataType: "JSON",
                 success: function(response) {
-
                     // console.log(response.customer.length)
                     // console.log(response.customer)
 
@@ -124,6 +125,7 @@
                         }
                         // console.log(tbodyCustomer);
                         $('#modal_customer').modal('hide');
+                        loadingHide()
                     } else {
                         //alert('Tidak Ada Data');
                         Swal.fire({

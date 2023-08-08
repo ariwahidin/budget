@@ -168,7 +168,7 @@ class Pic extends CI_Controller
         $noref = substr($this->pic_model->getNumber(), -8);
         $brand = $this->pic_model->getBrandPic($_SESSION['user_code']);
         $activity = $this->pic_model->getActivityFromBudgetSeteed();
-        $group = $this->pic_model->getGroupFromSales();
+        $group = $this->pic_model->getGroupMaster();
         $data = array(
             'noref' => $noref,
             'brand' => $brand,
@@ -181,8 +181,18 @@ class Pic extends CI_Controller
     public function show_form_proposal_from_sales()
     {
         // var_dump($_POST);
+        // var_dump(count($_POST['customer']));
+        // die;
+        $json_group = $_POST['json_group'];
+        $array_group = json_decode($json_group, true);
+
         $json_customer = $_POST['json_customer'];
         $array_customer = json_decode($json_customer, true);
+
+        // var_dump(count($array_group));
+        // var_dump(count($array_customer));
+        // die;
+
         $customer = $this->pic_model->getCustomerByCardCode($array_customer);
 
         $delete_cart = $this->pic_model->delete_cart_item();
@@ -197,7 +207,12 @@ class Pic extends CI_Controller
         $noref = substr($this->pic_model->getNumber(), -8);
 
         // $prefix = $this->pic_model->getPrefix($_POST['brand'])->row()->prefix;
-        $group_customer = array_values(array_unique($_POST['group']));
+        $group_customer = array_values(array_unique($array_group));
+        // var_dump(count($_POST['group']));
+        // var_dump($group_customer);
+        // die;
+
+
         $group_customer = implode(",", $group_customer);
         $group_customer = $this->pic_model->getGroupCustomer($group_customer);
 
@@ -221,6 +236,7 @@ class Pic extends CI_Controller
 
     public function cekNoDoc()
     {
+        // var_dump($_POST);
         $post = $this->input->post();
         $noDoc = $post['no_doc'];
         $result = $this->pic_model->getNoDoc($noDoc);
@@ -530,6 +546,8 @@ class Pic extends CI_Controller
     {
         $group = $_POST['group'];
 
+        // var_dump($_POST);
+
         if (!empty($_POST['customer'])) {
             $customer = $this->pic_model->getCustomerFromSales($group, $_POST['customer']);
         } else {
@@ -538,10 +556,6 @@ class Pic extends CI_Controller
         $data = array(
             'customer' => $customer,
         );
-
-        // var_dump($this->db->last_query());
-        // var_dump($this->db->error());
-        // die;
         $this->load->view('proposal/modal_customer_from_sales', $data);
     }
 
@@ -1067,6 +1081,7 @@ class Pic extends CI_Controller
 
     public function getCustomer()
     {
+        $_POST['customer_code'] = json_decode($_POST['customer_code'], true);
         $customer_code = implode("','", $_POST["customer_code"]);
         // $sql = "SELECT t1.CardCode, t1.CustomerName, t1.GroupCode, t2.GroupName FROM m_customer t1
         // INNER JOIN m_group t2 ON t1.GroupCode = t2.GroupCode

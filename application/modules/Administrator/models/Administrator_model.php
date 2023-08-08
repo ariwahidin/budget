@@ -238,11 +238,11 @@ class Administrator_model extends CI_Model
 
     public function getProposal($number = null)
     {
-        $sql = "SELECT * FROM tb_proposal";
+        $sql = "SELECT t1.*, t2.BrandName FROM tb_proposal t1 inner join m_brand t2 on t1.BrandCode = t2.BrandCode";
         if ($number != null) {
-            $sql .= " WHERE [Number] = '$number'";
+            $sql .= " WHERE t1.[Number] = '$number'";
         }
-        $sql .= " ORDER BY id DESC";
+        $sql .= " ORDER BY t1.id DESC";
         $query = $this->db->query($sql);
         return $query;
     }

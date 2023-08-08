@@ -12,8 +12,9 @@
                         <?php foreach ($group->result() as $data) { ?>
                             <tr>
                                 <td><?= $data->GroupName ?></td>
-                                <td><input type="text" class="form-control" placeholder="Nomor SKP"></td>
-                                <td><input type="text" class="form-control" placeholder="Keterangan"></td>
+                                <td><input type="hidden" class="form-control data-group" value="<?= $data->GroupCode ?>"></td>
+                                <td><input type="text" class="form-control data-skp" placeholder="Nomor SKP" value="<?= $data->NoSKP ?>"></td>
+                                <td><input type="text" class="form-control data-ket" placeholder="Keterangan" value="<?= $data->Ket ?>"></td>
                             </tr>
                         <?php } ?>
                     </table>
@@ -21,7 +22,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <button onclick="simpanSKP(this)" data-number="<?= $number ?>" type="button" class="btn btn-primary">Save</button>
+                <button id="sendButton" data-number="<?= $number ?>" type="button" class="btn btn-primary"><?= ucfirst($action) ?></button>
             </div>
         </div>
     </div>
@@ -31,4 +32,56 @@
         let number = $(button).data('number')
         alert('test ' + number)
     }
+
+    document.getElementById("sendButton").addEventListener("click", function() {
+        var action = "<?= $action ?>";
+        var number = "<?= $number ?>";
+        var dataGroup = document.getElementsByClassName("data-group");
+        var dataSKP = document.getElementsByClassName("data-skp");
+        var dataKET = document.getElementsByClassName("data-ket");
+        var arrayGroup = [];
+        var arraySKP = [];
+        var arrayKET = [];
+
+        for (var i = 0; i < dataSKP.length; i++) {
+            arrayGroup.push(dataGroup[i].value);
+            arraySKP.push(dataSKP[i].value);
+            arrayKET.push(dataKET[i].value);
+        }
+
+        // Kirim data ke server (contoh menggunakan fetch API)
+        fetch("<?= base_url($_SESSION['page']) ?>/simpanSkp", {
+                method: "POST",
+                body: JSON.stringify({
+                    action: action,
+                    number: number,
+                    group: arrayGroup,
+                    skp: arraySKP,
+                    ket: arrayKET,
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Lakukan sesuatu dengan respons dari server (opsional)
+                if (data.status == 'success') {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function() {
+                        $('#modal-input-skp').modal('hide')
+                    })
+                } else {
+                    Swal.fire(data.message)
+                }
+            })
+            .catch(error => {
+                console.error("Terjadi kesalahan:", error);
+            });
+    });
 </script>

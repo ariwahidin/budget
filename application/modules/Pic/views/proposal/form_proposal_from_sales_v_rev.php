@@ -1187,6 +1187,7 @@ $group_code = implode("','", $GroupCode);
 
 
         var customer_code = <?php echo json_encode(explode(",", $customer_code)); ?>;
+        // var customer_code = "<?php echo $customer_code; ?>";
         // console.log(customer_code);
         // return false;
         // var td_customer_code = document.querySelectorAll('td.CustomerCode_Customer');
@@ -1292,7 +1293,7 @@ $group_code = implode("','", $GroupCode);
 
         Swal.fire({
             icon: 'question',
-            title: 'Anda yakin untuk simpan proposal?\n Total Costing : '+total_costing,
+            title: 'Anda yakin untuk simpan proposal?\n Total Costing : ' + total_costing,
             showDenyButton: false,
             showCancelButton: true,
             confirmButtonText: 'Simpan',
@@ -1322,7 +1323,7 @@ $group_code = implode("','", $GroupCode);
                     item_promo,
                     item_promo_value,
                     item_costing,
-                    customer_code,
+                    customer_code: JSON.stringify(customer_code),
                     ims_saldo,
                     budget_saldo,
                     total_costing,

@@ -4,6 +4,7 @@
         <button onclick="loadModalInputSKP(this)" data-number="<?= $number ?>" class="btn btn-primary btn-sm pull-right">Input SKP</button>
     </section>
     <section class="content">
+
         <div class="row">
             <div class="col-md-12">
                 <div class="box box-warning">
@@ -257,7 +258,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered" id="tableCustomer">
                             <thead>
                                 <tr>
                                     <th>No.</th>
@@ -278,6 +279,7 @@
                 </div>
             </div>
         </div>
+
     </section>
 </div>
 <div id="modalInputSKP"></div>
@@ -290,4 +292,6 @@
             $('#modal-input-skp').modal('show')
         })
     }
+
+    $('#tableCustomer').DataTable()
 </script>

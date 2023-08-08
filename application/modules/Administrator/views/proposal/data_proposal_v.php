@@ -13,6 +13,7 @@
                                 <tr>
                                     <th>No.</th>
                                     <th>No Proposal</th>
+                                    <th>Brand</th>
                                     <th>Pic</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -24,6 +25,7 @@
                                     <tr>
                                         <td><?= $no++ ?></td>
                                         <td><?= $data->Number ?></td>
+                                        <td><?= $data->BrandName ?></td>
                                         <td><?= ucfirst($data->CreatedBy) ?></td>
                                         <td>
                                             <span class="label label-<?= $data->Status == 'approved' ? 'success' : ($data->Status == 'open' ? 'info' : 'warning') ?>"><?= ucfirst($data->Status) ?></span>
