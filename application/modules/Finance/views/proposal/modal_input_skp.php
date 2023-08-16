@@ -12,12 +12,13 @@
                         <?php foreach ($group->result() as $data) { ?>
                             <tr>
                                 <td><?= $data->GroupName ?></td>
+
                                 <td>
                                     <input type="hidden" class="form-control data-group" value="<?= $data->GroupCode ?>">
                                     <input type="hidden" class="form-control data-id" value="<?= $data->id ?>">
-                                    <input type="text" class="form-control input-sm data-skp" placeholder="Nomor SKP" value="<?= $data->NoSKP ?>">
+                                    <input type="text" class="form-control input-sm data-skp" placeholder="Nomor SKP" value="<?= $data->NoSKP ?>" readonly>
                                 </td>
-                                <td><input type="text" class="form-control input-sm data-ket" placeholder="Keterangan" value="<?= $data->Ket ?>"></td>
+                                <td><input type="text" class="form-control input-sm data-ket" placeholder="Keterangan" value="<?= $data->Ket ?>" readonly></td>
                             </tr>
                         <?php } ?>
                     </table>
@@ -25,7 +26,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <button id="sendButton" data-number="<?= $number ?>" type="button" class="btn btn-primary"><?= ucfirst($action) ?></button>
+                <!-- <button id="sendButton" data-number="<?= $number ?>" type="button" class="btn btn-primary"><?= ucfirst($action) ?></button> -->
             </div>
         </div>
     </div>

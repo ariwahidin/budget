@@ -574,4 +574,14 @@ class Direksi extends CI_Controller
         }
         echo json_encode($response);
     }
+
+    public function exportResumeProposalToExcel()
+    {
+        $post = $this->input->post();
+        $proposal = $this->direksi_model->getTarikanProposalExcel($post);
+        $data = array(
+            'proposal' => $proposal
+        );
+        $this->load->view('report/proposal_excel', $data);
+    }
 }

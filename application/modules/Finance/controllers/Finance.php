@@ -1,14 +1,14 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Kam extends CI_Controller
+class Finance extends CI_Controller
 {
 
     function __construct()
     {
         parent::__construct();
         check_login();
-        $this->load->model(['kam_model']);
+        $this->load->model(['finance_model']);
     }
 
     public function render($view, array $data = NULL)
@@ -25,7 +25,7 @@ class Kam extends CI_Controller
 
     public function showProposal()
     {
-        $proposal = $this->kam_model->getProposalApproved();
+        $proposal = $this->finance_model->getProposalApproved();
         $data = array(
             'proposal' => $proposal
         );
@@ -36,15 +36,15 @@ class Kam extends CI_Controller
     {
         $data = array(
             'number' => $number,
-            'proposal' => $this->kam_model->getProposalApproved($number)->row(),
-            'item' => $this->kam_model->getItemProposal($number),
-            'objective' => $this->kam_model->getObjectiveProposal($number),
-            'mechanism' => $this->kam_model->getMechanismProposal($number),
-            'comment' => $this->kam_model->getCommentProposal($number),
-            'other' => $this->kam_model->getCostingOther($number),
-            'group' => $this->kam_model->getProposalGroup($number),
-            'customer' => $this->kam_model->getCustomerProposal($number),
-            'total_costing' => $this->kam_model->getTotalCostingByNumberProposal($number)
+            'proposal' => $this->finance_model->getProposalApproved($number)->row(),
+            'item' => $this->finance_model->getItemProposal($number),
+            'objective' => $this->finance_model->getObjectiveProposal($number),
+            'mechanism' => $this->finance_model->getMechanismProposal($number),
+            'comment' => $this->finance_model->getCommentProposal($number),
+            'other' => $this->finance_model->getCostingOther($number),
+            'group' => $this->finance_model->getProposalGroup($number),
+            'customer' => $this->finance_model->getCustomerProposal($number),
+            'total_costing' => $this->finance_model->getTotalCostingByNumberProposal($number)
 
         );
         $this->render('proposal/detail_proposal', $data);
@@ -60,7 +60,7 @@ class Kam extends CI_Controller
     public function changePassword()
     {
         $post = $this->input->post();
-        $this->kam_model->changePassword($post);
+        $this->finance_model->changePassword($post);
         if ($this->db->affected_rows() > 0) {
             $this->session->set_flashdata('success', 'Password berhasil diubah');
         } else {
@@ -72,7 +72,7 @@ class Kam extends CI_Controller
     public function loadModalInputSKP()
     {
         $number = $this->input->post('number');
-        $cek_skp = $this->kam_model->getSKP($number);
+        $cek_skp = $this->finance_model->getSKP($number);
 
         if ($cek_skp->num_rows() > 0) {
             $action = 'update';
@@ -82,7 +82,7 @@ class Kam extends CI_Controller
 
         $data = array(
             'number' => $number,
-            'group' => $this->kam_model->getProposalSKP($number),
+            'group' => $this->finance_model->getProposalSKP($number),
             'action' => $action
         );
         $this->load->view('proposal/modal_input_skp', $data);
@@ -95,9 +95,9 @@ class Kam extends CI_Controller
             $dataArray = json_decode(file_get_contents("php://input"), true);
 
             if ($dataArray['action'] == 'update') {
-                $this->kam_model->update_skp($dataArray);
+                $this->finance_model->update_skp($dataArray);
             } else if ($dataArray['action'] == 'simpan') {
-                $this->kam_model->insert_skp($dataArray);
+                $this->finance_model->insert_skp($dataArray);
             }
 
             if ($this->db->affected_rows() > 0) {

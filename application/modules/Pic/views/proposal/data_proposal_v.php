@@ -52,6 +52,7 @@
                                         </td>
                                         <td>
                                             <a href="<?= base_url($_SESSION['page']) . '/showProposalDetail/' . $data->Number ?>" class="btn btn-info btn-xs">Lihat</a>
+                                            <!-- <a href="<?= base_url($_SESSION['page']) . '/showProposalEdit/' . $data->Number ?>" class="btn btn-primary btn-xs">Edit</a> -->
                                             <!-- <button class="btn btn-primary btn-xs">Update</button> -->
                                             <!-- <a href="<?= base_url($_SESSION['page']) . '/deleteProposal/' . $data->Number ?>" class="btn btn-danger btn-xs">Delete</button> -->
                                         </td>

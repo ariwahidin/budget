@@ -16,7 +16,6 @@
                 <?php } ?>
                 <h4>
                     <strong>Proposal Detail </strong>
-                    <!-- <button onclick="copyTo(this)" data-number="<?= $proposal->row()->Number ?>" class="btn btn-sm btn-success">Copy To</button> -->
                 </h4>
             </section>
             <section class="content">
@@ -332,6 +331,7 @@
                                             <th>Group Customer</th>
                                             <th>Item Name</th>
                                             <th>Qty</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -342,6 +342,9 @@
                                                 <td><?= $data->GroupName ?></td>
                                                 <td><?= $data->ItemName ?></td>
                                                 <td><?= $data->Target ?></td>
+                                                <td>
+                                                    <button onclick="editItem(this)" data-id="<?= $data->id ?>" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></button>
+                                                </td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -362,6 +365,8 @@
         </div>
     </div>
 </div>
+
+<div id="modalEditItem"></div>
 
 <div class="modal fade" id="modal-default">
     <div class="modal-dialog modal-lg">
@@ -418,40 +423,6 @@
 </div>
 
 
-<div class="modal fade" id="modal_copy_to" role="dialog">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title">Copy to new proposal</h4>
-            </div>
-            <div class="modal-body">
-                <form id="frm-example" name="frm-example">
-                    <div class="form-group">
-                        <label for="">Start Periode</label>
-                        <input type="date" id="start_date" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="">End Periode</label>
-                        <input type="date" id="end_date" class="form-control">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button onclick="copyToNewProposal(this)" data-source="<?= $proposal->row()->Budget_type = 'operating' ? 'anp' : $proposal->row()->Budget_type ?>" data-brand="<?= $proposal->row()->BrandCode ?>" data-activity="<?= $proposal->row()->Activity ?>" class="btn btn-primary">Create</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<form action="<?= base_url($_SESSION['page']) ?>/show_form_proposal_from_sales" method="POST" id="createNewProposal">
-    <input type="hidden" name="json_group" value="<?= htmlentities($string_group) ?>">
-    <input type="hidden" name="json_customer" value="<?= htmlentities($string_customer) ?>">
-</form>
-
 <?php $this->view('footer') ?>
 <script>
     $(document).ready(function() {
@@ -468,37 +439,12 @@
         $('#modal_copy_to').modal('show')
     }
 
-    function copyToNewProposal(button) {
-        var budget_source = $(button).data('source')
-        var brand = $(button).data('brand')
-        var activity = $(button).data('activity')
-        var start_date = $('#start_date').val()
-        var end_date = $('#end_date').val()
+    function editItem(button) {
+        let id = $(button).data('id')
+        $('#modalEditItem').load("<?= base_url($_SESSION['page']) ?>/showEditItem", {
+            id
+        }, function() {
 
-
-
-        if (start_date.trim() != "" && end_date.trim() != "") {
-            $.ajax({
-                url: "<?= base_url($_SESSION['page']) ?>/get_budget",
-                method: "POST",
-                data: {
-                    budget_source,
-                    brand,
-                    activity,
-                    start_date,
-                    end_date
-                },
-                dataType: "JSON",
-                success: function(response) {
-                    if (response.budget == 'not_set') {
-
-                    } else if (response.budget == 'ready') {
-
-
-                        $('#createNewProposal').submit()
-                    }
-                }
-            })
-        }
+        })
     }
 </script>

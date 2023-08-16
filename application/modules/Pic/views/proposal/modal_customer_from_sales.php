@@ -97,12 +97,12 @@
                             var input_customer = document.createElement('input');
                             input_customer.setAttribute('type', 'hidden');
                             input_customer.classList.add('input_customer');
-                            input_customer.name = 'customer[]';
+                            // input_customer.name = 'customer[]';
                             input_customer.value = response.customer[i].CardCode;
                             var input_group = document.createElement('input');
                             input_group.setAttribute('type', 'hidden');
                             input_group.classList.add('input_group');
-                            input_group.name = 'group[]';
+                            // input_group.name = 'group[]';
                             input_group.value = response.customer[i].GroupCode;
 
                             tdCustomerCode.className = 'CustomerCode_Customer';

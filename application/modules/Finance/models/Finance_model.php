@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Kam_model extends CI_Model
+class Finance_model extends CI_Model
 {
     function __construct()
     {
@@ -87,16 +87,10 @@ class Kam_model extends CI_Model
 
     public function getProposalGroup($number)
     {
-        // $sql = "select distinct t1.ProposalNumber, t2.GroupCode, t2.GroupName
-        // from tb_proposal_group t1
-        // inner join m_group t2 on t1.GroupCustomer = t2.GroupCode
-        // where ProposalNumber = '$number'";
-
-        $sql = "select distinct t1.ProposalNumber, t1.GroupCustomer as GroupCode,
-        t2.GroupName
-        from tb_proposal_customer t1
+        $sql = "select distinct t1.ProposalNumber, t2.GroupCode, t2.GroupName
+        from tb_proposal_group t1
         inner join m_group t2 on t1.GroupCustomer = t2.GroupCode
-        where t1.ProposalNumber = '$number'";
+        where ProposalNumber = '$number'";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -104,7 +98,7 @@ class Kam_model extends CI_Model
     public function getProposalSKP($number)
     {
         $sql = "select distinct t3.id, t1.ProposalNumber, t2.GroupCode, t2.GroupName, t3.NoSKP, t3.Ket
-        from tb_proposal_customer t1
+        from tb_proposal_group t1
         inner join m_group t2 on t1.GroupCustomer = t2.GroupCode
         left join tb_proposal_skp t3 on t1.ProposalNumber = t3.ProposalNumber and t2.GroupCode = t3.GroupCode
         where t1.ProposalNumber = '$number'";

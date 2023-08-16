@@ -647,4 +647,12 @@ class Direksi_model extends CI_Model
         }
         $this->db->insert_batch('tb_budget_on_top', $data);
     }
+
+    public function getTarikanProposalExcel($post)
+    {
+        $sql = "select * from ProposalTarikanExcelView
+        order by Number DESC";
+        $query = $this->db->query($sql);
+        return $query;
+    }
 }

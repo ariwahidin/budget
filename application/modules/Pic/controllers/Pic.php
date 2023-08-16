@@ -181,20 +181,15 @@ class Pic extends CI_Controller
     public function show_form_proposal_from_sales()
     {
         // var_dump($_POST);
-        // var_dump(count($_POST['customer']));
         // die;
+
         $json_group = $_POST['json_group'];
         $array_group = json_decode($json_group, true);
 
         $json_customer = $_POST['json_customer'];
         $array_customer = json_decode($json_customer, true);
 
-        // var_dump(count($array_group));
-        // var_dump(count($array_customer));
-        // die;
-
         $customer = $this->pic_model->getCustomerByCardCode($array_customer);
-
         $delete_cart = $this->pic_model->delete_cart_item();
 
         if ($_POST['budget_source'] == 'on_top') {
@@ -203,16 +198,8 @@ class Pic extends CI_Controller
             $budget_source = empty($_POST['ims']) ? 'operating' : 'ims';
         }
 
-
         $noref = substr($this->pic_model->getNumber(), -8);
-
-        // $prefix = $this->pic_model->getPrefix($_POST['brand'])->row()->prefix;
         $group_customer = array_values(array_unique($array_group));
-        // var_dump(count($_POST['group']));
-        // var_dump($group_customer);
-        // die;
-
-
         $group_customer = implode(",", $group_customer);
         $group_customer = $this->pic_model->getGroupCustomer($group_customer);
 
@@ -226,12 +213,7 @@ class Pic extends CI_Controller
             'customer' => $customer,
         ];
 
-        if ($_POST['is_sales'] == 'N') { //Listing
-            $this->load->view('proposal/form_proposal_non_sales_v', $data);
-        } else {
-            // $this->load->view('proposal/form_proposal_from_sales_v', $data);
-            $this->load->view('proposal/form_proposal_from_sales_v_rev', $data);
-        }
+        $this->load->view('proposal/form_proposal_from_sales_v_rev', $data);
     }
 
     public function cekNoDoc()
@@ -256,43 +238,24 @@ class Pic extends CI_Controller
 
     public function set_cart_item()
     {
-
-        // var_dump($_POST);
-        // die;
         $salesByGroup = $this->pic_model->set_cart_item($_POST);
-        // var_dump($salesByGroup->result());
-
         $data = array(
             'sales_detail' => $salesByGroup
         );
-
         $this->load->view('proposal/table_sales_by_group', $data);
-
-        // $response = array();
-        // if ($this->db->affected_rows() > 0) {
-        //     $response['success'] = true;
-        // } else {
-        //     $response['success'] = false;
-        // }
-        // echo json_encode($response);
     }
 
     public function get_cart_item()
     {
         $item_cart = $this->pic_model->get_item_cart();
-
         $data = array(
             'item_cart' => $item_cart
         );
-
         $this->load->view('proposal/table_cart_item_detail', $data);
     }
 
     public function get_budget()
     {
-        // var_dump($_POST);
-        // die;
-
         $balance = 0;
         if (!empty($_POST['budget_source'])) {
             if ($_POST['budget_source'] == 'anp') {
@@ -327,18 +290,9 @@ class Pic extends CI_Controller
                     $ims_value = ((float)$ims_value * (float)$budgetActivity_vs_Operating)  - (float)$ims_used;
                 }
 
-                // if ($actual_budget < $budget_activity) {
-                //     // $balance = $actual_budget - $budget_allocated;
-                //     $balance = $operatingBudget - $budget_allocated;
-                // } else {
-                //     $balance = $operatingBudget - $budget_allocated;
-                // }
-
                 $balance = $operatingBudget - $budget_used;
-
-
-
                 $data = array(
+                    'budget' => 'ready',
                     'balance' => $balance,
                     'budget_code' => $budget_code,
                     'budget_code_activity' => $budget_code_activity,
@@ -358,11 +312,8 @@ class Pic extends CI_Controller
 
             if ($_POST['budget_source'] == 'on_top') {
 
-                // var_dump($_POST);
-                // From ON TOP
 
                 $budgetCode = $this->pic_model->getBudgetCode($_POST);
-                // var_dump($budgetCode->row()->BudgetCode);
 
                 if ($budgetCode->num_rows() < 1) {
                     echo json_encode(['budget' => 'not_set']);
@@ -370,46 +321,19 @@ class Pic extends CI_Controller
                 }
 
                 $budgetOnTop = $this->pic_model->getBudgetOnTop($budgetCode->row()->BudgetCode);
-
                 if ($budgetOnTop->num_rows() < 1) {
                     echo json_encode(['budget_on_top' => 'not_set']);
                     return false;
                 }
 
-
-
                 $budget_code = $budgetCode->row()->BudgetCode;
                 $total_on_top = $this->pic_model->getTotalOnTop($budget_code);
                 $total_used_on_top = $this->pic_model->getTotalUsedOnTop($budget_code);
                 $balance = $total_on_top - $total_used_on_top;
-                // var_dump($balance);
                 $budget_code_activity = $budget_code . '/' . $_POST['activity'];
-                // $get_budget_code_activity = $this->db->query("SELECT * FROM tb_budget_on_top_activity WHERE budget_code = '$budget_code' AND  budget_code_activity ='$budget_code_activity'");
-                // if ($get_budget_code_activity->num_rows() < 1) {
-                //     echo json_encode(['budget_on_top' => 'not_set']);
-                //     return false;
-                // }
-                // $activity_on_top_percent = (float)$this->db->query("SELECT budget_on_top_percent FROM tb_budget_on_top_activity WHERE budget_code_activity = '$budget_code_activity'")->row()->budget_on_top_percent / 100;
-                // var_dump($activity_on_top_percent);
-                // $total_budget_on_top = $this->pic_model->get_total_budget_on_top($budget_code);
-                // $total_budget_on_top_allocated = $this->pic_model->get_total_budget_on_top_allocated($budget_code_activity);
-                // $total_budget_on_top_booked = $this->pic_model->get_total_budget_on_top_booked($budget_code_activity);
-                // $total_budget_on_top_unbooked = (float)$total_budget_on_top_allocated - (float)$total_budget_on_top_booked;
-                // var_dump($total_budget_on_top);
-                // var_dump($total_budget_on_top_allocated);
-                // var_dump($total_budget_on_top_booked);
-                // var_dump($total_budget_on_top_unbooked);
-                // var_dump($get_budget_code_activity->num_rows());
-                // var_dump($budget_code_activity);
-
-                // $balance = ((float)($total_budget_on_top) * (float)$activity_on_top_percent) - (float)$total_budget_on_top_allocated;
-                // var_dump($activity_on_top_percent);
-                // var_dump($activity_on_top_percent);
-                // var_dump($balance);
-                // var_dump($total_budget_on_top);
-                // var_dump($total_budget_on_top_allocated);
 
                 $data = array(
+                    'budget' => 'ready',
                     'balance' => $balance,
                     'budget_used' => $total_used_on_top,
                     'operatingBudget' => $total_on_top,
@@ -660,6 +584,16 @@ class Pic extends CI_Controller
         $total_costing = $this->pic_model->getTotalCosting($number)->row()->total_costing;
         $itemGroup = $this->pic_model->getProposalItemGroupDetail($number);
 
+
+        $array_group = [];
+        $array_customer = [];
+        foreach ($proposalCustomer->result() as $data) {
+            array_push($array_group, $data->GroupCustomer);
+            array_push($array_customer, $data->CustomerCode);
+        };
+        $string_group = json_encode($array_group);
+        $string_customer = json_encode($array_customer);
+
         $data = array(
             'proposal' => $proposal,
             'proposalItem' => $proposalItem,
@@ -671,9 +605,55 @@ class Pic extends CI_Controller
             'comment' => $comment,
             'total_costing' => $total_costing,
             'itemGroup' => $itemGroup,
+            'string_group' => $string_group,
+            'string_customer' => $string_customer,
         );
 
         $this->load->view('proposal/data_proposal_detail_v', $data);
+    }
+
+    public function showProposalEdit($number)
+    {
+        $params['number'] = $number;
+        $proposal = $this->pic_model->getProposal($params);
+        $proposalItem = $this->pic_model->getProposalItem($number);
+        $proposalItemOther = $this->pic_model->getProposalItemOther($number);
+        $proposalCustomer = $this->pic_model->getProposalCustomer($number);
+        $approvedBy = $this->pic_model->getApprovedBy($number);
+        $objective = $this->pic_model->getObjective($number);
+        $mechanism = $this->pic_model->getMechanism($number);
+        $comment = $this->pic_model->getComment($number);
+        $total_costing = $this->pic_model->getTotalCosting($number)->row()->total_costing;
+        $itemGroup = $this->pic_model->getProposalItemGroupDetail($number);
+
+        var_dump($itemGroup->result());
+
+
+        $array_group = [];
+        $array_customer = [];
+        foreach ($proposalCustomer->result() as $data) {
+            array_push($array_group, $data->GroupCustomer);
+            array_push($array_customer, $data->CustomerCode);
+        };
+        $string_group = json_encode($array_group);
+        $string_customer = json_encode($array_customer);
+
+        $data = array(
+            'proposal' => $proposal,
+            'proposalItem' => $proposalItem,
+            'proposalItemOther' => $proposalItemOther,
+            'proposalCustomer' => $proposalCustomer,
+            'approvedBy' => $approvedBy,
+            'objective' => $objective,
+            'mechanism' => $mechanism,
+            'comment' => $comment,
+            'total_costing' => $total_costing,
+            'itemGroup' => $itemGroup,
+            'string_group' => $string_group,
+            'string_customer' => $string_customer,
+        );
+
+        $this->load->view('proposal/data_proposal_detail_edit', $data);
     }
 
     public function prosesNoSk()
@@ -1541,5 +1521,21 @@ class Pic extends CI_Controller
             $this->session->set_flashdata('error', 'Gagal ubah password');
         }
         redirect(base_url($_SESSION['page'] . '/changePasswordPage'));
+    }
+
+
+    public function showEditItem()
+    {
+        $id = $this->input->post('id');
+        $data = array(
+            'item' => $this->pic_model->getProposalItemGroupDetailById($id),
+        );
+        $this->load->view('proposal/modal_edit_item_group', $data);
+    }
+
+    public function editItemExecute()
+    {
+        $post = $this->input->post();
+        var_dump($post);
     }
 }

@@ -11,7 +11,7 @@
                         <h4>Budget</h4>
                     </div>
                     <div class="box-body">
-                        <table class="table table-responsive table-bordered table-striped table_operating">
+                        <table class="table table-responsive table-bordered table-striped table_operating" style="font-size: 12px;">
                             <thead>
                                 <tr>
                                     <th>No.</th>

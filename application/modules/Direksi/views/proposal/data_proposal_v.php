@@ -8,19 +8,17 @@
             <div class="col col-md-12">
                 <h4>Data Proposal
                     <a style="display: inline;" href="<?= base_url($_SESSION['page']) ?>" class="btn btn-warning btn-sm pull-right">Back</a>
+                    <form style="display: inline;" action="<?= base_url($_SESSION['page'] . '/exportResumeProposalToExcel') ?>" method="POST">
+                        <button id="unduhExcel" style="margin-right:5px;" type="submit" class="btn btn-success btn-sm pull-right">Export to excel</button>
+                    </form>
                 </h4>
             </div>
-            <!-- <div class="col col-md-6">
-            </div> -->
         </div>
     </section>
     <section class="content">
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
-                    <!-- <div class="box-header">
-                        <button class="btn btn-info btn-sm pull-right" id="btnReportDetail">Report Detail</button>
-                    </div> -->
                     <div class="box-body table-responsive">
                         <table class="table table-responsive table-bordered table-striped" id="table_proposal">
                             <thead>
@@ -81,4 +79,16 @@
             window.location.href = "<?= base_url($_SESSION['page']) . '/reportDetail' ?>"
         })
     });
+
+    $('#unduhExcel').on('click', function() {
+        loadingShow()
+        console.log("Starting...");
+        setTimeout(loadingHide, 9000); // Menjalankan delayedFunction setelah 2000 milidetik (2 detik)
+        console.log("End.");
+        this.addEventListener('DOMContentLoaded', delayedFunction())
+    })
+
+    function delayedFunction() {
+        console.log("Delayed function executed!");
+    }
 </script>

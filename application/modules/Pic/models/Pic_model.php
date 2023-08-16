@@ -601,9 +601,10 @@ class Pic_model extends CI_Model
 
     public function getTotalUsedOnTop($budetCode)
     {
-        $sql = "select CASE WHEN sum(TotalCosting) is null THEN 0 ELSE sum(TotalCosting) END as TotalCostingOnTop
-        from tb_operating_proposal 
-        where BudgetCode = '$budetCode' and Budget_type = 'on_top'";
+        $sql = "select CASE WHEN sum(t1.TotalCosting) is null THEN 0 ELSE sum(t1.TotalCosting) END as TotalCostingOnTop
+        from tb_operating_proposal t1
+        inner join tb_proposal t2 on t1.ProposalNumber = t2.Number and t2.[Status] in ('open','approved') 
+        where t1.BudgetCode = '$budetCode' and t1.Budget_type = 'on_top'";
         $query = $this->db->query($sql);
         return $query->row()->TotalCostingOnTop;
     }
@@ -904,7 +905,8 @@ class Pic_model extends CI_Model
 
     public function getProposal($params = null)
     {
-        $sql = "SELECT DISTINCT t1.* FROM tb_proposal t1";
+        $sql = "SELECT DISTINCT t1.*, t2.Budget_type FROM tb_proposal t1 
+        inner join tb_operating_proposal t2 on t1.[Number] = t2.ProposalNumber";
         if (!empty($params['user_code'])) {
             $user_code = $params['user_code'];
             $sql .= " WHERE t1.BrandCode IN(SELECT BrandCode FROM tb_pic_brand WHERE UserCode = '$user_code')";
@@ -915,7 +917,7 @@ class Pic_model extends CI_Model
             $sql .= " WHERE t1.[Number] = '$number'";
         }
 
-        $sql .= " ORDER BY id DESC";
+        $sql .= " ORDER BY t1.id DESC";
 
         $query = $this->db->query($sql);
         return $query;
@@ -956,7 +958,7 @@ class Pic_model extends CI_Model
 
     public function getProposalCustomer($number)
     {
-        $sql = "SELECT t1.id, GroupCustomer, t2.GroupName, t2.CustomerName, t1.no_sk FROM tb_proposal_customer t1
+        $sql = "SELECT t1.id, GroupCustomer, t2.GroupName,t1.CustomerCode, t2.CustomerName, t1.no_sk FROM tb_proposal_customer t1
         INNER JOIN CustomerView t2 ON t1.CustomerCode = t2.CardCode
         WHERE t1.ProposalNumber = '$number'";
         $query = $this->db->query($sql);
@@ -1342,7 +1344,13 @@ class Pic_model extends CI_Model
 
     public function getBudgetUsed($budget_code)
     {
-        $sql = "select sum(TotalCosting) as TotalCosting from tb_operating_proposal where BudgetCode = '$budget_code' and Budget_type = 'operating'";
+        $sql = "select sum(t1.TotalCosting) as TotalCosting from 
+        tb_operating_proposal t1
+        inner join tb_proposal t2 on t1.ProposalNumber = t2.Number and t2.[Status] in ('open','approved') 
+        where 
+        t1.BudgetCode = '$budget_code' 
+        and 
+        t1.Budget_type = 'operating'";
         $query = $this->db->query($sql);
         $totalCosting = $query->row()->TotalCosting;
         if (is_null($totalCosting)) {
@@ -1850,6 +1858,14 @@ class Pic_model extends CI_Model
     {
         $sql = "select * from ProposalItemGroupDetailView
         where ProposalNumber = '$ProposalNumber'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getProposalItemGroupDetailById($id)
+    {
+        $sql = "select * from ProposalItemGroupDetailView
+        where id = '$id'";
         $query = $this->db->query($sql);
         return $query;
     }
