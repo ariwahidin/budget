@@ -728,11 +728,7 @@ class Pic_model extends CI_Model
         $date = $this->getDate();
         $budget_code = $post['budget_code'];
         $budget_code_activity = $post['budget_code_activity'];
-        // if ($post['budget_type'] == 'on_top') {
-        //     $budget_code = $this->db->query("SELECT budget_code FROM tb_budget_on_top_activity WHERE budget_code_activity = '$budget_code_activity'")->row()->budget_code;
-        // } else {
-        //     $budget_code = $this->db->query("SELECT BudgetCode FROM tb_operating_activity WHERE BudgetCodeActivity = '$budget_code_activity'")->row()->BudgetCode;
-        // }
+
         //insert proposal
         $params = array(
             'Number' => $number,
@@ -787,14 +783,6 @@ class Pic_model extends CI_Model
         $CustomerCode = implode(",", $post['customer_code']);
         $sql_insert_customer = "exec insertCustomerProposal '$ProposalNumber','$CustomerCode'";
         $insert_customer_proposal = $this->db->query($sql_insert_customer);
-        // for ($c = 0; $c < count($post['customer_code']); $c++) {
-        //     $customer = array(
-        //         'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
-        //         'GroupCustomer' => $post['group_code'][$c],
-        //         'CustomerCode' => $post['customer_code'][$c]
-        //     );
-        //     $this->db->insert('tb_proposal_customer', $customer);
-        // }
 
 
         //Insert CustomerGroup
@@ -815,12 +803,6 @@ class Pic_model extends CI_Model
             'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
             'StartPeriodeProposal' => $post['start_date'],
             'EndPeriodeProposal' => $post['end_date'],
-            // 'Total_Operating' => (float)$this->getTotalOperatingBudget($budget_code),
-            // 'Total_Budget_Activity' => (float)$this->getTotalBudgetActivity($budget_code_activity),
-            // 'YTD_operating' => (float)$post['YTD_operating'],
-            // 'YTD_purchase' => (float)$post['YTD_purchase'],
-            // 'YTD_budget_activity' => (float)$this->getYTDBudgetActivity($budget_code, $post['end_date']),
-            // 'YTD_actual_budget' => (float)$this->getYtdBudgetActualActivity($post['brand'], $budget_code, $budget_code_activity, $post['end_date']),
             'TotalCosting' => (float)$post['total_costing'],
             'Budget_type' => $post['budget_type'],
             'Budget_saldo' => (float)str_replace(',', '', $post['budget_saldo']),
@@ -863,15 +845,6 @@ class Pic_model extends CI_Model
                 $this->db->insert('tb_proposal_comment', $comment);
             }
         }
-
-        //insert customer group
-        // for ($i = 0; $i < count($customer_group); $i++) {
-        //     $customer_groups = [
-        //         'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
-        //         'GroupCustomer' => $customer_group[$i],
-        //     ];
-        //     $this->db->insert('tb_proposal_group', $customer_groups);
-        // }
 
         //insert item sales detail by group
         for ($i = 0; $i < count($post['t_qty_item']); $i++) {
@@ -1880,4 +1853,20 @@ class Pic_model extends CI_Model
         $this->db->where('user_code', $this->session->userdata('user_code'));
         $this->db->update('master_user', $params);
     }
+
+    // public function getCurrentSaldoForEdit($number){
+    //     $current_saldo = 0;
+    //     $sql_1= "select BudgetCode, Budget_type, TotalCosting 
+    //     from tb_operating_proposal where ProposalNumber = '$number'";
+    //     $proposal = $this->db->query($sql_1);
+    //     $budget_code = $proposal->row()->BudgetCode;
+    //     $budget_type = $proposal->row()->Budget_type;
+    //     $total_costing = $proposal->row()->TotalCosting;
+    //     if($budget_type == 'operating'){
+    //         $sql_saldoe
+
+    //     }else if($budget_type == 'on_top'){
+
+    //     }
+    // }
 }

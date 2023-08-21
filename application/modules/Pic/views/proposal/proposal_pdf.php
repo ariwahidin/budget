@@ -198,7 +198,7 @@
             <tr>
                 <td colspan="3">Total</td>
                 <td style="text-align: right;">
-                    <?= number_format($price); ?>
+                    <!-- <?= number_format($price); ?> -->
                 </td>
                 <?php if (activity_is_sales($proposal_header->row()->Activity) != 'N') { ?>
                     <td style="text-align: right;">
@@ -259,7 +259,7 @@
             <tr>
                 <td colspan="2">Total</td>
                 <td style="text-align: right;">
-                    <?= number_format($price); ?>
+                    <!-- <?= number_format($price); ?> -->
                 </td>
                 <td style="text-align: right;">
                     <?= number_format($qty); ?>

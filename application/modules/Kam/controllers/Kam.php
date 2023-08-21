@@ -88,11 +88,29 @@ class Kam extends CI_Controller
         $this->load->view('proposal/modal_input_skp', $data);
     }
 
+    public function loadImageSkp()
+    {
+        $id = $this->input->post('id');
+        $image = null;
+        if ($id != null) {
+            $image = 'uploads/img/skp/' . $this->kam_model->getSKPById($id)->row()->Img;
+        }
+
+        $data = array(
+            'image' => $image
+        );
+
+        $this->load->view('proposal/modal_image_skp', $data);
+    }
+
     public function simpanSkp()
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $dataArray = json_decode(file_get_contents("php://input"), true);
+
+            // var_dump($dataArray);
+            // die;
 
             if ($dataArray['action'] == 'update') {
                 $this->kam_model->update_skp($dataArray);

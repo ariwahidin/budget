@@ -14,7 +14,7 @@
                     <th>No.</th>
                     <th>Month</th>
                     <th>Value</th>
-                    <th>Action</th>
+                    <!-- <th>Action</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -24,9 +24,9 @@
                         <td><?= $no++ ?></td>
                         <td><?= date('M Y', strtotime($data->month)) ?></td>
                         <td><?= number_format($data->budget_on_top) ?></td>
-                        <td>
+                        <!-- <td>
                             <button onclick="loadModalEditOnTop(this)" data-id="<?= $data->id ?>" class="btn btn-primary btn-xs">Edit</button>
-                        </td>
+                        </td> -->
                     </tr>
                 <?php } ?>
             </tbody>

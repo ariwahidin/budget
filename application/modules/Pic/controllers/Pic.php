@@ -1356,19 +1356,6 @@ class Pic extends CI_Controller
     {
         $this->pic_model->simpanBudgetOnTop($_POST);
         if ($this->db->affected_rows() > 0) {
-            // $budget_code = $_POST['budget_code'];
-            // $brand = $this->db->query("SELECT DISTINCT BrandCode FROM tb_operating WHERE BudgetCode = '$budget_code'")->row()->BrandCode;
-            // $operating = $this->pic_model->getOperating($budget_code);
-            // $activity = $this->pic_model->getActivity();
-            // $operatingHeader = $this->pic_model->getHeaderOperating($budget_code);
-            // $data = array(
-            //     'brand' => $brand,
-            //     'operating' => $operating,
-            //     'activity' => $activity,
-            //     'budget_code' => $budget_code,
-            //     'operating_header' => $operatingHeader,
-            // );
-            // $this->load->view('operating/set_on_top_activity_v', $data);
             redirect(base_url($_SESSION['page'] . '/set_on_top_activity/' . $_POST['budget_code']));
         } else {
             echo "Gagal Simpan Data";

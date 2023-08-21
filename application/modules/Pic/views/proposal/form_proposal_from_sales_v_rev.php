@@ -696,47 +696,14 @@ $group_code = implode("','", $GroupCode);
             item_code.push(input_item_code[x].value);
             item_qty.push(input_qty[x].value.replace(/,/g, ''));
         }
-        // console.log(item_code);
-        // console.log(item_qty);
 
-
-
-
-        // return false
 
         if (item_code.length > 0) {
-
-
             var qty_inputs = document.querySelectorAll('.input_qty')
-            // for (let i = 0; i < qty_inputs.length; i++) {
-            //     if (qty_inputs[i].value === "" || qty_inputs[i].value === "0") {
-            //         Swal.fire({
-            //             icon: 'warning',
-            //             title: 'Input sales estimation tidak boleh kosong!',
-            //         })
-            //         return false;
-            //     }
-
-            // }
-
-            // var promo_inputs = document.querySelectorAll('.input_value_promo')
-            // for (let i = 0; i < promo_inputs.length; i++) {
-            //     if (promo_inputs[i].value === "" || promo_inputs[i].value === "0") {
-            //         Swal.fire({
-            //             icon: 'warning',
-            //             title: 'Input value promo tidak boleh kosong!',
-            //         })
-            //         return false;
-            //     }
-            // }
-
 
             //cek budget
             var budget_saldo = '<?= (float)str_replace(',', '', $_POST['balance_budget']) ?>';
             var total_costing = $('#td_total_costing').text().replace(/,/g, '');
-
-            // console.log(budget_saldo)
-            // console.log(total_costing)
 
             if (parseFloat(total_costing) > parseFloat(budget_saldo)) {
                 Swal.fire({
@@ -774,53 +741,6 @@ $group_code = implode("','", $GroupCode);
                         brand,
                     });
 
-                    //Swal.fire('Saved!', '', 'success')
-                    // loadingShow();
-                    // $.ajax({
-                    //     type: "POST",
-                    //     url: "<?= base_url($_SESSION['page']) . '/set_cart_item' ?>",
-                    //     data: {
-                    //         group_customer,
-                    //         no_proposal,
-                    //         item_code,
-                    //         item_qty,
-                    //         customer,
-                    //         avg_sales,
-                    //         start_date,
-                    //         end_date,
-                    //         brand,
-                    //     },
-                    //     dataType: "JSON",
-                    //     success: function(response) {
-                    //         // Handle the response from the server
-                    //         //console.log(response.success);
-                    //         if (response.success == true) {
-                    //             $("#containerSetDetail").load('<?= base_url($_SESSION['page'] . '/get_cart_item') ?>', {
-                    //                 customer
-                    //             });
-
-                    //             const inputs_price = document.querySelectorAll('.input_price'); // select all input elements of type "text"
-                    //             for (let i = 0; i < inputs_price.length; i++) {
-                    //                 inputs_price[i].readOnly = true; // set the readOnly property to true for each element
-
-                    //             }
-
-                    //             const inputs_avg = document.querySelectorAll('.input_avg_sales'); // select all input elements of type "text"
-                    //             for (let i = 0; i < inputs_avg.length; i++) {
-                    //                 inputs_avg[i].readOnly = true; // set the readOnly property to true for each element
-
-                    //             }
-
-                    //             const inputs = document.querySelectorAll('.input_qty'); // select all input elements of type "text"
-                    //             for (let i = 0; i < inputs.length; i++) {
-                    //                 inputs[i].readOnly = true; // set the readOnly property to true for each element
-
-                    //             }
-                    //             const promo_inputs = document.querySelectorAll('.input_value_promo'); // select all input elements of type "text"
-                    //             for (let i = 0; i < promo_inputs.length; i++) {
-                    //                 promo_inputs[i].readOnly = true; // set the readOnly property to true for each element
-
-                    //             }
                     const btn_delete = document.querySelectorAll('.btn_delete_product'); // select all input elements of type "text"
                     for (let i = 0; i < btn_delete.length; i++) {
                         btn_delete[i].disabled = true; // set the disabled property to true for each element
@@ -938,7 +858,7 @@ $group_code = implode("','", $GroupCode);
 
         // Menampilkan hasil penjumlahan untuk setiap data-id di console
         for (const [dataId, value] of dataValues) {
-            console.log(`Data ID "${dataId}": ${value}`);
+            // console.log(`Data ID "${dataId}": ${value}`);
         }
 
         //dimatikan sementara
@@ -1027,11 +947,6 @@ $group_code = implode("','", $GroupCode);
         }
 
         total_costing = total_costing_1 + total_costing_2
-        // console.log(total_costing_1)
-        // console.log(total_costing_2)
-        // console.log(total_costing)
-
-        // return false
 
 
         if (total_costing < 1) {
@@ -1064,24 +979,6 @@ $group_code = implode("','", $GroupCode);
             t_sales.push(table_detail.querySelectorAll(".t_qty")[i].value)
         }
 
-
-        // console.log(t_qty_item)
-        // console.log(t_group)
-        // console.log(t_item_code)
-        // console.log(t_sales)
-        // console.log(table_detail)
-
-
-
-
-        // console.log(qty_estimation_inputs.length)
-        // return false
-
-
-
-
-
-
         const valid_item_estimation = validatation_item_estimations()
         // console.log(validatation_item_estimations())
 
@@ -1096,18 +993,6 @@ $group_code = implode("','", $GroupCode);
             // console.log("stop")
             return false
         }
-
-        // console.log(json_customer_items)
-        // return false
-
-        // var input_group = document.querySelectorAll('input.input_group');
-        // var input_customer = document.querySelectorAll('input.input_customer');
-        // var group_code = [];
-        // var customer_code = [];
-        // for (var y = 0; y < input_customer.length; y++) {
-        //     group_code.push(input_group[y].value);
-        //     customer_code.push(input_customer[y].value);
-        // }
 
         var brand = '<?= $_POST['brand'] ?>';
         var activity = '<?= $_POST['activity'] ?>';
@@ -1187,13 +1072,7 @@ $group_code = implode("','", $GroupCode);
 
 
         var customer_code = <?php echo json_encode(explode(",", $customer_code)); ?>;
-        // var customer_code = "<?php echo $customer_code; ?>";
-        // console.log(customer_code);
-        // return false;
-        // var td_customer_code = document.querySelectorAll('td.CustomerCode_Customer');
-        // for (var c = 0; c < td_customer_code.length; c++) {
-        //     customer_code.push(td_customer_code[c].innerText.replace(/\s/g, ""));
-        // }
+
 
         const duplicates_customer = customer_code.filter((item, index) => index !== customer_code.indexOf(item));
         if (duplicates_customer.length > 0) {
@@ -1251,12 +1130,6 @@ $group_code = implode("','", $GroupCode);
         var data_no_doc = {
             no_doc: no_doc.replace(/[\s\t]/g, "")
         };
-        // Melakukan permintaan POST dengan jQuery
-        // $.post("<?= base_url($_SESSION['page']) . '/cekNoDoc' ?>", data_no_doc).done(function(response) {
-        //     if (response.success == true) {
-        //         no_ref_is_exists = true;
-        //     }
-        // });
 
         no_ref_is_exists = $.ajax({
             url: "<?= base_url($_SESSION['page']) . '/cekNoDoc' ?>",
@@ -1283,12 +1156,6 @@ $group_code = implode("','", $GroupCode);
             })
             return false;
         }
-
-        // console.log('lanjut')
-        // return false;
-        //confirmation before save
-
-
 
 
         Swal.fire({

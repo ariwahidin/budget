@@ -251,7 +251,7 @@
                             <thead>
                                 <tr>
                                     <th>No.</th>
-                                    <th>Group Name</th>
+                                    <th>Group Customer</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -259,7 +259,7 @@
                                 foreach ($group->result() as $data) { ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
-                                        <td><?= $data->GroupName ?></td>
+                                        <td><?= $data->SubGroupName ?></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -303,6 +303,7 @@
     </section>
 </div>
 <div id="modalInputSKP"></div>
+<div id="modalGambarSKP"></div>
 <script>
     function loadModalInputSKP(button) {
         let number = $(button).data('number')
@@ -314,4 +315,13 @@
     }
 
     $('#tableCustomer').DataTable()
+
+    function lihatGambar(button) {
+        const id = $(button).data('id')
+        $('#modalGambarSKP').load("<?= base_url($_SESSION['page']) ?>/loadImageSkp", {
+            id
+        }, function() {
+            $('#modal-image-skp').modal('show')
+        })
+    }
 </script>
