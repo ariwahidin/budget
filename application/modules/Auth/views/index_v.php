@@ -1,3 +1,5 @@
+<?php var_dump($_SERVER) ?>
+<?php var_dump($_GET) ?>
 <!DOCTYPE html>
 <html>
 
@@ -43,6 +45,13 @@
 
       <form action="<?= site_url('auth/auth/process') ?>" method="post">
         <div class="form-group has-feedback">
+          <?php
+          $page = ""; 
+          if(isset($_GET['urlKam'])){
+            $page = $_GET['urlKam'];
+          }
+          ?>
+          <input name="urlProposalForKam" type="hidden" value="<?=$page?>">
           <input name="username" class="form-control" placeholder="Username">
           <span class="glyphicon glyphicon-user form-control-feedback"></span>
         </div>

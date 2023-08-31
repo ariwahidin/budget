@@ -1,6 +1,3 @@
-<?php
-// var_dump($_SESSION);
-?>
 <?php $this->view('header'); ?>
 <div class="content-wrapper">
     <section class="content-header">
@@ -91,25 +88,6 @@
 <script>
     $(document).ready(function() {
         $('.select2').select2();
-        // $('#next').on('click', function() {
-        //     var brand_code = $('#brand').val();
-        //     var activity = $('#activity').val();
-        //     var start_date = $('#start_date').val();
-        //     var end_date = $('#end_date').val();
-        //     var group = $('#group').val();
-
-        //     $.ajax({
-        //         url : '<?= base_url($_SESSION['page'] . '/createProposal2') ?>',
-        //         type : 'POST',
-        //         data : {
-        //             brand_code, activity, start_date, end_date, group, 
-        //         },
-        //         dataType : 'JSON',
-        //         success: function(response){
-
-        //         }
-        //     });
-        // })
     })
 
     function create() {

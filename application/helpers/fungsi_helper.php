@@ -1146,3 +1146,13 @@ function getItemGroup($number)
     $query = $ci->db->query($sql);
     return $query;
 }
+
+function getApprovedBy($proposalNumber)
+{
+    $ci = &get_instance();
+    $sql = "select t1.*, t2.fullname from tb_proposal_approved t1
+    inner join master_user t2 on t1.approvedBy = t2.user_code
+    where t1.ProposalNumber = '$proposalNumber'";
+    $query = $ci->db->query($sql);
+    return $query;
+}

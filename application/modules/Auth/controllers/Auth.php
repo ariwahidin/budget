@@ -17,9 +17,6 @@ class Auth extends CI_Controller
 
     public function process()
     {
-
-
-
         $post = $this->input->post(null, TRUE);
         $login = $this->auth_model->cek_user($post);
         if ($login->num_rows() > 0) {
@@ -28,16 +25,27 @@ class Auth extends CI_Controller
             $fullname = $login->row()->fullname;
             $page = $login->row()->page;
             $access_role = $login->row()->access_role;
+            $level = $login->row()->level;
             $params = array(
                 'user_code' => $usercode,
                 'username' => $username,
                 'fullname' => $fullname,
                 'page' => $page,
                 'access_role' => $access_role,
+                'level' => $level
             );
 
             $this->session->set_userdata($params);
-            redirect(base_url($page));
+
+            if (isset($_POST['urlProposalForKam'])) {
+                if ($_POST['urlProposalForKam'] != "") {
+                    redirect(base_url($_POST['urlProposalForKam']));
+                } else {
+                    redirect(base_url($page));
+                }
+            } else {
+                redirect(base_url($page));
+            }
         } else {
 
 ?>
@@ -76,7 +84,7 @@ class Auth extends CI_Controller
 
     public function logout()
     {
-        $params = array('user_code', 'username', 'fullname', 'page', 'access_role');
+        $params = array('user_code', 'username', 'fullname', 'page', 'access_role', 'level');
         $this->session->unset_userdata($params);
         redirect('auth/login');
     }

@@ -293,15 +293,6 @@ class Administrator_model extends CI_Model
         $updateStatusProposal = $this->db->query("UPDATE tb_proposal SET [Status] = 'approved', ApprovedBy = '$username', ApprovedDate = '$date' WHERE Number = '$number'");
     }
 
-    public function cancelProposal($number)
-    {
-        $username = $_SESSION['username'];
-        $date = $this->getDate();
-        $allocated = $this->db->query("SELECT AllocatedBudget FROM tb_operating_proposal WHERE ProposalNumber = '$number'")->row()->AllocatedBudget;
-        $updateOperating = $this->db->query("UPDATE tb_operating_proposal SET AllocatedBudget = 0, DeallocatedBudget = '$allocated', CancelBy = '$username', CancelDate = '$date' WHERE ProposalNumber = '$number'");
-        $updateStatusProposal = $this->db->query("UPDATE tb_proposal SET [Status] = 'cancelled', CancelBy = '$username', CancelDate = '$date' WHERE Number = '$number'");
-    }
-
     public function getNumberBudget($brand_code)
     {
         $sql = "SELECT FORMAT(MAX(right(BudgetCode, charindex('/', BudgetCode) - 1))+1, 'd3') AS Number FROM tb_operating
@@ -526,5 +517,38 @@ class Administrator_model extends CI_Model
         );
 
         $this->db->insert('master_user', $data);
+    }
+
+    public function getDireksi()
+    {
+        $sql = "select id, user_code, username, fullname, page, access_role, level from master_user where page = 'direksi'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getLevelDireksi()
+    {
+        $sql = "select id, code, page, note from m_level where page = 'direksi'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function editDireksi($post)
+    {
+        $data = array(
+            'level' => $post['code'],
+            'updated_date' => $this->getDate(),
+            'updated_by' => $this->session->userdata('user_code')
+        );
+        $this->db->where('id', $post['id']);
+        $this->db->update('master_user', $data);
+    }
+
+
+    public function cancelProposal($number)
+    {
+        $username = $_SESSION['username'];
+        $date = $this->getDate();
+        $this->db->query("UPDATE tb_proposal SET [Status] = 'canceled', CancelBy = '$username', CancelDate = '$date' WHERE Number = '$number'");
     }
 }

@@ -1,6 +1,5 @@
 <div class="content-wrapper">
     <section class="content">
-        Halaman Kam
-        <?php var_dump($_SESSION); ?>
+        Selamat datang, <?=ucfirst($_SESSION['fullname'])?>
     </section>
 </div>

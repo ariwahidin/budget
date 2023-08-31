@@ -207,15 +207,6 @@
                                 <?php
                                 } ?>
                             </tbody>
-                            <!-- <tfoot>
-                                <tr>
-                                    <td colspan="2">Total</td>
-                                    <td><?= $total_percent_activity ?></td>
-                                    <td><?= number_format($total_budget_activity) ?></td>
-                                    <td><?= number_format($total_used) ?></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot> -->
                         </table>
                     </div>
                 </div>

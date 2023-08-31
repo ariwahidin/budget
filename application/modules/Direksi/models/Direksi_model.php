@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+
+
 class Direksi_model extends CI_Model
 {
     function __construct()
@@ -331,15 +333,22 @@ class Direksi_model extends CI_Model
     {
 
         // var_dump($post);
+        // var_dump($this->session->userdata());
         // die;
 
         $number = $post['number'];
         $comment = $post['comment'];
         $username = $_SESSION['username'];
+
+
         $date = $this->getDate();
-        $allocated = $this->db->query("SELECT Budget_allocated FROM tb_operating_proposal WHERE ProposalNumber = '$number'")->row()->Budget_allocated;
-        $updateOperating = $this->db->query("UPDATE tb_operating_proposal SET Budget_unbooked = 0, Budget_booked = '$allocated', ApprovedBy = '$username', ApprovedDate = '$date' WHERE ProposalNumber = '$number'");
-        $updateStatusProposal = $this->db->query("UPDATE tb_proposal SET [Status] = 'approved', ApprovedBy = '$username', ApprovedDate = '$date', reason ='$comment', reason_by = '$username' WHERE Number = '$number'");
+
+        if ($this->session->userdata('level') == 'D1') {
+            $allocated = $this->db->query("SELECT Budget_allocated FROM tb_operating_proposal WHERE ProposalNumber = '$number'")->row()->Budget_allocated;
+            $updateOperating = $this->db->query("UPDATE tb_operating_proposal SET Budget_unbooked = 0, Budget_booked = '$allocated', ApprovedBy = '$username', ApprovedDate = '$date' WHERE ProposalNumber = '$number'");
+            $updateStatusProposal = $this->db->query("UPDATE tb_proposal SET [Status] = 'approved', ApprovedBy = '$username', ApprovedDate = '$date', reason ='$comment', reason_by = '$username' WHERE Number = '$number'");
+        }
+
         $params = array(
             'proposalNumber' => $number,
             'approvedBy' => $_SESSION['user_code'],
@@ -654,5 +663,16 @@ class Direksi_model extends CI_Model
         order by Number DESC";
         $query = $this->db->query($sql);
         return $query;
+    }
+
+    public function changePassword($post)
+    {
+        $params = array(
+            'password' => $post['newPassword'],
+            'updated_date' => $this->getDate(),
+            'updated_by' => $this->session->userdata('user_code'),
+        );
+        $this->db->where('user_code', $this->session->userdata('user_code'));
+        $this->db->update('master_user', $params);
     }
 }

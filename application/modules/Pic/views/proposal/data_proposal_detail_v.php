@@ -11,9 +11,9 @@
                 <?php if ($proposal->row()->Status == 'open' || $proposal->row()->Status == 'cancelled') { ?>
                     <!-- <a class="btn btn-warning pull-right" href="<?= base_url($_SESSION['page'] . '/edit_proposal/' . $proposal->row()->Number) ?>" style="margin-right:5px;">Edit</a> -->
                 <?php } ?>
-                <?php if ($proposal->row()->Status == 'approved') { ?>
+                <!-- <?php if ($proposal->row()->Status == 'approved') { ?>
                     <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-default" style="margin-right: 10px;"> Add No.SK</button>
-                <?php } ?>
+                <?php } ?> -->
                 <h4>
                     <strong>Proposal Detail </strong>
                     <!-- <button onclick="copyTo(this)" data-number="<?= $proposal->row()->Number ?>" class="btn btn-sm btn-success">Copy To</button> -->
@@ -65,11 +65,38 @@
                                             </tr>
                                         </table>
                                     </div>
-                                    <?php if ($proposal->row()->Status != 'open') { ?>
+                                    <div class="col-md-4">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Approved by</th>
+                                                    <th>Comment</th>
+                                                    <th>Approved date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php $no = 1;
+                                                foreach ($approvedBy->result() as $data) { ?>
+                                                    <tr>
+                                                        <td><?= $no++ . "." ?></td>
+                                                        <td><?= ucfirst($data->fullname) ?></td>
+                                                        <td><?= ucfirst($data->reason) ?></td>
+                                                        <td><?= date('d M Y H:i', strtotime($data->approvedDate)) ?></td>
+                                                    </tr>
+                                                <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- <?php if ($proposal->row()->Status != 'open') { ?>
                                         <div class="col-md-4">
                                             <?php if ($approvedBy->num_rows() > 0) { ?>
                                                 <b>Approved By</b>
-                                                <p><?= ucwords($proposal->row()->ApprovedBy) ?></p>
+                                                <ul>
+                                                    <?php foreach ($approvedBy->result() as $data) { ?>
+                                                        <li><?= ucwords($data->fullname) ?></li>
+                                                    <?php } ?>
+                                                </ul>
                                             <?php } ?>
                                             <?php if ($proposal->row()->Status == 'cancelled') { ?>
                                                 <b>Cancell By </b>
@@ -79,10 +106,17 @@
                                         <div class="col-md-4">
                                             <div class="">
                                                 <b>Comment</b>
-                                                <p><?= ucwords($proposal->row()->reason) ?></p>
+                                                <?php if ($approvedBy->num_rows() > 0) { ?>
+                                                    <b>Approved By</b>
+                                                    <ul>
+                                                        <?php foreach ($approvedBy->result() as $data) { ?>
+                                                            <li><?= ucwords($data->reason) ?></li>
+                                                        <?php } ?>
+                                                    </ul>
+                                                <?php } ?>
                                             </div>
                                         </div>
-                                    <?php } ?>
+                                    <?php } ?> -->
                                 </div>
                             </div>
                         </div>

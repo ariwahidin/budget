@@ -169,4 +169,38 @@ class Finance_model extends CI_Model
         $query = $this->db->query($sql);
         return $query->row()->TotalCosting;
     }
+
+    public function getDataSkp()
+    {
+        $sql = "select distinct t1.id, t1.ProposalNumber, t1.GroupCode, 
+        t1.SubGroupCode, t1.NoSKP, t1.Ket, 
+        t2.GroupName as GroupCustomer, 
+        --t3.CardCode, t3.CardName as CustomerName, 
+        t4.GroupCode, t4.GroupName as ServiceBy
+        from [dbo].[tb_proposal_skp] t1
+        left join m_group_anp t2 on t1.SubGroupCode = t2.GroupId
+        left join m_customer_anp t3 on t1.SubGroupCode = t3.SubGroupCode
+        left join m_group t4 on t1.GroupCode = t4.GroupCode
+        where t1.NoSKP != ''";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getCustomerBySkp($skp){
+        $sql = "select distinct 
+        t1.id, t1.ProposalNumber,
+        --t1.GroupCode, 
+        --t1.SubGroupCode, t1.NoSKP, t1.Ket, 
+        t2.GroupName as GroupCustomer, 
+        t5.CardCode, t5.CardName, 
+        t4.GroupCode, t4.GroupName as ServiceBy
+        from [dbo].[tb_proposal_skp] t1
+        left join m_group_anp t2 on t1.SubGroupCode = t2.GroupId
+        left join tb_proposal_customer t3 on t1.ProposalNumber = t3.ProposalNumber
+        left join m_group t4 on t1.GroupCode = t4.GroupCode
+        left join m_customer_anp t5 on t1.SubGroupCode = t5.SubGroupCode 
+        where t1.NoSKP = '$skp'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
 }

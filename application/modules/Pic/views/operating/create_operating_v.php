@@ -50,6 +50,7 @@
                                                 <option value="CHF">CHF</option>
                                                 <option value="EUR">EUR</option>
                                                 <option value="GBP">GBP</option>
+                                                <option value="SGD">SGD</option>
                                                 <option value="IDR">IDR</option>
                                             </select>
                                         </td>

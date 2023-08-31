@@ -13,8 +13,6 @@ class Pic extends CI_Controller
 
     public function index()
     {
-        // $this->load->view('pic_v');
-
         redirect(base_url($_SESSION['page']) . '/showProposal');
     }
 
@@ -29,10 +27,6 @@ class Pic extends CI_Controller
 
     public function showBrand()
     {
-        // $brand = $this->pic_model->getBrand();
-        // $data = array(
-        //     'brand' => $brand,
-        // );
         $this->load->view('brand/brand_v');
     }
 
@@ -259,22 +253,19 @@ class Pic extends CI_Controller
         $balance = 0;
         if (!empty($_POST['budget_source'])) {
             if ($_POST['budget_source'] == 'anp') {
+                
                 if ($this->pic_model->getBudgetCode($_POST)->num_rows() < 1) {
                     echo json_encode(['budget' => 'not_set']);
                     return false;
                 }
+
                 //From Operating
                 $budget_code = $this->pic_model->getBudgetCode($_POST)->row()->BudgetCode;
                 $budget_code_activity = $budget_code . '/' . $_POST['activity'];
                 $budget_activity = $this->pic_model->getBudgetActivity($budget_code_activity, $_POST['end_date']);
-                // $actual_purchase = (float)$this->pic_model->getYtdActualPurchase($_POST['brand'], $budget_code_activity, $_POST['end_date']);
-                // var_dump($actual_purchase);
                 $budget_allocated = $this->pic_model->getBudgetAllocated($budget_code)->row()->budget_total_allocated;
                 $budget_used = $this->pic_model->getBudgetUsed($budget_code);
-                // $anp_vs_target = $this->pic_model->getAnpVsTarget($budget_code)->row()->Anp_Vs_Target;
-                // $operating_vs_anp = $this->pic_model->getOperatingVsAnp($budget_code)->row()->Operating_Vs_Anp;
                 $budgetActivity_vs_Operating = $this->pic_model->getBudgetActivityVsOperating($budget_code_activity)->row()->activity_vs_operating;
-                // $actual_budget = (($actual_purchase * $operating_vs_anp) * $anp_vs_target) * $budgetActivity_vs_Operating;
                 $actual_budget = $this->pic_model->getYtdBudgetActualActivity($_POST['brand'], $budget_code, $budget_code_activity, $_POST['end_date']);
                 $total_budget_activity = $this->pic_model->getBudgetActivityVsOperating($budget_code_activity)->row()->TotalBudgetActivity;
                 $total_operating = $this->pic_model->getBudgetActivityVsOperating($budget_code_activity)->row()->OperatingBudget;

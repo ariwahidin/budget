@@ -227,15 +227,7 @@ class Administrator extends CI_Controller
         }
     }
 
-    public function cancelProposal($number)
-    {
-        $this->administrator_model->cancelProposal($number);
-        if ($this->db->affected_rows() > 0) {
-            redirect(base_url($_SESSION['page']) . '/showProposal');
-        } else {
-            echo "Gagal cancel proposal";
-        }
-    }
+
 
     public function createOperating()
     {
@@ -475,5 +467,52 @@ class Administrator extends CI_Controller
             }
         }
         echo json_encode($response);
+    }
+
+    public function direksi()
+    {
+        $data = array(
+            'direksi' => $this->administrator_model->getDireksi(),
+            'level' => $this->administrator_model->getLevelDireksi()
+        );
+        $this->render('user/direksi', $data);
+    }
+
+    public function simpanLevelDireksi()
+    {
+        $post = $this->input->post();
+        $this->administrator_model->editDireksi($post);
+        if ($this->db->affected_rows() > 0) {
+            $response = array(
+                'success' => true,
+                'message' => 'Data berhasil diupdate'
+            );
+        } else {
+            $response = array(
+                'success' => true,
+                'message' => 'Gagal update data'
+            );
+        }
+        echo json_encode($response);
+    }
+
+    public function loadTableUserDireksi()
+    {
+        $data = array(
+            'direksi' => $this->administrator_model->getDireksi(),
+        );
+        $this->load->view('user/table_user_direksi', $data);
+    }
+
+    public function cancelProposal($number)
+    {
+        $this->administrator_model->cancelProposal($number);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('success', 'Proposal ' . $number . ' berhasil dicancel');
+            redirect(base_url($_SESSION['page']) . '/showProposal');
+        } else {
+            $this->session->set_flashdata('error', 'Proposal ' . $number . ' gagal dicancel');
+            redirect(base_url($_SESSION['page']) . '/showProposal');
+        }
     }
 }

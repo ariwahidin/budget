@@ -3,6 +3,7 @@
     <section class="content-header">
         <h1>Data Proposal</h1>
     </section>
+    <?php $this->load->view('alert') ?>
     <section class="content">
         <div class="row">
             <div class="col-md-12">
@@ -32,10 +33,11 @@
                                         </td>
                                         <td>
                                             <a href="<?= base_url($_SESSION['page']) . '/showProposalDetail/' . $data->Number ?>" class="btn btn-info btn-xs">Lihat</a>
-                                            <?php if ($_SESSION['access_role'] == 'administrator') { ?>
-                                                <button class="btn btn-primary btn-xs">Update</button>
-                                                <a href="<?= base_url($_SESSION['page']) . '/deleteProposal/' . $data->Number ?>" class="btn btn-danger btn-xs">Delete</button>
-                                            <?php } ?>
+
+                                            <button class="btn btn-primary btn-xs">Update</button>
+                                            <a href="<?= base_url($_SESSION['page']) . '/deleteProposal/' . $data->Number ?>" class="btn btn-danger btn-xs">Delete</a>
+
+                                            <a href="<?= base_url($_SESSION['page']) . '/cancelProposal/' . $data->Number ?>" class="btn btn-warning btn-xs">Cancel</a>
                                         </td>
                                     </tr>
                                 <?php } ?>

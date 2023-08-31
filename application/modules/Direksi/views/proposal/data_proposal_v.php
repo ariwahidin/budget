@@ -33,6 +33,7 @@
                                     <th>Pic</th>
                                     <th>Created Date</th>
                                     <th>Status</th>
+                                    <th>Aprroved</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -50,8 +51,12 @@
                                         <td><?= ucfirst($data->CreatedBy) ?></td>
                                         <td><?= date('d M Y', strtotime($data->CreatedDate)) ?></td>
                                         <td>
-                                            <!-- <span class="label label-<?= $data->Status == 'approved' ? 'success' : ($data->Status == 'open' ? 'info' : 'warning') ?>"><?= ucfirst($data->Status) ?></span> -->
                                             <span class=""><?= ucfirst($data->Status) ?></span>
+                                        </td>
+                                        <td>
+                                            <?php foreach (getApprovedBy($data->Number)->result() as $a) { ?>
+                                                <span class="label label-success"><i class="fa fa-check"></i><?= ucfirst($a->fullname)." ".date('d/m/y', strtotime($a->created_at)) ?></span><br>
+                                            <?php } ?>
                                         </td>
                                         <td>
                                             <a href="<?= base_url($_SESSION['page']) . '/showProposalDetail/' . $data->Number ?>" class="btn btn-info btn-xs">Lihat</a>

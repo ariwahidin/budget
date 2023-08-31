@@ -122,7 +122,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <table id="table1" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                                    <table id="table1" class="table table-bordered  table-striped table-hover dataTable" role="grid" aria-describedby="example2_info">
                                         <thead>
                                             <tr>
                                                 <th>No.</th>
@@ -131,6 +131,8 @@
                                                 <th>End Periode</th>
                                                 <th>Operating</th>
                                                 <th>Costing</th>
+                                                <th style="background-color: #FFDBAA;">Claim Amount</th>
+                                                <th style="background-color: #FFB7B7;">Used Amount</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -141,8 +143,10 @@
                                                     <td><?= $data->BrandName ?></td>
                                                     <td><?= $data->StartPeriode ?></td>
                                                     <td><?= $data->EndPeriode ?></td>
-                                                    <td><?= number_format($data->TotalOperatingBudget) ?></td>
-                                                    <td><?= number_format($data->TotalCosting) ?></td>
+                                                    <td style="text-align: right;"><?= number_format($data->TotalOperatingBudget) ?></td>
+                                                    <td style="text-align: right;"><?= number_format($data->TotalCosting) ?></td>
+                                                    <td style="text-align: right;background-color: #FFDBAA;"> <?= number_format($data->IncomingAmount) ?></td>
+                                                    <td style="background-color: #FFB7B7;"></td>
                                                 </tr>
                                             <?php } ?>
                                         </tbody>

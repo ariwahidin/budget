@@ -269,7 +269,7 @@
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">MAIN NAVIGATION</li>
                     <li class="treeview <?= $this->uri->segment(2) == 'employee' ? 'active' : '' ?>">
-                    <li class="treeview <?= $this->uri->segment(2) == 'detailProposal' || $this->uri->segment(2) == 'showProposal' ? 'active' : '' ?>">
+                    <li class="treeview <?= $this->uri->segment(2) == 'detailProposal' || $this->uri->segment(2) == 'showProposal' || $this->uri->segment(2) == 'showSkp' ? 'active' : '' ?>">
                         <a href="#">
                             <i class="fa fa-folder-o"></i>
                             <span>Proposal Promotion</span>
@@ -278,8 +278,8 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <!-- <li <?= $this->uri->segment(2) == 'show_create_form' ? 'class="active"' : '' ?>><a href="<?= base_url($_SESSION['page']) . '/show_create_form' ?>"><i class="fa fa-circle-o"></i> Create New Proposal</a></li> -->
                             <li <?= $this->uri->segment(2) == 'showProposal' || $this->uri->segment(2) == 'detailProposal' ? 'class="active"' : '' ?>><a href="<?= base_url($_SESSION['page'] . '/showProposal') ?>"><i class="fa fa-circle-o"></i> Data Proposal</a></li>
+                            <li <?= $this->uri->segment(2) == 'showSkp' ? 'class="active"' : '' ?>><a href="<?= base_url($_SESSION['page']) . '/showSkp' ?>"><i class="fa fa-circle-o"></i> Data SKP</a></li>
                         </ul>
                     </li>
                     <li class="treeview <?= $this->uri->segment(2) == 'changePasswordPage' ? 'active' : '' ?> ">

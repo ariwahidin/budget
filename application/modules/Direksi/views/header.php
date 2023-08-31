@@ -346,6 +346,22 @@
                             <li <?= $this->uri->segment(2) == 'reportDetail' ? 'class="active"' : '' ?>><a href="<?= base_url($_SESSION['page']) . '/reportDetail' ?>"><i class="fa fa-circle-o"></i> All Proposal</a></li>
                         </ul>
                     </li>
+                    <li class="treeview <?= $this->uri->segment(2) == 'changePasswordPage' ? 'active' : '' ?> ">
+                        <a href="#">
+                            <i class="fa fa-folder-o"></i>
+                            <span>Settings</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li <?= $this->uri->segment(2) == 'changePasswordPage' ? 'class="active"' : '' ?>>
+                                <a href="<?= site_url($_SESSION['page'] . '/changePasswordPage') ?>">
+                                    <i class="fa fa-circle-o"></i> Change User Password
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </section>
         </aside>

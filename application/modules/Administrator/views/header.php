@@ -124,6 +124,7 @@
                     <li class="header">MAIN NAVIGATION</li>
                     <li class="treeview <?= $this->uri->segment(2) == 'showGroup' ||
                                             $this->uri->segment(2) == 'user' ||
+                                            $this->uri->segment(2) == 'direksi' ||
                                             $this->uri->segment(2) == 'showBrand' ||
                                             $this->uri->segment(2) == 'showItem' ||
                                             $this->uri->segment(2) == 'showActivity' ||
@@ -139,6 +140,9 @@
                         <ul class="treeview-menu">
                             <li <?= $this->uri->segment(2) == 'user' ? 'class="active"' : '' ?>>
                                 <a href="<?= base_url($_SESSION['page'] . '/user') ?>"><i class="fa fa-tag"></i><span>User</span></a>
+                            </li>
+                            <li <?= $this->uri->segment(2) == 'direksi' ? 'class="active"' : '' ?>>
+                                <a href="<?= base_url($_SESSION['page'] . '/direksi') ?>"><i class="fa fa-tag"></i><span>Direksi</span></a>
                             </li>
                             <li <?= $this->uri->segment(2) == 'showGroup' ? 'class="active"' : '' ?>>
                                 <a href="<?= base_url($_SESSION['page'] . '/showGroup') ?>"><i class="fa fa-tag"></i><span>Group</span></a>

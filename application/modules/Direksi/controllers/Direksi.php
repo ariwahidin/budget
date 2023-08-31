@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 class Direksi extends CI_Controller
 {
 
@@ -27,6 +31,8 @@ class Direksi extends CI_Controller
             'anp' => $anp,
             'resumeAnp' => $resumeAnp
         );
+
+        // var_dump($this->session->userdata());
         $this->load->view('direksi_v', $data);
     }
 
@@ -255,10 +261,56 @@ class Direksi extends CI_Controller
         }
     }
 
+    public function sendEmailToKamProposalApproved()
+    {
+
+        
+        $mail = new PHPMailer(true);
+ 
+            $no_invoice         = 'PK12345678';
+            $nama_pengirim      = 'anp@pandurasa.com';
+            $email              = 'ari@pandurasa.com';
+ 
+            //Server settings
+            // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
+            $mail->isSMTP();                                            // Send using SMTP
+            $mail->Host       = 'mail.pandurasa.com ';                    // Set the SMTP server to send through
+            $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+            $mail->Username   = 'anp@pandurasa.com';                     // SMTP username
+            $mail->Password   = '^kp0oV.!x,jm';                               // SMTP password
+            // $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+            $mail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+ 
+            //Recipients
+            $mail->setFrom('anp@pandurasa.com');
+            $mail->addAddress($email, $nama_pengirim);     // Add a recipient
+ 
+            $mail->addReplyTo('anp@pandurasa.com');
+            // $mail->addCC('cc@example.com');
+            // $mail->addBCC('bcc@example.com');
+ 
+            // Attachments
+            // $mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
+            // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+ 
+            // Content
+            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->Subject = 'ANP | Proposal Promotion';
+            $mail->Body    = '<h1>Halo, Admin.</h1> <p>Proposal baru dengan nomor ' . $no_invoice . ' telah dibuat </p> <a href="http://192.168.60.14:1895/anp-development/auth/login?urlKam=kam/detailProposal/PK01520230069">Klik disini untuk membuka</a>';
+ 
+            if ($mail->send()) {
+                echo 'Konfirmasi pembayaran telah berhasil';
+            } else {
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+        
+    }
+
     public function approveProposal($number)
     {
         $this->direksi_model->approveProposal($_POST);
         if ($this->db->affected_rows() > 0) {
+
             $params = array(
                 'success' => true
             );
@@ -583,5 +635,23 @@ class Direksi extends CI_Controller
             'proposal' => $proposal
         );
         $this->load->view('report/proposal_excel', $data);
+    }
+
+    public function changePasswordPage()
+    {
+        $data = array();
+        $this->render('settings/changePasswordPage', $data);
+    }
+
+    public function changePassword()
+    {
+        $post = $this->input->post();
+        $this->direksi_model->changePassword($post);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('success', 'Password berhasil diubah');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal ubah password');
+        }
+        redirect(base_url($_SESSION['page'] . '/changePasswordPage'));
     }
 }

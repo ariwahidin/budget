@@ -450,7 +450,7 @@ class Pic_model extends CI_Model
     {
         $user_code = $this->session->userdata('user_code');
         $sql = "select * from ProposalTarikanExcelView
-        where UserCode = '$user_code' order by Number DESC";
+        where UserCode = '$user_code' order by Number ASC";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -493,10 +493,6 @@ class Pic_model extends CI_Model
 
     public function getBudgetActivity($budget_code_activity, $end_date)
     {
-        // $sql = "SELECT SUM(BudgetActivity) AS BudgetActivity FROM tb_operating_activity 
-        // WHERE BudgetCodeActivity = '$budget_code_activity'
-        // AND [month] BETWEEN (SELECT MIN([month]) FROM tb_operating_activity WHERE BudgetCodeActivity = '$budget_code_activity') AND '$end_date'";
-        // $query = $this->db->query($sql);
         $sql = "SELECT SUM(BudgetActivity)/12 AS BudgetActivity FROM tb_operating_activity 
         WHERE BudgetCodeActivity = '$budget_code_activity'";
         $query = $this->db->query($sql);
@@ -505,13 +501,6 @@ class Pic_model extends CI_Model
 
     public function getBudgetActivityReport($budget_code)
     {
-        // $sql = "select distinct t1.BudgetCode, t1.BudgetCodeActivity, t1.ActivityName, t1.BudgetActivity,
-        // (select sum(Budget_unbooked) from tb_operating_proposal 
-        // where BudgetCodeActivity = t1.BudgetCodeActivity) as Used,
-        // t1.BudgetActivity - (select sum(Budget_unbooked) from tb_operating_proposal 
-        // where BudgetCodeActivity = t1.BudgetCodeActivity) as Saldo
-        // from tb_operating_activity t1
-        // where BudgetCode = '$budget_code'";
         $sql = "exec getBudgetActivityUsedReport '$budget_code'";
         $query = $this->db->query($sql);
         return $query;
@@ -1305,13 +1294,9 @@ class Pic_model extends CI_Model
         $sql = "SELECT SUM(Budget_allocated) as SUMAllocatedBudget FROM tb_operating_proposal WHERE BudgetCodeActivity = '$budget_code_activity' AND Budget_type = 'operating'";
         $query = $this->db->query($sql);
         $allocated_budget = $query->row()->SUMAllocatedBudget;
-        // var_dump($sql);
-        // var_dump($allocated_budget);
-        // die;
         if (is_null($allocated_budget)) {
             $allocated_budget = 0;
         }
-        // var_dump($this->db->error());
         return $allocated_budget;
     }
 
@@ -1357,7 +1342,9 @@ class Pic_model extends CI_Model
 
     public function getApprovedBy($proposalNumber)
     {
-        $sql = "SELECT * FROM tb_proposal_approved WHERE proposalNumber = '$proposalNumber'";
+        $sql = "select t1.*, t2.fullname from tb_proposal_approved t1
+        inner join master_user t2 on t1.approvedBy = t2.user_code
+        where t1.ProposalNumber = '$proposalNumber'";
         $query = $this->db->query($sql);
         return $query;
     }

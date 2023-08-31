@@ -112,4 +112,23 @@ class Finance extends CI_Controller
             echo "Metode HTTP tidak diizinkan.";
         }
     }
+
+    public function showSkp()
+    {
+        $data = array(
+            'skp' => $this->finance_model->getDataSkp()
+        );
+        $this->render('proposal/data_skp', $data);
+    }
+
+    public function loadCustomerBySkp()
+    {
+        $skp = $this->input->post('skp');
+
+        var_dump($skp);
+        $data = array(
+            'customer' => $this->finance_model->getCustomerBySkp($skp)
+        );
+        $this->load->view('proposal/modal_customer_by_skp', $data);
+    }
 }
