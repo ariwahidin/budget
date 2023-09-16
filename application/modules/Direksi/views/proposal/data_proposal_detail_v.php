@@ -71,14 +71,12 @@
                                         <?php } ?>
                                     </ul>
                                 <?php } ?>
-                                <!-- <?php if ($proposal->row()->Status == 'cancelled') { ?>
-                                    <b>Cancell By </b>
+                                <?php if ($proposal->row()->Status == 'canceled') { ?>
+                                    <b>Cancel By </b>
                                     <p><?= ucwords($proposal->row()->CancelBy) ?></p>
-                                <?php } ?> -->
+                                <?php } ?>
                             </div>
                             <div class="col-md-4">
-
-
 
                                 <?php
                                 if ($approvedBy->num_rows() > 0) {
@@ -91,11 +89,17 @@
                                     } else {
                                         //do something
                                 ?>
-                                        <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-approved">Approve</button>
+                                        <?php if ($proposal->row()->Status == 'rejected') { ?>
+                                            <!-- //do nothing -->
+                                        <?php } else { ?>
+                                            <button style="margin-left: 5px;" class="btn btn-danger pull-right" data-toggle="modal" data-target="#modal-reject">Reject</button>
+                                            <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-approved">Approve</button>
+                                        <?php } ?>
                                     <?php
                                     }
                                 } else {
                                     ?>
+                                    <button style="margin-left: 5px;" class="btn btn-danger pull-right" data-toggle="modal" data-target="#modal-reject">Reject</button>
                                     <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-approved">Approve</button>
                                 <?php
                                 }
@@ -119,26 +123,48 @@
                                 <?php } else { ?>
                                 <?php } ?>
 
-
                                 <div class="modal fade" id="modal-approved">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span></button>
-                                                <h4 class="modal-title">Comment</h4>
+                                                <h4 class="modal-title">Approve proposal</h4>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="form-group">
                                                     <form id="form_approve">
                                                         <input type="hidden" name="number" value="<?= $proposal->row()->Number ?>">
-                                                        <textarea name="comment" class="form-control" rows="3" placeholder="Enter ..."></textarea>
+                                                        <textarea name="comment" class="form-control" rows="3" placeholder="Enter a reason"></textarea>
                                                     </form>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
                                                 <button onclick="approve_proposal()" type="button" class="btn btn-primary">Approve</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="modal-reject">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title">Reject proposal</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <form id="form_reject">
+                                                        <input type="hidden" name="number" value="<?= $proposal->row()->Number ?>">
+                                                        <textarea name="comment" class="form-control" rows="3" placeholder="Enter a reason"></textarea>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                                                <button onclick="reject_proposal()" type="button" class="btn btn-danger">Reject</button>
                                             </div>
                                         </div>
                                     </div>
@@ -169,8 +195,6 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
 
                 <div class="row">
@@ -219,7 +243,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="box">
@@ -256,22 +279,22 @@
                                                 <td><?= $no++ ?></td>
                                                 <td><?= $item->Barcode ?></td>
                                                 <td><?= $item->ItemName ?></td>
-                                                <td><?= number_format($item->Price) ?></td>
+                                                <td style="text-align: right;"><?= number_format($item->Price) ?></td>
                                                 <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
-                                                    <td><?= number_format($item->AvgSales) ?></td>
+                                                    <td style="text-align: right;"><?= number_format($item->AvgSales) ?></td>
                                                 <?php } ?>
-                                                <td class="item_qty"><?= number_format($item->Qty) ?></td>
-                                                <td class="item_target"><?= number_format($item->Target) ?></td>
+                                                <td style="text-align: right;" class="item_qty"><?= number_format($item->Qty) ?></td>
+                                                <td style="text-align: right;" class="item_target"><?= number_format($item->Target) ?></td>
                                                 <?php if (activity_is_sales($proposal->row()->Activity) == 'N') {  ?>
-                                                    <td>
+                                                    <td style="text-align: right;">
                                                         <?= number_format($item->ListingCost)  ?>
                                                     </td>
                                                 <?php } ?>
                                                 <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
-                                                    <td><?= $item->Promo ?></td>
-                                                    <td class="item_value"><?= number_format($item->PromoValue) ?></td>
+                                                    <td style="text-align: right;"><?= $item->Promo ?></td>
+                                                    <td style="text-align: right;" class="item_value"><?= number_format($item->PromoValue) ?></td>
                                                 <?php } ?>
-                                                <td class="item_costing"><?= number_format($item->Costing) ?></td>
+                                                <td style="text-align: right;" class="item_costing"><?= number_format($item->Costing) ?></td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -289,7 +312,7 @@
                                             <?php if (activity_is_sales($proposal->row()->Activity) != 'N') { ?>
                                                 <td></td>
                                             <?php } ?>
-                                            <td id="total_target">
+                                            <td style="text-align: right;" id="total_target">
                                                 <b>
                                                     <?= number_format(total_target($proposal->row()->Number)) ?>
                                                 </b>
@@ -301,7 +324,7 @@
                                                 <td></td>
                                                 <td id="total_value"></td>
                                             <?php } ?>
-                                            <td id="total_costing">
+                                            <td style="text-align: right;" id="total_costing">
                                                 <b>
                                                     <?= number_format(total_costing($proposal->row()->Number)) ?>
                                                 </b>
@@ -309,18 +332,6 @@
                                         </tr>
                                     </tfooter>
                                 </table>
-
-
-
-
-                                <!-- <div class="modal-footer">
-                                <table>
-                                    <tr>
-                                        <td>COST RATIO</td>
-                                        <td>&nbsp;:&nbsp; <b id="cost_ratio"><?= cost_ratio($proposal->row()->Number) ?></b></td>
-                                    </tr>
-                                </table>
-                            </div> -->
                             </div>
                         </div>
                     </div>
@@ -364,7 +375,7 @@
                                                     Total
                                                 </b>
                                             </td>
-                                            <td>
+                                            <td style="text-align: right;">
                                                 <b>
                                                     <?= number_format($totalCostingOther) ?>
                                                 </b>
@@ -377,7 +388,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <div class="box">
@@ -431,7 +441,7 @@
                                                 <td><?= $no++ ?></td>
                                                 <td><?= $data->GroupName ?></td>
                                                 <td><?= $data->ItemName ?></td>
-                                                <td><?= $data->Target ?></td>
+                                                <td style="text-align: right;"><?= $data->Target ?></td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -483,6 +493,36 @@
         });
     }
 
+    function reject_proposal() {
+        var form = new FormData(document.getElementById('form_reject'));
+        $.ajax({
+            url: '<?= base_url($_SESSION['page']) . '/rejectProposal/' . $proposal->row()->Number ?>',
+            data: form,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(response) {
+                if (response.success == true) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Proposal rejected',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then((result) => {
+                        window.location.href = "<?= base_url($_SESSION['page'] . '/showProposalDetail/' . $proposal->row()->Number); ?>";
+                    })
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                    })
+                }
+            }
+        });
+    }
+
     function cancel_proposal() {
         var form = new FormData(document.getElementById('form_cancel'));
         $.ajax({
@@ -512,28 +552,4 @@
             }
         });
     }
-
-
-    // var td_item_qty = document.querySelectorAll('td.item_qty');
-    // var td_item_target = document.querySelectorAll('td.item_target');
-    // var td_item_value = document.querySelectorAll('td.item_value');
-    // var td_item_costing = document.querySelectorAll('td.item_costing');
-
-    // var total_qty = 0;
-    // var total_target = 0;
-    // var total_value = 0;
-    // var total_costing = 0;
-
-    // for (var i = 0; i < td_item_target.length; i++) {
-    //     total_qty += parseFloat(td_item_qty[i].innerText.replace(/,/g, ''))
-    //     total_target += parseFloat(td_item_target[i].innerText.replace(/,/g, ''))
-    //     total_value += parseFloat(td_item_value[i].innerText.replace(/,/g, ''))
-    //     total_costing += parseFloat(td_item_costing[i].innerText.replace(/,/g, ''))
-    // }
-
-    // document.querySelector('td#total_qty').innerText = total_qty.toLocaleString();
-    // document.querySelector('td#total_target').innerText = total_target.toLocaleString();
-    // document.querySelector('td#total_value').innerText = total_value.toLocaleString();
-    // document.querySelector('td#total_costing').innerText = total_costing.toLocaleString();
-    // document.getElementById('cost_ratio').innerText = Math.round(((total_costing / total_target) * 100)) + '%';
 </script>

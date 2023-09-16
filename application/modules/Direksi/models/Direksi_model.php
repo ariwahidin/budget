@@ -284,9 +284,10 @@ class Direksi_model extends CI_Model
     public function getProposal($number = null)
     {
         $sql = "SELECT t1.*, t2.TotalCosting FROM tb_proposal t1
-		LEFT JOIN tb_operating_proposal t2 on t1.Number = t2.ProposalNumber";
+		LEFT JOIN tb_operating_proposal t2 on t1.Number = t2.ProposalNumber
+        WHERE t1.Status != 'canceled'";
         if ($number != null) {
-            $sql .= " WHERE t1.[Number] = '$number'";
+            $sql .= " AND t1.[Number] = '$number'";
         }
         $sql .= " ORDER BY t1.id DESC";
         $query = $this->db->query($sql);
@@ -331,16 +332,9 @@ class Direksi_model extends CI_Model
 
     public function approveProposal($post)
     {
-
-        // var_dump($post);
-        // var_dump($this->session->userdata());
-        // die;
-
         $number = $post['number'];
         $comment = $post['comment'];
         $username = $_SESSION['username'];
-
-
         $date = $this->getDate();
 
         if ($this->session->userdata('level') == 'D1') {
@@ -356,6 +350,36 @@ class Direksi_model extends CI_Model
             'approvedDate' => $this->getDate(),
             'reason' => $comment,
             'is_approve' => 'y',
+            'created_by' => $_SESSION['user_code']
+        );
+        $this->db->insert('tb_proposal_approved', $params);
+    }
+
+    public function rejectProposal($post)
+    {
+
+        // var_dump($post);
+        // die;
+
+        $number = $post['number'];
+        $comment = $post['comment'];
+        $username = $_SESSION['username'];
+        $date = $this->getDate();
+
+        // if ($this->session->userdata('level') == 'D1') {
+        //     $allocated = $this->db->query("SELECT Budget_allocated FROM tb_operating_proposal WHERE ProposalNumber = '$number'")->row()->Budget_allocated;
+        //     $updateOperating = $this->db->query("UPDATE tb_operating_proposal SET Budget_unbooked = 0, Budget_booked = '$allocated', ApprovedBy = '$username', ApprovedDate = '$date' WHERE ProposalNumber = '$number'");
+        // }
+
+        $updateStatusProposal = $this->db->query("UPDATE tb_proposal SET [Status] = 'rejected', RejectBy = '$username', RejectDate = '$date', reason ='$comment', reason_by = '$username' WHERE Number = '$number'");
+
+        $params = array(
+            'proposalNumber' => $number,
+            'approvedBy' => $_SESSION['user_code'],
+            'username' => $_SESSION['username'],
+            'approvedDate' => $this->getDate(),
+            'reason' => $comment,
+            'is_approve' => 'n',
             'created_by' => $_SESSION['user_code']
         );
         $this->db->insert('tb_proposal_approved', $params);

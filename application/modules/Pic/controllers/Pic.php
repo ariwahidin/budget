@@ -253,7 +253,7 @@ class Pic extends CI_Controller
         $balance = 0;
         if (!empty($_POST['budget_source'])) {
             if ($_POST['budget_source'] == 'anp') {
-                
+
                 if ($this->pic_model->getBudgetCode($_POST)->num_rows() < 1) {
                     echo json_encode(['budget' => 'not_set']);
                     return false;
@@ -682,14 +682,18 @@ class Pic extends CI_Controller
         }
     }
 
-    public function cancelProposal($number)
+    public function cancelProposal()
     {
+
+        $number = $this->input->post('proposal_number');
+        // die;
         $this->pic_model->cancelProposal($number);
         if ($this->db->affected_rows() > 0) {
-            redirect(base_url($_SESSION['page']) . '/showProposal');
+            $response = array('success' => true);
         } else {
-            echo "Gagal cancel proposal";
+            $response = array('success' => false);
         }
+        echo json_encode($response);
     }
 
     public function createOperating()
@@ -996,6 +1000,9 @@ class Pic extends CI_Controller
 
     public function showModalItemFromPenjualan()
     {
+        $today = $this->pic_model->getDate();
+        // var_dump($today);
+        // die;
         // var_dump($_POST);
         $barcode = array();
         if (isset($_POST['barcode'])) {
@@ -1003,7 +1010,7 @@ class Pic extends CI_Controller
         }
 
         // die;
-        $end = date('Y-m-d', strtotime($_POST['start_date']));
+        $end = date('Y-m-d', strtotime($today));
         $start = '';
         if ($_POST['avg_sales'] == 'Last 3 Month') {
             $start = date("Y-m-d", strtotime("-3 Months", strtotime($end)));
@@ -1024,8 +1031,9 @@ class Pic extends CI_Controller
 
     public function getItemFromPenjualan()
     {
+        $today = $this->pic_model->getDate();
 
-        $end = date('Y-m-d', strtotime($_POST['start_date']));
+        $end = date('Y-m-d', strtotime($today));
         $start = '';
 
         if ($_POST['avg_sales'] == 'Last 3 Month') {

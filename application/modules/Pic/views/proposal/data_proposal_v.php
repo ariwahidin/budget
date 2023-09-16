@@ -11,9 +11,10 @@
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <form action="<?= base_url($_SESSION['page'] . '/exportResumeProposalToExcel') ?>" method="POST">
+                        <form style="display: inline;" action="<?= base_url($_SESSION['page'] . '/exportResumeProposalToExcel') ?>" method="POST">
                             <button type="submit" class="btn btn-success btn-sm pull-right">Export to excel</button>
                         </form>
+                        <a href="<?= base_url($_SESSION['page']) ?>/show_create_form" class="btn btn-primary btn-sm pull-right" style="margin-right: 5px;">Create new proposal</a>
                         <!-- <button class="btn-success btn-sm pull-right" data-toggle="modal" data-target="#modal-default">Export excel</button> -->
                     </div>
                     <div class="box-body table-responsive">
@@ -29,7 +30,7 @@
                                     <th>End Periode</th>
                                     <th>Pic</th>
                                     <th>Status</th>
-                                    <th>Aprroved</th>
+                                    <th>Management</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -50,14 +51,18 @@
                                         </td>
                                         <td>
                                             <?php foreach (getApprovedBy($data->Number)->result() as $a) { ?>
-                                                <span class="label label-success"><i class="fa fa-check"></i><?= ucfirst($a->fullname)." ".date('d/m/y', strtotime($a->created_at)) ?></span><br>
+                                                <?php if ($a->is_approve == 'y') { ?>
+                                                    <span class="label label-success"><i class="fa fa-check"></i><?= ucfirst($a->fullname) . " " . date('d/m/y', strtotime($a->created_at)) ?></span><br>
+                                                <?php } else { ?>
+                                                    <span class="label label-danger"><i class="fa fa-close"></i><?= ucfirst($a->fullname) . " " . date('d/m/y', strtotime($a->created_at)) ?></span><br>
+                                                <?php } ?>
                                             <?php } ?>
                                         </td>
                                         <td>
                                             <a href="<?= base_url($_SESSION['page']) . '/showProposalDetail/' . $data->Number ?>" class="btn btn-info btn-xs">Lihat</a>
-                                            <!-- <a href="<?= base_url($_SESSION['page']) . '/showProposalEdit/' . $data->Number ?>" class="btn btn-primary btn-xs">Edit</a> -->
-                                            <!-- <button class="btn btn-primary btn-xs">Update</button> -->
-                                            <!-- <a href="<?= base_url($_SESSION['page']) . '/deleteProposal/' . $data->Number ?>" class="btn btn-danger btn-xs">Delete</button> -->
+                                            <?php if ($data->Status == 'open') { ?>
+                                                <button onclick="cancelProposal(this)" data-proposal-number="<?= $data->Number ?>" class="btn btn-warning btn-xs">Cancel</button>
+                                            <?php } ?>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -69,20 +74,6 @@
         </div>
     </section>
 </div>
-
-<!-- <div class="modal fade" id="modal-default">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Export to excel</h4>
-            </div>
-            
-        </div>
-    </div>
-</div> -->
-
 <?php $this->view('footer'); ?>
 
 
@@ -91,4 +82,45 @@
     $(document).ready(function() {
         $('#table_proposal').DataTable();
     });
+
+    function cancelProposal(button) {
+        const proposal_number = $(button).data('proposal-number')
+        Swal.fire({
+            title: 'Yakin cancel proposal?',
+            showDenyButton: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            denyButtonText: `Don't save`,
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?= base_url($_SESSION['page'] . '/cancelProposal') ?>",
+                    method: "POST",
+                    data: {
+                        proposal_number
+                    },
+                    dataType: "JSON",
+                    success: function(response) {
+                        if (response.success == true) {
+                            // Swal.fire('Saved!', '', 'success')
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Cancel proposal berhasil',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(function() {
+                                window.location.href = "<?= base_url($_SESSION['page']) ?>/showProposal"
+                            })
+                        } else {
+                            Swal.fire('Gagal cancel proposal', '', 'error')
+                        }
+                    }
+                })
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info')
+            }
+        })
+    }
 </script>

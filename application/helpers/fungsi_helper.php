@@ -1156,3 +1156,15 @@ function getApprovedBy($proposalNumber)
     $query = $ci->db->query($sql);
     return $query;
 }
+
+function encrypt($s)
+{
+    $qEncoded    = base64_encode($s);
+    return ($qEncoded);
+}
+
+function decrypt($s)
+{
+    $qDecoded    = base64_decode($s);
+    return ($qDecoded);
+}

@@ -33,7 +33,7 @@
                                     <th>Pic</th>
                                     <th>Created Date</th>
                                     <th>Status</th>
-                                    <th>Aprroved</th>
+                                    <th>Management</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -55,7 +55,11 @@
                                         </td>
                                         <td>
                                             <?php foreach (getApprovedBy($data->Number)->result() as $a) { ?>
-                                                <span class="label label-success"><i class="fa fa-check"></i><?= ucfirst($a->fullname)." ".date('d/m/y', strtotime($a->created_at)) ?></span><br>
+                                                <?php if ($a->is_approve == 'y') { ?>
+                                                    <span class="label label-success"><i class="fa fa-check"></i><?= ucfirst($a->fullname) . " " . date('d/m/y', strtotime($a->created_at)) ?></span><br>
+                                                <?php } else { ?>
+                                                    <span class="label label-danger"><i class="fa fa-close"></i><?= ucfirst($a->fullname) . " " . date('d/m/y', strtotime($a->created_at)) ?></span><br>
+                                                <?php } ?>
                                             <?php } ?>
                                         </td>
                                         <td>

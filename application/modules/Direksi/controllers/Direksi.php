@@ -264,53 +264,80 @@ class Direksi extends CI_Controller
     public function sendEmailToKamProposalApproved()
     {
 
-        
+
         $mail = new PHPMailer(true);
- 
-            $no_invoice         = 'PK12345678';
-            $nama_pengirim      = 'anp@pandurasa.com';
-            $email              = 'ari@pandurasa.com';
- 
-            //Server settings
-            // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
-            $mail->isSMTP();                                            // Send using SMTP
-            $mail->Host       = 'mail.pandurasa.com ';                    // Set the SMTP server to send through
-            $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
-            $mail->Username   = 'anp@pandurasa.com';                     // SMTP username
-            $mail->Password   = '^kp0oV.!x,jm';                               // SMTP password
-            // $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
-            $mail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
- 
-            //Recipients
-            $mail->setFrom('anp@pandurasa.com');
-            $mail->addAddress($email, $nama_pengirim);     // Add a recipient
- 
-            $mail->addReplyTo('anp@pandurasa.com');
-            // $mail->addCC('cc@example.com');
-            // $mail->addBCC('bcc@example.com');
- 
-            // Attachments
-            // $mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
-            // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
- 
-            // Content
-            $mail->isHTML(true);                                  // Set email format to HTML
-            $mail->Subject = 'ANP | Proposal Promotion';
-            $mail->Body    = '<h1>Halo, Admin.</h1> <p>Proposal baru dengan nomor ' . $no_invoice . ' telah dibuat </p> <a href="http://192.168.60.14:1895/anp-development/auth/login?urlKam=kam/detailProposal/PK01520230069">Klik disini untuk membuka</a>';
- 
+
+        // Server settings
+        // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                       // Enable verbose debug output
+        $mail->isSMTP();                                                // Send using SMTP
+        $mail->Host       = 'mail.pandurasa.com ';                      // Set the SMTP server to send through
+        $mail->SMTPAuth   = true;                                       // Enable SMTP authentication
+        $mail->Username   = 'anp@pandurasa.com';                        // SMTP username
+        $mail->Password   = '^kp0oV.!x,jm';                             // SMTP password
+        // $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;          // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+        $mail->Port       = 587;                                        // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+        // Recipients
+        // Add a recipient
+        // $mail->addAddress('data.analis2@pandurasa.com');             // Add a recipient
+        // $mail->addReplyTo('anp@pandurasa.com');
+        // $mail->addCC('cc@example.com');
+        // $mail->addBCC('bcc@example.com');
+        // Attachments
+        // $mail->addAttachment('/var/tmp/file.tar.gz');                // Add attachments
+        // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');           // Optional name
+        // Content
+        // $mail->isHTML(true);                                         // Set email format to HTML
+
+        $recipients = [
+            'ari@pandurasa.com' => 'Ari Wahidin',
+        ];
+
+        $mail->Subject = 'ANP | Proposal Promotion';
+        $no_proposal = 'PK01520230069';
+        $page = encrypt('kam/detailProposal/' . $no_proposal);
+
+        foreach ($recipients as $email => $name) {
+            $mail->setFrom('anp@pandurasa.com', 'ANP Pandurasa');
+            $mail->addAddress($email);
+            $data = array(
+                'penerima' => $name,
+                'no_proposal' => $no_proposal,
+                'page' => $page
+            );
+
+            $mail->msgHTML($this->load->view('email/body_email_to_kam', $data, true));
             if ($mail->send()) {
                 echo 'Konfirmasi pembayaran telah berhasil';
             } else {
                 echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
             }
-        
+
+            // Hapus penerima saat ini agar penerima berikutnya dapat ditambahkan
+            $mail->clearAddresses();
+        }
+    }
+
+    public function rejectProposal($number)
+    {
+        $this->direksi_model->rejectProposal($_POST);
+        if ($this->db->affected_rows() > 0) {
+            $params = array(
+                'success' => true
+            );
+            echo json_encode($params);
+        } else {
+            $params = array(
+                'success' => false
+            );
+            echo json_encode($params);
+        }
     }
 
     public function approveProposal($number)
     {
         $this->direksi_model->approveProposal($_POST);
         if ($this->db->affected_rows() > 0) {
-
             $params = array(
                 'success' => true
             );

@@ -279,64 +279,6 @@ class Pic_model extends CI_Model
     public function getItemFromPenjualan($brand, $customer, $start, $end, $item = null, $barcode)
     {
 
-        // if ($item != null) {
-        //     $sql = "IF OBJECT_ID('tempdb..#tempItemFromSales') IS NOT NULL
-        //     DROP TABLE #tempItemFromSales;
-        //     CREATE TABLE #tempItemFromSales
-        //     (
-        //     ItemCode VARCHAR(255),
-        //     ItemName VARCHAR(255),
-        //     Barcode VARCHAR(255),
-        //     CodeBrand VARCHAR(255),
-        //     BrandName VARCHAR(255),
-        //     Quantity VARCHAR(255),
-        //     Price VARCHAR(255)
-        //     )
-        //     INSERT INTO #tempItemFromSales
-        //     EXEC select_item_from_sales @BrandCode = '$brand', @StartDate = '$start', 
-        //     @EndDate = '$end', @StringListCustomerCode ='$customer'";
-        //     $this->db->query($sql);
-
-        //     $query = "select * from #tempItemFromSales where ItemCode IN (select value FROM  STRING_SPLIT('$item', ','))";
-        //     $result = $this->db->query($query);
-        // } else {
-        //     $sql = "EXEC select_item_from_sales @BrandCode = '$brand', @StartDate = '$start',@EndDate = '$end', @StringListCustomerCode ='$customer'";
-        //     // $sql = "select * from tb_sales where ";
-        //     $result = $this->db->query($sql);
-        // }
-
-        // $sql = "select * from 
-        // (
-        // select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode,
-        // ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, 
-        // Barcode collate SQL_Latin1_General_CP850_CI_AS as Barcode,
-        // CodeBrand as CodeBrand,
-        // BRAND collate SQL_Latin1_General_CP850_CI_AS as BrandName, 
-        // SUM(Quantity) as Quantity, 
-        // AVG(Price) as Price 
-        // from tb_sales 
-        // WHERE CardCode collate SQL_Latin1_General_CP850_CI_AS IN (select value FROM  STRING_SPLIT('$customer', ','))
-        // AND [Month] between '$start' and '$end'
-        // AND CodeBrand = '$brand' 
-        // group by ItemCode, ItemName, Barcode, CodeBrand, BRAND 
-        // union
-        // select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode,
-        // ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, 
-        // FRGNNAME collate SQL_Latin1_General_CP850_CI_AS as Barcode,
-        // BrandCode as CodeBrand,
-        // BrandName collate SQL_Latin1_General_CP850_CI_AS as BrandName, 
-        // '0' as Quantity,
-        // Price 
-        // from tb_item 
-        // WHERE ItemCode collate SQL_Latin1_General_CP850_CI_AS NOT IN(
-        // select distinct ItemCode from tb_sales 
-        // WHERE CardCode  IN (select value FROM  STRING_SPLIT('$customer', ',')) 
-        // AND [Month] between '$start' and '$end'
-        // AND CodeBrand = '$brand'
-        // )
-        // AND tb_item.BrandCode = '$brand'
-        // )ss";
-
         $sql = "select * from
         (
         select t2.ItemCode, t2.ItemName, t2.FrgnName as Barcode, t2.BrandCode, t3.BrandName,
@@ -361,6 +303,50 @@ class Pic_model extends CI_Model
         where t2.BrandCode = '$brand'
         )xx";
 
+        // $sql = "
+        // select * from 
+        // (select t2.ItemCode, t2.ItemName, t2.FrgnName as Barcode, t2.BrandCode, t3.BrandName, 
+        // case when ss.Quantity IS NULL then 0 else ss.Quantity end AS Quantity, t2.Price, AvgQty
+        // from (
+        // --start query pak lim
+        // select a.*,a.quantity/c.bagi as AvgQty from (
+        // select ItemCode  as ItemCode, ItemName as ItemName, Barcode as Barcode, CodeBrand as CodeBrand, 
+        // BRAND as BrandName, SUM(Quantity) as Quantity, AVG(Price) as Price from tb_sales WHERE CardCode 
+        // IN (select value FROM STRING_SPLIT('$customer', ','))
+        // AND [Month] between '$start' and '$end' AND CodeBrand = '$brand' 
+        // group by ItemCode, ItemName, Barcode, CodeBrand, BRAND ) as a inner join 
+        // (
+        // select b.itemcode,sum(b.bagi) as bagi from
+        // (select distinct itemcode,month([month]) as bulan,1 as bagi from tb_sales where CardCode 
+        // IN (select value FROM STRING_SPLIT('$customer', ','))
+        // AND [Month] between '$start' and '$end' AND CodeBrand = '$brand' 
+        // ) as b group by b.itemcode ) as c on a.itemcode=c.itemcode
+        // --end query pak lim
+        // union
+        // select 
+        // ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode, 
+        // ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, 
+        // FRGNNAME collate SQL_Latin1_General_CP850_CI_AS as Barcode, 
+        // BrandCode as CodeBrand, 
+        // BrandName collate SQL_Latin1_General_CP850_CI_AS as BrandName, 
+        // 0 as Quantity, Price, 0 as AvgQty 
+        // from tb_item WHERE ItemCode 
+        // collate SQL_Latin1_General_CP850_CI_AS 
+        // NOT IN(
+        // select distinct ItemCode 
+        // from tb_sales 
+        // WHERE CardCode 
+        // IN (select value FROM STRING_SPLIT('$customer', ',')) 
+        // AND [Month] between '$start' and '$end' AND CodeBrand = '$brand'
+        // ) 
+        // AND tb_item.BrandCode = '$brand'
+        // )ss
+        // RIGHT JOIN m_item t2 ON ss.ItemCode = t2.ItemCode 
+        // INNER JOIN m_brand t3 ON t2.BrandCode = t3.BrandCode 
+        // where 
+        // t2.BrandCode = '$brand' 
+        // )xx";
+
         if ($item != null) {
             $sql .= " WHERE xx.ItemCode IN (select value FROM  STRING_SPLIT('$item', ','))";
         }
@@ -374,8 +360,6 @@ class Pic_model extends CI_Model
         $sql .= " order by xx.Quantity DESC";
         $result = $this->db->query($sql);
         // print_r($sql);
-        // die;
-
         return $result;
     }
 
@@ -972,13 +956,9 @@ class Pic_model extends CI_Model
 
     public function cancelProposal($number)
     {
-        $username = $_SESSION['username'];
+        $username = $this->session->userdata('username');
         $date = $this->getDate();
-        $unbooked = $this->db->query("SELECT Budget_unbooked FROM tb_operating_proposal WHERE ProposalNumber = '$number'")->row()->Budget_unbooked;
-        // var_dump($unbooked);
-        // die;
-        $update_budget = $this->db->query("UPDATE tb_operating_proposal SET Budget_unbooked = 0, DeallocatedBudget = '$unbooked', CancelBy = '$username', CancelDate = '$date' WHERE ProposalNumber = '$number'");
-        $update_status_proposal = $this->db->query("UPDATE tb_proposal SET [Status] = 'cancelled', CancelBy = '$username', CancelDate = '$date' WHERE Number = '$number'");
+        $this->db->query("UPDATE tb_proposal SET [Status] = 'canceled', CancelBy = '$username', CancelDate = '$date' WHERE Number = '$number'");
     }
 
     public function getNumberBudget($brand_code)
@@ -1722,7 +1702,8 @@ class Pic_model extends CI_Model
     public function set_cart_item($post)
     {
 
-        $end = date('Y-m-d', strtotime($post['start_date']));
+        $today = $this->getDate();
+        $end = date('Y-m-d', strtotime($today));
         $start = '';
         if ($post['avg_sales'] == 'Last 3 Month') {
             $start = date("Y-m-d", strtotime("-3 Months", strtotime($end)));
@@ -1743,38 +1724,6 @@ class Pic_model extends CI_Model
         $sql = "getSalesByCustomerGroup @GroupCode='$group_customer', @ItemCode = '$item_code', @CustomerCode = '$customer_code', @StartDate = '$start', @EndDate = '$end'";
         $salesByGroup = $this->db->query($sql);
         return $salesByGroup;
-
-        // $data = array();
-        // for ($i = 0; $i < count($post['item_code']); $i++) {
-        //     for ($x = 0; $x < count($post['customer']); $x++) {
-
-        //         $param = array(
-        //             'no_proposal' => $post['no_proposal'],
-        //             'customer_code' => $post['customer'][$x],
-        //             'customer_name' => $this->getCustomerFromTBSales($post['customer'][$x])->row()->CustomerName,
-        //             'item_code' => $post['item_code'][$i],
-        //             'barcode' => $this->getBarcodeFromTBSales($post['item_code'][$i]),
-        //             'item_name' => getNameItem($post['item_code'][$i]),
-        //             // 'qty_avg_sales' => (int)$this->getItemFromPenjualan($brand, $post['customer'][$x], $start, $end, $post['item_code'][$i], null)->row()->Quantity,
-        //             'qty_avg_sales' => 0,
-        //             'sales_estimation' => $post['item_qty'][$i],
-        //             'user_id' => $_SESSION['user_code'],
-        //         );
-
-        //         $cek = $this->db->query("select * from tb_item_cart where no_proposal = '" . $post['no_proposal'] . "' and item_code = '" . $post['item_code'][$i] . "'");
-
-        //         if ($cek->num_rows() > 0) {
-        //             //nothing
-        //         } else {
-        //             array_push($data, $param);
-        //         }
-        //     }
-        // }
-
-        // var_dump($data);
-        // die;
-
-        // $this->db->insert_batch('tb_item_cart', $data);
     }
 
     public function get_item_cart()
