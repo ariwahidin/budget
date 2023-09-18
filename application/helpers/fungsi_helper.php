@@ -27,6 +27,23 @@ function check_admin()
     }
 }
 
+function rupiah($angka){
+	$angkaarr = str_replace(".",",",$angka);
+	$aex = explode(",",$angkaarr);
+	$angka = $aex[0];
+	$ades = (count($aex) >= 2) ? $aex[1] : 0;
+	$rupiah="";
+	$rp=strlen($angka);
+	while ($rp>3){
+		$rupiah = ".". substr($angka,-3). $rupiah;
+		$s=strlen($angka) - 3;
+		$angka=substr($angka,0,$s);
+		$rp=strlen($angka);
+	}
+	$rupiah = $angka . $rupiah . ",".$ades;
+	return $rupiah;
+}
+
 function angkrupiah($string) {
     $string = str_replace('.', '', $string); // Mengganti titik dengan kosong
     $string = str_replace(',', '.', $string); // Mengganti koma dengan titik

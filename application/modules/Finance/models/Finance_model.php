@@ -99,7 +99,7 @@ class Finance_model extends CI_Model
 
     public function getProposalSKP($number)
     {
-        $sql = "select distinct t3.id, t1.ProposalNumber, t2.GroupCode, t2.GroupName, t3.NoSKP, t3.Ket
+        $sql = "select distinct t3.id, t1.ProposalNumber, t2.GroupCode, t2.GroupName, t3.NoSKP, t3.Ket, t3.Valueskp
         from tb_proposal_group t1
         inner join m_group t2 on t1.GroupCustomer = t2.GroupCode
         left join tb_proposal_skp t3 on t1.ProposalNumber = t3.ProposalNumber and t2.GroupCode = t3.GroupCode
