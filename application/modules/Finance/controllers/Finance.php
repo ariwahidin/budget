@@ -69,6 +69,25 @@ class Finance extends CI_Controller
         redirect(base_url($_SESSION['page'] . '/changePasswordPage'));
     }
 
+    
+    public function tambahskpb(){
+        $number = $this->input->post('number');
+        $cek_skp = $this->finance_model->getSKP($number);
+
+        if ($cek_skp->num_rows() > 0) {
+            $action = 'update';
+        } else {
+            $action = 'simpan';
+        }
+
+        $data = array(
+            'number' => $number,
+            'group' => $this->finance_model->getProposalSKP($number),
+            'action' => $action
+        );
+        $this->load->view('proposal/tambahskpb', $data);
+    }
+
     public function loadModalInputSKP()
     {
         $number = $this->input->post('number');
@@ -94,6 +113,30 @@ class Finance extends CI_Controller
 
             $dataArray = json_decode(file_get_contents("php://input"), true);
 
+            if ($dataArray['action'] == 'update') {
+                $this->finance_model->update_skp($dataArray);
+            } else if ($dataArray['action'] == 'simpan') {
+                $this->finance_model->insert_skp($dataArray);
+            }
+
+            if ($this->db->affected_rows() > 0) {
+                $response = array("status" => "success", "message" => "Data berhasil diterima dan diproses.");
+            } else {
+                $response = array("status" => "error", "message" => "Gagal simpan data");
+            }
+
+            echo json_encode($response);
+        } else {
+            header("HTTP/1.1 405 Method Not Allowed");
+            echo "Metode HTTP tidak diizinkan.";
+        }
+    }
+
+    public function simpanskpb()
+    {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+            $dataArray = json_decode(file_get_contents("php://input"), true);
             if ($dataArray['action'] == 'update') {
                 $this->finance_model->update_skp($dataArray);
             } else if ($dataArray['action'] == 'simpan') {

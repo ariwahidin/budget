@@ -31,12 +31,14 @@ class Finance_model extends CI_Model
     {
         $sql = "select t1.id, t1.Number, t3.BrandName, t1.StartDatePeriode, 
         t1.EndDatePeriode, t2.promo_name as ActivityName, 
-        t1.Status,t1.CreatedBy, t1.CreatedDate, t4.TotalCosting,
+        t1.Status,t1.CreatedBy, t1.CreatedDate, t4.TotalCosting, t6.GroupName,
         (select count(id) from tb_proposal_skp where ProposalNumber = t1.Number and NoSKP != '') as jml_skp
         from tb_proposal t1
         inner join m_promo t2 on t1.Activity = t2.id 
         inner join m_brand t3 on t1.BrandCode = t3.BrandCode
         inner join tb_operating_proposal t4 on t1.Number = t4.ProposalNumber
+        inner join tb_proposal_group t5 on t1.Number = t5.ProposalNumber 
+        inner join m_group t6 on t6.GroupCode = t5.GroupCustomer 
         where [Status] = 'approved'";
         if (!is_null($number)) {
             $sql .= " and t1.Number = '$number'";
@@ -125,6 +127,7 @@ class Finance_model extends CI_Model
                 'ProposalNumber' => $array['number'],
                 'GroupCode' => $value,
                 'NoSKP' => $array['skp'][$i],
+                'Valueskp' => angkrupiah($array['valueskp'][$i]),
                 'Ket' => $array['ket'][$i],
                 'CreatedBy' => $this->session->userdata('user_code'),
                 'CreatedAt' => $this->getDate(),
@@ -142,6 +145,7 @@ class Finance_model extends CI_Model
             $data = array(
                 'NoSKP' => $array['skp'][$i],
                 'Ket' => $array['ket'][$i],
+                'Valueskp' => angkrupiah($array['valueskp'][$i]),
                 'UpdatedBy' => $this->session->userdata('user_code'),
                 'UpdatedAt' => $this->getDate(),
             );

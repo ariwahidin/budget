@@ -27,6 +27,12 @@ function check_admin()
     }
 }
 
+function angkrupiah($string) {
+    $string = str_replace('.', '', $string); // Mengganti titik dengan kosong
+    $string = str_replace(',', '.', $string); // Mengganti koma dengan titik
+    return $string;
+}
+
 function indo_currency($nominal)
 {
     $result = "Rp " . number_format($nominal, 2, ',', '.');
