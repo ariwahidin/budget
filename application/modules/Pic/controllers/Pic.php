@@ -537,15 +537,35 @@ class Pic extends CI_Controller
         $this->pic_model->insert_batch_customer_item($params_customer_item);
     }
 
-    public function showProposal()
+    public function loadTableProposal()
     {
-        // var_dump($this->session->userdata());
         $params['user_code'] = $_SESSION['user_code'];
+
+        if (isset($_POST['brand'])) {
+            if (count($_POST['brand']) > 0) {
+                $params['brand'] = implode(",", $_POST['brand']);
+            }
+        }
+
+        if (isset($_POST['activity'])) {
+            if (count($_POST['activity']) > 0) {
+                $params['activity'] = implode(",", $_POST['activity']);
+            }
+        }
+        
         $proposal = $this->pic_model->getProposal($params);
-        $brandByPic = $this->pic_model->getBrandProposalByPic();
         $data = array(
             'proposal' => $proposal,
-            'brand' => $brandByPic
+        );
+        $this->load->view('proposal/table_proposal', $data);
+    }
+
+    public function showProposal()
+    {
+        $brandByPic = $this->pic_model->getBrandProposalByPic();
+        $data = array(
+            'brand' => $brandByPic,
+            'activity' => $this->pic_model->getActivity()
         );
         $this->load->view('proposal/data_proposal_v', $data);
     }

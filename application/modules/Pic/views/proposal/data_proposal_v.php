@@ -1,73 +1,72 @@
 <?php
-// var_dump($_SESSION);
+// var_dump($activity->result());
 ?>
 <?php $this->view('header'); ?>
 <div class="content-wrapper">
     <section class="content-header">
-        <h1>Data Proposal</h1>
+        <h1>Data Proposal
+            <a href="<?= base_url($_SESSION['page']) ?>/show_create_form" class="btn btn-primary btn-sm pull-right" style="margin-right: 5px;">Create new proposal</a>
+        </h1>
     </section>
     <section class="content">
         <div class="row">
             <div class="col-md-12">
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Filter <i class="fa fa-filter"></i></h3>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col col-md-3">
+                                <label for="">Brand</label><br>
+                                <select class="form-control select2" multiple name="" id="filter_brand">
+                                    <?php foreach ($brand->result() as $data) { ?>
+                                        <option value="<?= $data->BrandCode ?>"><?= $data->BrandName ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="col col-md-3">
+                                <label for="">Activity</label>
+                                <select class="form-control select2" multiple name="" id="filter_activity">
+                                    <?php foreach ($activity->result() as $data) { ?>
+                                        <option value="<?= $data->id ?>"><?= $data->ActivityName ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+
+                            <div class="col col-md-3">
+                                <label for="">Status</label>
+                                <select class="form-control select2" multiple name="" id="filter_status">
+                                    <option value="open">Open</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="cancel">Cancel</option>
+                                </select>
+                            </div>
+                            <div class="col col-md-3">
+                                <label for="">Action</label>
+                                <br>
+                                <button onclick="prosesFilter()" class="btn btn-flat btn-default">Filter</button>
+                                <button onclick="resetFilter()" class="btn btn-flat  btn-warning">Reset</button>
+                                <form style="display: inline;" action="<?= base_url($_SESSION['page'] . '/exportResumeProposalToExcel') ?>" method="POST">
+                                    <button type="submit" class="btn btn-flat btn-success">Export to excel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <form style="display: inline;" action="<?= base_url($_SESSION['page'] . '/exportResumeProposalToExcel') ?>" method="POST">
-                            <button type="submit" class="btn btn-success btn-sm pull-right">Export to excel</button>
-                        </form>
-                        <a href="<?= base_url($_SESSION['page']) ?>/show_create_form" class="btn btn-primary btn-sm pull-right" style="margin-right: 5px;">Create new proposal</a>
-                        <!-- <button class="btn-success btn-sm pull-right" data-toggle="modal" data-target="#modal-default">Export excel</button> -->
                     </div>
-                    <div class="box-body table-responsive">
-                        <table class="table table-responsive table-bordered table-striped" id="table_proposal">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>No Proposal</th>
-                                    <th>Ref Code</th>
-                                    <th>Brand</th>
-                                    <th>Activity</th>
-                                    <th>Start Periode</th>
-                                    <th>End Periode</th>
-                                    <th>Pic</th>
-                                    <th>Status</th>
-                                    <th>Management</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php $no = 1;
-                                foreach ($proposal->result() as $data) { ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $data->Number ?></td>
-                                        <td><?= $data->NoRef ?></td>
-                                        <td><?= getBrandName($data->BrandCode) ?></td>
-                                        <td><?= getActivityName($data->Activity) ?></td>
-                                        <td><?= date('d M Y', strtotime($data->StartDatePeriode)) ?></td>
-                                        <td><?= date('d M Y', strtotime($data->EndDatePeriode)) ?></td>
-                                        <td><?= ucfirst($data->CreatedBy) ?></td>
-                                        <td>
-                                            <span class=""><?= ucfirst($data->Status) ?></span>
-                                        </td>
-                                        <td>
-                                            <?php foreach (getApprovedBy($data->Number)->result() as $a) { ?>
-                                                <?php if ($a->is_approve == 'y') { ?>
-                                                    <span class="label label-success"><i class="fa fa-check"></i><?= ucfirst($a->fullname) . " " . date('d/m/y', strtotime($a->created_at)) ?></span><br>
-                                                <?php } else { ?>
-                                                    <span class="label label-danger"><i class="fa fa-close"></i><?= ucfirst($a->fullname) . " " . date('d/m/y', strtotime($a->created_at)) ?></span><br>
-                                                <?php } ?>
-                                            <?php } ?>
-                                        </td>
-                                        <td>
-                                            <a href="<?= base_url($_SESSION['page']) . '/showProposalDetail/' . $data->Number ?>" class="btn btn-info btn-xs">Lihat</a>
-                                            <?php if ($data->Status == 'open') { ?>
-                                                <button onclick="cancelProposal(this)" data-proposal-number="<?= $data->Number ?>" class="btn btn-warning btn-xs">Cancel</button>
-                                            <?php } ?>
-                                        </td>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
+                    <div class="box-body table-responsive" id="boxTablePrposal">
+
                     </div>
                 </div>
             </div>
@@ -80,8 +79,28 @@
 
 <script>
     $(document).ready(function() {
-        $('#table_proposal').DataTable();
-    });
+        $('#boxTablePrposal').load("<?= base_url($_SESSION['page']) . '/loadTableProposal' ?>")
+    })
+
+    function prosesFilter() {
+        var brand = $('#filter_brand').val()
+        var activity = $('#filter_activity').val()
+        if (brand.length > 0 || activity.length > 0) {
+            $('#boxTablePrposal').load("<?= base_url($_SESSION['page']) . '/loadTableProposal' ?>", {
+                brand,
+                activity
+            }, function() {
+
+            })
+        }
+    }
+
+    function resetFilter() {
+        $('#boxTablePrposal').load("<?= base_url($_SESSION['page']) . '/loadTableProposal' ?>", {}, function() {
+            $('#filter_brand').val(null).trigger('change') // mengosongkan filter
+            $('#filter_activity').val(null).trigger('change')
+        })
+    }
 
     function cancelProposal(button) {
         const proposal_number = $(button).data('proposal-number')

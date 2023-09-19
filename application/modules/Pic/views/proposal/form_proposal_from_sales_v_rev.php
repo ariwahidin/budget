@@ -202,22 +202,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <input type="text" class="form-control input_other_desc">
-                                    </td>
-                                    <td>
-                                        <input type="number" onkeyup="calculateTotalCostingOther(this)" class="form-control input_other_cost">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input type="text" class="form-control input_other_desc">
-                                    </td>
-                                    <td>
-                                        <input type="number" onkeyup="calculateTotalCostingOther(this)" class="form-control input_other_cost">
-                                    </td>
-                                </tr>
+                                <?php for ($i = 0; $i < 5; $i++) { ?>
+                                    <tr>
+                                        <td>
+                                            <input type="text" class="form-control input_other_desc">
+                                        </td>
+                                        <td>
+                                            <input type="number" onkeyup="calculateTotalCostingOther(this)" class="form-control input_other_cost">
+                                        </td>
+                                    </tr>
+                                <?php } ?>
                             </tbody>
                             <tfoot>
                                 <tr>
