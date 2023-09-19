@@ -18,6 +18,8 @@
                                     <th>No.</th>
                                     <th>Brand</th>
                                     <th>Periode</th>
+                                    <th>Valas</th>
+                                    <th>Exchange Rate</th>
                                     <th>Target Principal</th>
                                     <th>A&P Principal</th>
                                     <th>Target PK</th>
@@ -33,6 +35,8 @@
                                         <td><?= $no++ ?></td>
                                         <td><?= $op->BrandName ?></td>
                                         <td><?= date('M-Y', strtotime($op->StartPeriode)) . ' s/d ' . date('M-Y', strtotime($op->EndPeriode)) ?></td>
+                                        <td><?= strtoupper($op->Valas) ?></td>
+                                        <td><?= number_format($op->ExchangeRate) ?></td>
                                         <td><?= number_format($op->PrincipalTarget) ?></td>
                                         <td><?= number_format($op->TargetAnp) ?></td>
                                         <td><?= number_format($op->PKTarget) ?></td>
