@@ -529,6 +529,8 @@ class Direksi_model extends CI_Model
         return $query;
     }
 
+    
+
     public function get_detail_budget($budget_code)
     {
         $sql = "SELECT *, [PrincipalAnpIDR] AS TargetAnp FROM tb_operating WHERE BudgetCode = '$budget_code'";

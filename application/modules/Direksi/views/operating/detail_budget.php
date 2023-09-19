@@ -11,6 +11,80 @@
                         <strong>Brand : <?= $operating->row()->BrandName ?></strong>
                     </div>
                     <div class="box-body">
+                    <table style="font-size:12px;">
+                            <tr>
+                                <td>Brand</td>
+                                <td>&nbsp;:&nbsp; <?= getBrandName($budget_detail->row()->BrandCode) ?></td>
+                            </tr>
+                            <tr>
+                                <td>Start Periode</td>
+                                <td>&nbsp;:&nbsp; <?= date('M-Y', strtotime($budget_detail->result()[0]->Month)) ?></td>
+                            </tr>
+                            <tr>
+                                <td>End Periode</td>
+                                <td>&nbsp;:&nbsp; <?= date('M-Y', strtotime($budget_detail->result()[11]->Month)) ?></td>
+                            </tr>
+
+                            <tr>
+                                <td>Principal Target</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalPrincipalTargetIDR) ?></td>
+                            </tr>
+                            <tr>
+                                <?php
+                                $target_anp = 0;
+                                if ($budget_detail_header->row()->TotalPrincipalTargetIDR == 0) {
+                                    $target_anp = 0;
+                                } else {
+                                    $target_anp = ($budget_detail_header->row()->TotalTargetAnp / $budget_detail_header->row()->TotalPrincipalTargetIDR);
+                                }
+                                $target_anp_percent = $target_anp * 100;
+                                ?>
+                                <td>Principal A&P</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalTargetAnp) ?></td>
+                            </tr>
+                            <tr>
+                                <td>PK Target</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalPKTargetIDR) ?></td>
+                            </tr>
+                            <tr>
+                                <td>PK A&P</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalPKAnpIDR) ?></td>
+                            </tr>
+                            <tr>
+                                <?php
+                                $operating = 0;
+                                $operating = ($budget_detail_header->row()->TotalOperating / ($budget_detail_header->row()->TotalTargetAnp + $budget_detail_header->row()->TotalPKAnpIDR));
+                                $operating_percent = $operating * 100;
+                                ?>
+                                <td>Operating (<?= round($operating_percent) ?>%)</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalOperating); ?></td>
+                            </tr>
+                            <!-- <tr>
+                                <td>Purchase</td>
+                                <?php
+                                $actual_purchase = getActualPurchase($budget_detail->row()->BrandCode, $budget_detail_header->row()->StartPeriode, $budget_detail_header->row()->EndPeriode);
+                                ?>
+                                <td>&nbsp;:&nbsp; <?= number_format($actual_purchase); ?></td>
+                            </tr> -->
+                            <tr style="display:none">
+                                <?php
+                                $total_actual_anp = 0;
+                                $total_actual_anp = $actual_purchase * $target_anp;
+                                ?>
+                                <td>Actual A&P (<?= round($target_anp_percent) ?>%)</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($total_actual_anp) ?></td>
+                            </tr>
+                            <!-- <tr>
+                                <td>IMS</td>
+                                <td>&nbsp;:&nbsp; <?= $is_ims ?></td>
+                            </tr>
+                            <tr>
+                                <td>IMS (<?= $ims_percent ?>%)</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($ims_value) ?></td>
+                            </tr> -->
+
+
+                        </table>
                         <table class="table table-bordered table-striped" style="font-size: 12px;">
                             <thead>
                                 <tr>
