@@ -550,7 +550,6 @@ class Direksi extends CI_Controller
         $budgetCode = $this->input->post('budget_code');
         $operating = $this->direksi_model->getBudgetOperating($budgetCode);
         
-        $budget_detail = $this->pic_model->get_detail_budget($budget_code);
         $budget_detail_header = $this->direksi_model->getHeaderOperating($budgetCode);
         $data = array(
             'budget_code' => $budgetCode,
