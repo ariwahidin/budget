@@ -18,7 +18,7 @@
                                     <input type="hidden" class="form-control data-id" value="<?= $data->id ?>">
                                     <input type="text" class="form-control input-sm data-skp" placeholder="Nomor SKP" value="<?= $data->NoSKP ?>">
                                 </td>
-                                <td><input type="text" class="form-control input-sm value-skp rupiah" placeholder="Value SKP" value="<?= $data->Valueskp ?>"></td>
+                                <td><input type="text" class="form-control input-sm value-skp rupiah" placeholder="Value SKP" value="<?= rupiah($data->Valueskp) ?>"></td>
                             </tr>
                             <tr>    
                                 <td colspan="3"><input type="text" class="form-control input-sm data-ket" placeholder="Keterangan" value="<?= $data->Ket ?>"></td>

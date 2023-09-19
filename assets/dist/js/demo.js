@@ -349,6 +349,14 @@ $(function () {
 })
 
 
+let cells = document.querySelectorAll('td');
+cells.forEach(function (cell) {
+  let cellText = cell.textContent.trim();
+  if (/^[0-9,.]+$/.test(cellText)) {
+    cell.style.textAlign = 'right';
+  }
+});
+
     
 let formatRupiah = (angka, prefix) =>{
 	let number_string = angka.replace(/[^,\d]/g, '').toString(),

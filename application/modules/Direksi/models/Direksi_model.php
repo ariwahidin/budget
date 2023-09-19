@@ -126,7 +126,7 @@ class Direksi_model extends CI_Model
         if ($budget_code != null) {
             $sql = "SELECT * FROM tb_operating WHERE BudgetCode = '$budget_code'";
         } else {
-            $sql = "SELECT BudgetCode, ss.BrandCode,
+            $sql = "SELECT BudgetCode, ss.BrandCode, ss.ExchangeRate, ss.Valas,
             MIN([month]) AS StartPeriode,
             MAX([month]) AS EndPeriode, t2.BrandName,
             SUM([PrincipalTargetIDR]) AS PrincipalTarget,
@@ -136,7 +136,7 @@ class Direksi_model extends CI_Model
             SUM(OperatingBudget) AS OperatingBudget FROM
             (SELECT * FROM tb_operating)ss
             INNER JOIN m_brand t2 ON ss.BrandCode = t2.BrandCode
-            GROUP BY BudgetCode, ss.BrandCode, t2.BrandName";
+            GROUP BY BudgetCode, ss.BrandCode, t2.BrandName, ss.ExchangeRate, ss.Valas";
         }
         $query = $this->db->query($sql);
         return $query;

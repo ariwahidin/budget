@@ -106,7 +106,7 @@
             <!-- ./col -->
         </div>
         <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-12">
                 <div class="box box-primary">
                     <div class="box-header">
                         <form action="<?= base_url($_SESSION['page'] . '/downloadExcel') ?>" method="POST" id="formCetakExcel"></form>
@@ -131,6 +131,7 @@
                                                 <th>End Periode</th>
                                                 <th>Operating</th>
                                                 <th>Costing</th>
+                                                <th>DN Amount</th>
                                                 <th style="background-color: #FFDBAA;">Claim Amount</th>
                                                 <th style="background-color: #FFB7B7;">Used Amount</th>
                                             </tr>
@@ -145,6 +146,7 @@
                                                     <td><?= $data->EndPeriode ?></td>
                                                     <td style="text-align: right;"><?= number_format($data->TotalOperatingBudget) ?></td>
                                                     <td style="text-align: right;"><?= number_format($data->TotalCosting) ?></td>
+                                                    <td>0</td>
                                                     <td style="text-align: right;background-color: #FFDBAA;"> <?= number_format($data->IncomingAmount) ?></td>
                                                     <td style="background-color: #FFB7B7;"></td>
                                                 </tr>
