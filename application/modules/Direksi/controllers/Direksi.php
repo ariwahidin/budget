@@ -13,6 +13,7 @@ class Direksi extends CI_Controller
         parent::__construct();
         check_login();
         $this->load->model(['direksi_model']);
+        
     }
 
     public function render($view, array $data = NULL)
@@ -558,6 +559,46 @@ class Direksi extends CI_Controller
         );
 
         $this->render('operating/detail_budget', $data);
+    }
+
+    
+    public function loadTableProposal()
+    {
+
+        if (isset($_POST['brand'])) {
+            if (count($_POST['brand']) > 0) {
+                $params['brand'] = implode(",", $_POST['brand']);
+            }
+        }
+
+        if (isset($_POST['activity'])) {
+            if (count($_POST['activity']) > 0) {
+                $params['activity'] = implode(",", $_POST['activity']);
+            }
+        }
+
+        if (isset($_POST['status'])) {
+            if (count($_POST['status']) > 0) {
+                $params['status'] = implode(",", $_POST['status']);
+            }
+        }
+
+        $proposal = $this->direksi_model->getProposalx($params);
+        $data = array(
+            'proposal' => $proposal,
+        );
+
+        $this->load->view('proposal/table_proposal', $data);
+    }
+
+
+    public function loadplan(){
+        $data = array(
+            'brand' => $this->direksi_model->getBrandProposalByPic(),
+            'activity' => $this->direksi_model->getActivity()
+        );
+
+        $this->render('operating/loadplan', $data);
     }
 
     public function loadTableFund()

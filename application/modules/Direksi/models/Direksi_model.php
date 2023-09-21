@@ -31,6 +31,7 @@ class Direksi_model extends CI_Model
         $query = $this->db->query($sql);
         return $query;
     }
+    
 
     public function getGroup()
     {
@@ -574,6 +575,52 @@ class Direksi_model extends CI_Model
     public function getProposalView()
     {
         $sql = "SELECT * FROM ProposalView";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getProposalpic($params = null)
+    {
+        $sql = "SELECT DISTINCT t1.*, t2.Budget_type FROM tb_proposal t1 
+        inner join tb_operating_proposal t2 on t1.[Number] = t2.ProposalNumber";
+
+            if (isset($params['brand'])) {
+                $brand = $params['brand'];
+                $sql .= " AND t1.BrandCode IN (SELECT * FROM STRING_SPLIT('$brand', ','))";
+            }
+
+            if (isset($params['activity'])) {
+                $activity = $params['activity'];
+                $sql .= " AND t1.Activity IN (SELECT * FROM STRING_SPLIT('$activity', ','))";
+            }
+
+            if (isset($params['status'])) {
+                $status = $params['status'];
+                $sql .= " AND t1.Status IN (SELECT * FROM STRING_SPLIT('$status', ','))";
+            }
+        
+
+        if (!empty($params['number'])) {
+            $number = $params['number'];
+            $sql .= " WHERE t1.[Number] = '$number'";
+        }
+
+        $sql .= " ORDER BY t1.id DESC";
+
+        // echo $sql;
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getProposalx($params = null){
+        $anu = $this->getProposalpic($params);
+        return $anu;
+    }
+    
+    public function getBrandProposalByPic()
+    {
+        $sql = "SELECT DISTINCT t1.BrandCode, t1.BrandName FROM ProposalTarikanExcelView t1 
+        LEFT JOIN tb_pic_brand t2 on t1.BrandCode = t2.BrandCode ";
         $query = $this->db->query($sql);
         return $query;
     }
