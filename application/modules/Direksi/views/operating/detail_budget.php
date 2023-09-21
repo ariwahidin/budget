@@ -1,3 +1,45 @@
+<style>
+table.custom{
+    font-size: 1.3rem;
+    width: 100%;
+    margin: 20px 0;
+}
+table.custom tr:nth-child(even) {
+    background: #f7f2f2;
+}
+
+td,
+th {
+  padding:5px 10px;
+}
+</style>
+<?php
+
+
+$cek_sumber_dana = $budget_detail_header->row()->TotalPrincipalTargetIDR ?? 0;
+$is_supplier_dana = ($cek_sumber_dana > 0) ? 1 : 0;
+$ceklist0 = ($is_supplier_dana == 1) ? "checked='checked'" : "";
+$ceklist1 = ($is_supplier_dana == 0) ? "checked='checked'" : "";
+
+
+$target_anp = 0;
+if ($budget_detail_header->row()->TotalPrincipalTargetIDR == 0) { $target_anp = 0; } 
+else { $target_anp = ($budget_detail_header->row()->TotalTargetAnp / $budget_detail_header->row()->TotalPrincipalTargetIDR); }
+$target_anp_percent = $target_anp * 100;
+
+$besaranx = ceknum($budget_detail_header->row()->TotalPrincipalTargetIDR);
+$besarany = ceknum($budget_detail_header->row()->TotalTargetAnp);
+$presentase_0 = ($is_supplier_dana == 1) ? ($besaranx / $besarany)  : 0;
+
+$besarana = ceknum($budget_detail_header->row()->TotalPKTargetIDR) ?? 0;
+$besaranb = ceknum($budget_detail_header->row()->TotalPKAnpIDR) ?? 0;
+$presentase_1 = ($is_supplier_dana == 0) ? ($besarana / $besaranb) : 0;
+
+
+$operatingx = 0;
+$operatingx = ($budget_detail_header->row()->TotalOperating / ($budget_detail_header->row()->TotalTargetAnp + $budget_detail_header->row()->TotalPKAnpIDR));
+$operating_percent = $operatingx * 100;
+?>
 <section class="content-wrapper">
     <section class="content-header">
         <h1>Budget Detail</h1>
@@ -11,12 +53,83 @@
                         <strong>Brand : <?= $operating->row()->BrandName ?></strong>
                     </div>
                     <div class="box-body">
+                    <table class="custom">
+                            <tr>
+                                <td>Brand</td>
+                                <td>&nbsp;:&nbsp; <?= getBrandName($operating->row()->BrandCode) ?></td>
+                            </tr>
+                            <tr>
+                                <td>Sumber Dana</td>
+                                <td>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td><input type="checkbox" disabled="disabled" <?= $ceklist0 ?>></td>
+                                                <td>Supplier</td>
+                                                <td>Presentase : <?= $presentase_0 ?>%</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" disabled="disabled" <?= $ceklist1 ?>></td>
+                                                <td>Perusahaan Pandu Rasa</td>
+                                                <td>Presentase : <?= $presentase_1 ?>%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mata Uang</td>
+                                <td>&nbsp;:&nbsp; <?= strtoupper($operating->result()[0]->Valas); ?></td>
+                            </tr>
+                            <tr>
+                                <td>Start Periode</td>
+                                <td>&nbsp;:&nbsp; <?= date('M-Y', strtotime($operating->result()[0]->Periode)) ?></td>
+                            </tr>
+                            <tr>
+                                <td>End Periode </td>
+                                <td>&nbsp;:&nbsp; <?= date('M-Y', strtotime($operating->result()[11]->Periode)) ?></td>
+                            </tr>
+                            <?php if($is_supplier_dana == 1){ ?>
+                            <tr>
+                                <td>Principal Target</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalPrincipalTargetIDR) ?></td>
+                            </tr>
+                            <tr>
+                                <td>Principal A&P</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalTargetAnp) ?></td>
+                            </tr>
+                            <?php } ?>
+                            
+                            <?php if($is_supplier_dana == 0){ ?>
+                            <tr>
+                                <td>PK Target</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalPKTargetIDR) ?></td>
+                            </tr>
+                            <tr>
+                                <td>PK A&P</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalPKAnpIDR) ?></td>
+                            </tr>
+                            <?php } ?>
+                            <tr>
+                                <td>Operating (<?= round($operating_percent); ?>%)</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalOperating);  ?></td>
+                            </tr>
+                            <tr style="display:none">
+                                <?php
+                                $total_actual_anp = 0;
+                                $total_actual_anp = $actual_purchase * $target_anp;
+                                ?>
+                                <td>Actual A&P (<?= round($target_anp_percent) ?>%)</td>
+                                <td>&nbsp;:&nbsp; <?= number_format($total_actual_anp) ?></td>
+                            </tr>
+                        </table>
 
                         <table class="table table-bordered table-striped" style="font-size: 12px;">
                             <thead>
                                 <tr>
                                     <th>No.</th>
                                     <th>Month</th>
+                                    <th>Kurs</th>
                                     <th>Principal Target</th>
                                     <th>Principal A&P</th>
                                     <th>PK Target</th>
@@ -33,6 +146,7 @@
                                     <tr>
                                         <td><?= $no++ ?></td>
                                         <td><?= date('M Y', strtotime($data->Periode)) ?></td>
+                                        <td><?= number_format($data->ExchangeRate)  ?></td>
                                         <td><?= number_format($data->PrincipalTarget) ?></td>
                                         <td><?= number_format($data->AnpPrincipal) ?></td>
                                         <td><?= number_format($data->PKTargetIDR) ?></td>

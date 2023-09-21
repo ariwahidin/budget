@@ -309,6 +309,18 @@
                     <li class="treeview <?= $this->uri->segment(2) == 'createProposal' || $this->uri->segment(2) == 'showProposal' ? 'active' : '' ?>">
                         <a href="#">
                             <i class="fa fa-folder-o"></i>
+                            <span>Planning</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li <?= $this->uri->segment(2) == 'showProposal' ? 'class="active"' : '' ?>><a href="<?= base_url($_SESSION['page'] . '/showProposal') ?>"><i class="fa fa-circle-o"></i> Data Planning</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview <?= $this->uri->segment(2) == 'createProposal' || $this->uri->segment(2) == 'showProposal' ? 'active' : '' ?>">
+                        <a href="#">
+                            <i class="fa fa-folder-o"></i>
                             <span>Proposal Promotion</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
