@@ -860,9 +860,14 @@ class Pic_model extends CI_Model
                 $sql .= " AND t1.BrandCode IN (SELECT * FROM STRING_SPLIT('$brand', ','))";
             }
 
-            if(isset($params['activity'])){
+            if (isset($params['activity'])) {
                 $activity = $params['activity'];
                 $sql .= " AND t1.Activity IN (SELECT * FROM STRING_SPLIT('$activity', ','))";
+            }
+
+            if (isset($params['status'])) {
+                $status = $params['status'];
+                $sql .= " AND t1.Status IN (SELECT * FROM STRING_SPLIT('$status', ','))";
             }
         }
 

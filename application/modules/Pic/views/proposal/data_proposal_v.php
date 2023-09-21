@@ -85,10 +85,12 @@
     function prosesFilter() {
         var brand = $('#filter_brand').val()
         var activity = $('#filter_activity').val()
+        var status = $('#filter_status').val()
         if (brand.length > 0 || activity.length > 0) {
             $('#boxTablePrposal').load("<?= base_url($_SESSION['page']) . '/loadTableProposal' ?>", {
                 brand,
-                activity
+                activity,
+                status,
             }, function() {
 
             })

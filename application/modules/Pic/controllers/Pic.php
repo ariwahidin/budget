@@ -552,19 +552,25 @@ class Pic extends CI_Controller
                 $params['activity'] = implode(",", $_POST['activity']);
             }
         }
-        
+
+        if (isset($_POST['status'])) {
+            if (count($_POST['status']) > 0) {
+                $params['status'] = implode(",", $_POST['status']);
+            }
+        }
+
         $proposal = $this->pic_model->getProposal($params);
         $data = array(
             'proposal' => $proposal,
         );
+
         $this->load->view('proposal/table_proposal', $data);
     }
 
     public function showProposal()
     {
-        $brandByPic = $this->pic_model->getBrandProposalByPic();
         $data = array(
-            'brand' => $brandByPic,
+            'brand' => $this->pic_model->getBrandProposalByPic(),
             'activity' => $this->pic_model->getActivity()
         );
         $this->load->view('proposal/data_proposal_v', $data);
@@ -578,7 +584,6 @@ class Pic extends CI_Controller
             'proposal' => $proposal
         );
         $this->load->view('report/proposal_excel', $data);
-        // var_dump($proposal->result());
     }
 
     public function showProposalDetail($number)

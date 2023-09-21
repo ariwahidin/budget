@@ -193,8 +193,6 @@ class Finance_model extends CI_Model
     public function getCustomerBySkp($skp){
         $sql = "select distinct 
         t1.id, t1.ProposalNumber,
-        --t1.GroupCode, 
-        --t1.SubGroupCode, t1.NoSKP, t1.Ket, 
         t2.GroupName as GroupCustomer, 
         t5.CardCode, t5.CardName, 
         t4.GroupCode, t4.GroupName as ServiceBy
