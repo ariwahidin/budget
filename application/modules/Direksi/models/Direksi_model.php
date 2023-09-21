@@ -582,7 +582,7 @@ class Direksi_model extends CI_Model
     public function getBudgetOperating($budget_code)
     {
         $sql = "select
-        BrandName,BrandCode,
+        BrandName,BrandCode, Valas,ExchangeRate,
         [Month] as Periode,
         PrincipalTargetIDR as PrincipalTarget,
         PrincipalAnpIDR as AnpPrincipal,
@@ -590,7 +590,6 @@ class Direksi_model extends CI_Model
         PKAnpIDR,
         OperatingBudget
         from tb_operating where BudgetCode = '$budget_code'";
-        echo $sql;
         $query = $this->db->query($sql);
         return $query;
     }

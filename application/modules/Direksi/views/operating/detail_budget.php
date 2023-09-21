@@ -78,14 +78,18 @@ $operating_percent = $operatingx * 100;
                                 </td>
                             </tr>
                             <tr>
-                                <td>Start Periode</td>
-                                <td>&nbsp;:&nbsp; <?= date('M-Y', strtotime($operating->result()[0]->Month)) ?></td>
+                                <td>Mata Uang</td>
+                                <td>&nbsp;:&nbsp; <?= strtoupper($operating->result()[0]->Valas); ?></td>
                             </tr>
                             <tr>
-                                <td>End Periode <?= json_encode($operating->row()); ?></td>
-                                <td>&nbsp;:&nbsp; <?= date('M-Y', strtotime($operating->result()[11]->Month)) ?></td>
+                                <td>Start Periode</td>
+                                <td>&nbsp;:&nbsp; <?= date('M-Y', strtotime($operating->result()[0]->Periode)) ?></td>
                             </tr>
-
+                            <tr>
+                                <td>End Periode </td>
+                                <td>&nbsp;:&nbsp; <?= date('M-Y', strtotime($operating->result()[11]->Periode)) ?></td>
+                            </tr>
+                            <?php if($is_supplier_dana == 1){ ?>
                             <tr>
                                 <td>Principal Target</td>
                                 <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalPrincipalTargetIDR) ?></td>
@@ -94,6 +98,9 @@ $operating_percent = $operatingx * 100;
                                 <td>Principal A&P</td>
                                 <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalTargetAnp) ?></td>
                             </tr>
+                            <?php } ?>
+                            
+                            <?php if($is_supplier_dana == 0){ ?>
                             <tr>
                                 <td>PK Target</td>
                                 <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalPKTargetIDR) ?></td>
@@ -102,6 +109,7 @@ $operating_percent = $operatingx * 100;
                                 <td>PK A&P</td>
                                 <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalPKAnpIDR) ?></td>
                             </tr>
+                            <?php } ?>
                             <tr>
                                 <td>Operating (<?= round($operating_percent); ?>%)</td>
                                 <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalOperating);  ?></td>
@@ -121,6 +129,7 @@ $operating_percent = $operatingx * 100;
                                 <tr>
                                     <th>No.</th>
                                     <th>Month</th>
+                                    <th>Kurs</th>
                                     <th>Principal Target</th>
                                     <th>Principal A&P</th>
                                     <th>PK Target</th>
@@ -137,6 +146,7 @@ $operating_percent = $operatingx * 100;
                                     <tr>
                                         <td><?= $no++ ?></td>
                                         <td><?= date('M Y', strtotime($data->Periode)) ?></td>
+                                        <td><?= number_format($data->ExchangeRate)  ?></td>
                                         <td><?= number_format($data->PrincipalTarget) ?></td>
                                         <td><?= number_format($data->AnpPrincipal) ?></td>
                                         <td><?= number_format($data->PKTargetIDR) ?></td>
