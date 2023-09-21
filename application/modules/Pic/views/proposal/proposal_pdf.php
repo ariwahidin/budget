@@ -147,6 +147,22 @@
 
         </table>
     </div>
+    <div>
+        <table>
+            <tr>
+                <th colspan="3">COMMENT</th>
+            </tr>
+
+            <?php
+            $no = 1;
+            foreach ($comment->result() as $com) { ?>
+                <tr>
+                    <td><?= $no++ ?>.&nbsp;</td>
+                    <td><?= $com->Comment ?></td>
+                </tr>
+            <?php } ?>
+        </table>
+    </div>
     <div style="text-align:left; padding-top: 10px;">
         <b style="font-size: 12px;">SALES TARGET</b>
     </div>
@@ -398,22 +414,7 @@
             </tbody>
         </table>
     <?php } ?>
-    <div>
-        <table>
-            <tr>
-                <th colspan="3">COMMENT</th>
-            </tr>
 
-            <?php
-            $no = 1;
-            foreach ($comment->result() as $com) { ?>
-                <tr>
-                    <td><?= $no++ ?>.&nbsp;</td>
-                    <td><?= $com->Comment ?></td>
-                </tr>
-            <?php } ?>
-        </table>
-    </div>
     <div>
         <!-- <table>
             <tr>
