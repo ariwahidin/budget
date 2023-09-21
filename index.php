@@ -90,7 +90,6 @@ switch (ENVIRONMENT)
 }
 
 
-error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
 /*
  *---------------------------------------------------------------
  * SYSTEM DIRECTORY NAME
@@ -314,4 +313,9 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE &
  *
  * And away we go...
  */
-require_once BASEPATH.'core/CodeIgniter.php';
+
+ error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
+ header('Access-Control-Allow-Origin: *');
+ header("Access-Control-Allow-Methods: GET, OPTIONS");
+ 
+ require_once BASEPATH.'core/CodeIgniter.php';

@@ -147,11 +147,13 @@ class Direksi_model extends CI_Model
         $sql = "SELECT MIN([Month]) AS StartPeriode, 
         MAX([Month]) AS EndPeriode, 
         AVG(ExchangeRate) AS ExchangeRate,
+        SUM([PKAnpIDR]) AS TotalPKAnpIDR,
         SUM(PrincipalTargetValas) AS TotalPrincipalTargetValas,
         SUM(PrincipalTargetIDR) AS TotalPrincipalTargetIDR,
         SUM([PrincipalAnpIDR]) AS TotalTargetAnp, 
         SUM(OperatingBudget) AS TotalOperating 
         FROM tb_operating WHERE BudgetCode = '$budget_code'";
+
         $query = $this->db->query($sql);
         return $query;
     }
@@ -580,7 +582,7 @@ class Direksi_model extends CI_Model
     public function getBudgetOperating($budget_code)
     {
         $sql = "select
-        BrandName,
+        BrandName,BrandCode,
         [Month] as Periode,
         PrincipalTargetIDR as PrincipalTarget,
         PrincipalAnpIDR as AnpPrincipal,
@@ -588,6 +590,7 @@ class Direksi_model extends CI_Model
         PKAnpIDR,
         OperatingBudget
         from tb_operating where BudgetCode = '$budget_code'";
+        echo $sql;
         $query = $this->db->query($sql);
         return $query;
     }

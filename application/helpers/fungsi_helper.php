@@ -27,6 +27,14 @@ function check_admin()
     }
 }
 
+function ceknum($angka){
+    if((is_numeric($angka))&&($angka > 0)){
+        return angkrupiah($angka);
+    }
+
+    return 0;
+}
+
 function rupiah($angka){
 	$angkaarr = str_replace(".",",",$angka);
 	$aex = explode(",",$angkaarr);
