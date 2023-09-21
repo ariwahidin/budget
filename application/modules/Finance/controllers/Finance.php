@@ -25,11 +25,16 @@ class Finance extends CI_Controller
 
     public function showProposal()
     {
+        $this->render('proposal/proposal_data');
+    }
+
+    public function loadTableProposal()
+    {
         $proposal = $this->finance_model->getProposalApproved();
         $data = array(
             'proposal' => $proposal
         );
-        $this->render('proposal/proposal_data', $data);
+        $this->load->view('proposal/table_proposal', $data);
     }
 
     public function detailProposal($number)
@@ -69,8 +74,9 @@ class Finance extends CI_Controller
         redirect(base_url($_SESSION['page'] . '/changePasswordPage'));
     }
 
-    
-    public function tambahskpb(){
+
+    public function tambahskpb()
+    {
         $number = $this->input->post('number');
         $cek_skp = $this->finance_model->getSKP($number);
 
@@ -167,8 +173,7 @@ class Finance extends CI_Controller
     public function loadCustomerBySkp()
     {
         $skp = $this->input->post('skp');
-
-        var_dump($skp);
+        // var_dump($skp);
         $data = array(
             'customer' => $this->finance_model->getCustomerBySkp($skp)
         );

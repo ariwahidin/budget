@@ -23,9 +23,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-//$config['base_url'] = 'http://192.168.60.14:1895/anp-development/';
+// $config['base_url'] = 'http://192.168.60.14:1895/anp-development/';
+$config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/anp-development/';
 
+<<<<<<< HEAD
 $config['base_url'] = "https://".$_SERVER['HTTP_HOST']."/test/budget/";
+=======
+// $config['base_url'] = "https://test.test/budget/";
+>>>>>>> b8ee7931c225487a0150731dab48f550829573b6
 /*
 |--------------------------------------------------------------------------
 | Index File

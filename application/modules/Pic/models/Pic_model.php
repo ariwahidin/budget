@@ -251,8 +251,6 @@ class Pic_model extends CI_Model
 
     public function getCustomerFromTBSales($customer_code = null)
     {
-        // var_dump($group);
-        // var_dump($customer);
         $sql = "SELECT DISTINCT CardCode, GroupName, CardName AS CustomerName, GroupCode FROM tb_sales";
 
         if ($customer_code != null) {
@@ -856,6 +854,21 @@ class Pic_model extends CI_Model
         if (!empty($params['user_code'])) {
             $user_code = $params['user_code'];
             $sql .= " WHERE t1.BrandCode IN(SELECT BrandCode FROM tb_pic_brand WHERE UserCode = '$user_code')";
+
+            if (isset($params['brand'])) {
+                $brand = $params['brand'];
+                $sql .= " AND t1.BrandCode IN (SELECT * FROM STRING_SPLIT('$brand', ','))";
+            }
+
+            if (isset($params['activity'])) {
+                $activity = $params['activity'];
+                $sql .= " AND t1.Activity IN (SELECT * FROM STRING_SPLIT('$activity', ','))";
+            }
+
+            if (isset($params['status'])) {
+                $status = $params['status'];
+                $sql .= " AND t1.Status IN (SELECT * FROM STRING_SPLIT('$status', ','))";
+            }
         }
 
         if (!empty($params['number'])) {
@@ -865,6 +878,7 @@ class Pic_model extends CI_Model
 
         $sql .= " ORDER BY t1.id DESC";
 
+        // echo $sql;
         $query = $this->db->query($sql);
         return $query;
     }
