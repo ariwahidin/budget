@@ -61,5 +61,5 @@
 
 </section>
 <script>
-    $('#table_employee').DataTable();
+    $('#table_employee').DataTable({resposive : true});
 </script>

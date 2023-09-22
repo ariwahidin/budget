@@ -43,7 +43,7 @@
 <div id="loadModalCustomerBySkp"></div>
 <script>
     $(document).ready(function() {
-        $('#tableProposal').DataTable()
+        $('#tableProposal').DataTable({resposive : true})
     })
 
     function loadModalCustomerBySkp(button) {

@@ -137,7 +137,7 @@
     })
 </script>
 <script>
-    // $('#tableAnggaranActivity').DataTable();
+    // $('#tableAnggaranActivity').DataTable({resposive : true});
     $('#tableAnggaranActivity').DataTable({
         ordering : false,
         info : false,

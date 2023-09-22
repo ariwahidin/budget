@@ -25,7 +25,10 @@ class Finance extends CI_Controller
 
     public function showProposal()
     {
-        $this->render('proposal/proposal_data');
+        $data = array(
+            'brand' => $this->finance_model->getBrandProposal(),
+        );
+        $this->render('proposal/proposal_data', $data);
     }
 
     public function loadTableProposal()
@@ -173,7 +176,6 @@ class Finance extends CI_Controller
     public function loadCustomerBySkp()
     {
         $skp = $this->input->post('skp');
-        // var_dump($skp);
         $data = array(
             'customer' => $this->finance_model->getCustomerBySkp($skp)
         );

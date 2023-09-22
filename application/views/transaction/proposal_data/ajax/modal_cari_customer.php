@@ -46,7 +46,7 @@
 
     $(document).ready(function(){
         $('#modal-cari_customer').modal('show');
-        $('#table_cari_customer').DataTable();
+        $('#table_cari_customer').DataTable({resposive : true});
     })
 
     $(document).on('click','#add_customer', function(){

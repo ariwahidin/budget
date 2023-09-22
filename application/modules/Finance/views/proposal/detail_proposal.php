@@ -313,5 +313,5 @@
         })
     }
 
-    $('#tableCustomer').DataTable()
+    $('#tableCustomer').DataTable({resposive : true})
 </script>

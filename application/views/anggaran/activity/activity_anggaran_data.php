@@ -53,7 +53,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
 
-        $('#table_detail_pemakaian').DataTable();
+        $('#table_detail_pemakaian').DataTable({resposive : true});
 
         $(document).on('click','#btn_muncul_modal_pemakaian_anggaran_activity', function(){
             var no_proposal = $(this).data('no_proposal'); 

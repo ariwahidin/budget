@@ -83,7 +83,7 @@
 <?php $this->load->view('footer') ?>
 <script>
     $(document).ready(function() {
-        $('#table_pic').DataTable()
+        $('#table_pic').DataTable({resposive : true})
         $('#brand').select2()
         $('#pic').select2()
         $('#btnSave').on('click', function() {

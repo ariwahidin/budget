@@ -365,31 +365,31 @@
 </script>
 <script>
   $(document).ready(function(){
-    $('#table_item').DataTable()
+    $('#table_item').DataTable({resposive : true})
   })
   
   $(document).ready(function(){
-    $('#table_brand').DataTable()
+    $('#table_brand').DataTable({resposive : true})
   })
 
   $(document).ready(function(){
-    $('#table_group').DataTable()
+    $('#table_group').DataTable({resposive : true})
   })
 
   $(document).ready(function(){
-    $('#table_promo').DataTable()
+    $('#table_promo').DataTable({resposive : true})
   })
 
   $(document).ready(function(){
-    $('#table_customer').DataTable()
+    $('#table_customer').DataTable({resposive : true})
   })
 
   $(document).ready(function(){
-    $('#table_pilih_brand').DataTable()
+    $('#table_pilih_brand').DataTable({resposive : true})
   })
 
   $(document).ready(function() {
-	    $('#item_barang').DataTable();
+	    $('#item_barang').DataTable({resposive : true});
   });
 </script>
 

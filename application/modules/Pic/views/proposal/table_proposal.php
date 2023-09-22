@@ -38,7 +38,7 @@
                         <?php } ?>
                     <?php } ?>
                 </td>
-                <td style="width: 12%;">
+                <td style="min-width: 120px;">
                     <a href="<?= base_url($_SESSION['page']) . '/showProposalDetail/' . $data->Number ?>" class="btn btn-info btn-xs">Lihat</a>
                     <a href="<?= base_url($_SESSION['page']) . '/exportProposalToPdf/' . $data->Number ?>" class="btn btn-danger btn-xs">Pdf</a>
                     <?php if ($data->Status == 'open') { ?>
@@ -51,6 +51,6 @@
 </table>
 <script>
     $(document).ready(function() {
-        $('#table_proposal').DataTable();
+        $('#table_proposal').DataTable({resposive : true});
     });
 </script>

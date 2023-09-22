@@ -30,7 +30,7 @@
                     if(result.success == true){
                         $('#table_outlet').load('<?=site_url('sale/outlet_selected_data')?>',function(){                            
                             
-                                // $('#table_outlet1').DataTable()
+                                // $('#table_outlet1').DataTable({resposive : true})
                             
                         }) 
                         // alert('Outlet berhasil dihapus')

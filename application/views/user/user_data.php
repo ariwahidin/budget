@@ -72,6 +72,6 @@
 </section>
 <script>
     $(document).ready(function(){
-        $('#table_user').DataTable();
+        $('#table_user').DataTable({resposive : true});
     })
 </script>

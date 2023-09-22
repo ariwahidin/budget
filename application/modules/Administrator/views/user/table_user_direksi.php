@@ -29,6 +29,6 @@
 </table>
 <script>
     $(document).ready(function() {
-        $('#tableUserDireksi').DataTable()
+        $('#tableUserDireksi').DataTable({resposive : true})
     })
 </script>

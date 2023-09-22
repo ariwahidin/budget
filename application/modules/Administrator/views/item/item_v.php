@@ -41,5 +41,5 @@
 </div>
 <?php $this->view('footer') ?>
 <script>
-    $('.table_item').dataTable();
+    $('.table_item').DataTable({resposive : true});
 </script>

@@ -489,8 +489,8 @@
 <?php $this->view('footer') ?>
 <script>
     $(document).ready(function() {
-        $('.table_customer').DataTable()
-        $('#tableDetailItem').DataTable()
+        $('.table_customer').DataTable({resposive : true})
+        $('#tableDetailItem').DataTable({resposive : true})
     });
 
     function prosesSK() {

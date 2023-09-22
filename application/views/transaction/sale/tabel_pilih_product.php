@@ -50,7 +50,7 @@
                 if(result.success == true){
                     // alert('Ada Data dari '+id_brand)
                 $('#table_product').load('<?=site_url('product/product_data/')?>'+id_brand,function(){
-                    $('#table_product_t').DataTable()
+                    $('#table_product_t').DataTable({resposive : true})
                 })
                     
                 }else{

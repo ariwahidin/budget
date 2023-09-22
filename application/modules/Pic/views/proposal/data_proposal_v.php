@@ -30,7 +30,7 @@
                                 </select>
                             </div>
                             <div class="col col-md-3">
-                                <label for="">Activity</label>
+                                <label for="">Activity</label><br>
                                 <select class="form-control select2" multiple name="" id="filter_activity">
                                     <?php foreach ($activity->result() as $data) { ?>
                                         <option value="<?= $data->id ?>"><?= $data->ActivityName ?></option>
@@ -39,11 +39,11 @@
                             </div>
 
                             <div class="col col-md-3">
-                                <label for="">Status</label>
+                                <label for="">Status</label><br>
                                 <select class="form-control select2" multiple name="" id="filter_status">
                                     <option value="open">Open</option>
                                     <option value="approved">Approved</option>
-                                    <option value="cancel">Cancel</option>
+                                    <option value="canceled">Canceled</option>
                                 </select>
                             </div>
                             <div class="col col-md-3">

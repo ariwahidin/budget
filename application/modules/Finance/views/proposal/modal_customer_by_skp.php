@@ -37,6 +37,6 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#tableCustomer').DataTable()
+        $('#tableCustomer').DataTable({resposive : true})
     })
 </script>

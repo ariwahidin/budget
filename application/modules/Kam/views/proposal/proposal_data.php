@@ -46,6 +46,6 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#tableProposal').DataTable()
+        $('#tableProposal').DataTable({resposive : true})
     })
 </script>
