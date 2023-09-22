@@ -12,7 +12,7 @@
                         <form action="<?= base_url($_SESSION['page']) ?>/loadDetailBudget" method="POST" id="formDetailBudget">
                             <input type="hidden" id="budget_code" name="budget_code">
                         </form>
-                        <table class="table table-responsive table-bordered table-striped table_operating" style="font-size:12px">
+                        <table class="table table-bordered table-responsive table_operating" style="font-size:12px">
                             <thead>
                                 <tr>
                                     <th>No.</th>
@@ -20,6 +20,7 @@
                                     <th>Periode</th>
                                     <th>Valas</th>
                                     <th>Exchange Rate</th>
+                                    <th>Actual A&P</th>
                                     <th>Target Principal</th>
                                     <th>A&P Principal</th>
                                     <th>Target PK</th>
@@ -37,6 +38,7 @@
                                         <td><?= date('M-Y', strtotime($op->StartPeriode)) . ' s/d ' . date('M-Y', strtotime($op->EndPeriode)) ?></td>
                                         <td><?= strtoupper($op->Valas) ?></td>
                                         <td><?= number_format($op->ExchangeRate) ?></td>
+                                        <td><?= number_format($op->ActualAnp) ?></td>
                                         <td><?= number_format($op->PrincipalTarget) ?></td>
                                         <td><?= number_format($op->TargetAnp) ?></td>
                                         <td><?= number_format($op->PKTarget) ?></td>
@@ -61,7 +63,9 @@
 </div>
 <?php $this->view('footer') ?>
 <script>
-    $('.table_operating').dataTable();
+    $('.table-responsive').DataTable({
+        responsive: true
+    });
 
     function loading() {
         div_loading = document.getElementById('muncul_loading');

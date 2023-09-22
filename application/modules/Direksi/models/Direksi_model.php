@@ -629,7 +629,7 @@ class Direksi_model extends CI_Model
     public function getBudgetOperating($budget_code)
     {
         $sql = "select
-        BrandName,BrandCode, Valas,ExchangeRate,
+        BrandName,BrandCode, Valas,ExchangeRate, ActualAnp,
         [Month] as Periode,
         PrincipalTargetIDR as PrincipalTarget,
         PrincipalAnpIDR as AnpPrincipal,

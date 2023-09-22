@@ -3,7 +3,7 @@
 ?>
 <div class="content-wrapper">
     <section class="content-header">
-        <h1>Data Proposal
+        <h1>Data Planning
             <a href="<?= base_url($_SESSION['page']) ?>/show_create_form" class="btn btn-primary btn-sm pull-right" style="margin-right: 5px;">Create new proposal</a>
         </h1>
     </section>
@@ -72,7 +72,7 @@
         </div>
     </section>
 </div>
-
+`
 
 <script>
     $(document).ready(function() {

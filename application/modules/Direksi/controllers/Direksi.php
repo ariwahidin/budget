@@ -593,6 +593,7 @@ class Direksi extends CI_Controller
 
 
     public function loadplan(){
+        $tahunlist = $this->direksi_model->getBrandProposalByPic();
         $data = array(
             'brand' => $this->direksi_model->getBrandProposalByPic(),
             'activity' => $this->direksi_model->getActivity()
