@@ -33,6 +33,7 @@ class Finance extends CI_Controller
 
     public function loadTableProposal()
     {
+        var_dump($_POST);
         $proposal = $this->finance_model->getProposalApproved();
         $data = array(
             'proposal' => $proposal
