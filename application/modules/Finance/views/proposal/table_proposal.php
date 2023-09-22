@@ -4,7 +4,7 @@
             <th>No.</th>
             <th>Proposal Number</th>
             <th>Brand</th>
-            <th>Group Customer</th>
+            <th>Group</th>
             <th>Start Periode</th>
             <th>End Periode</th>
             <th>Activity</th>
