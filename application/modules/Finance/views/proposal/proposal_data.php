@@ -22,26 +22,32 @@
                                             <?php } ?>
                                         </select>
                                     </div>
+
                                     <div class="col col-md-2">
                                         <label for="">Group Customer</label><br>
-                                        <select class="form-control select2" multiple name="" id="filter_activity">
-
+                                        <select class="form-control select2" multiple name="" id="filter_group">
+                                            <?php foreach ($group->result() as $data) { ?>
+                                                <option value="<?= $data->GroupCustomer ?>"><?= $data->GroupName ?></option>
+                                            <?php } ?>
                                         </select>
                                     </div>
+
                                     <div class="col col-md-2">
                                         <label for="">Activity</label><br>
                                         <select class="form-control select2" multiple name="" id="filter_activity">
-
+                                            <?php foreach ($activity->result() as $data) { ?>
+                                                <option value="<?= $data->id ?>"><?= $data->ActivityName ?></option>
+                                            <?php } ?>
                                         </select>
                                     </div>
 
                                     <div class="col col-md-2">
                                         <label for="">Start Periode</label><br>
-                                        <input type="date" class="form-control">
+                                        <input type="date" class="form-control" id="start_date">
                                     </div>
                                     <div class="col col-md-2">
                                         <label for="">End Periode</label><br>
-                                        <input type="date" class="form-control">
+                                        <input type="date" class="form-control" id="end_date">
                                     </div>
                                     <div class="col col-md-2">
                                         <label for="">Action</label>
@@ -78,12 +84,46 @@
         })
     })
 
+    // let prosesPerkalian = (a = null,b = null)=>{
+    //     a = a??3;
+    //     b = b??5;
+    //     let c = a * b;
+    //     console.log(c);
+    //     return a * b;
+    // };
+    // prosesPerkalian(5,5);
+
     function prosesFilter() {
         let brand = $('#filter_brand').val()
-        if (brand.length > 0) {
-            $('#boxProposal').load("<?= base_url($_SESSION['page']) . '/loadTableProposal' ?>", {brand}, function() {
+        let group = $('#filter_group').val()
+        let activity = $('#filter_activity').val()
+        let start_date = $('#start_date').val()
+        let end_date = $('#end_date').val()
+        // console.log(brand)
+        // console.log(group)
+        // console.log(activity)
+        // console.log(start_date)
+        // console.log(end_date)
+        if (brand.length > 0 || group.length > 0 || activity.length > 0 || start_date != '' || end_date != '') {
+            $('#boxProposal').load("<?= base_url($_SESSION['page']) . '/loadTableProposal' ?>", {
+                brand,
+                group,
+                activity,
+                start_date,
+                end_date,
+            }, function() {
 
             })
         }
+    }
+
+    function resetFilter() {
+        $('#boxProposal').load("<?= base_url($_SESSION['page']) . '/loadTableProposal' ?>", {}, function() {
+            $('#filter_brand').val(null).trigger('change') // mengosongkan filter
+            $('#filter_group').val(null).trigger('change')
+            $('#filter_activity').val(null).trigger('change')
+            $('#start_date').val(null).trigger('change')
+            $('#end_date').val(null).trigger('change')
+        })
     }
 </script>

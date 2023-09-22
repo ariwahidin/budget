@@ -27,14 +27,53 @@ class Finance extends CI_Controller
     {
         $data = array(
             'brand' => $this->finance_model->getBrandProposal(),
+            'group' => $this->finance_model->getGroupProposal(),
+            'activity' => $this->finance_model->getActivityProposal(),
         );
         $this->render('proposal/proposal_data', $data);
     }
 
     public function loadTableProposal()
     {
-        var_dump($_POST);
-        $proposal = $this->finance_model->getProposalApproved();
+        $params = array();
+
+        if (isset($_POST['brand'])) {
+            if (count($_POST['brand']) > 0) {
+                $params['brand'] = $_POST['brand'];
+            }
+        }
+
+        if (isset($_POST['group']) > 0) {
+            if (count($_POST['group']) > 0) {
+                $params['group'] = $_POST['group'];
+            }
+        }
+
+        if (isset($_POST['activity']) > 0) {
+            if (count($_POST['activity']) > 0) {
+                $params['activity'] = $_POST['activity'];
+            }
+        }
+
+        if (isset($_POST['activity']) > 0) {
+            if (count($_POST['activity']) > 0) {
+                $params['activity'] = $_POST['activity'];
+            }
+        }
+
+        if(isset($_POST['start_date'])){
+            if($_POST['start_date'] != ''){
+                $params['start_date'] = $_POST['start_date'];
+            }
+        }
+
+        if(isset($_POST['end_date'])){
+            if($_POST['end_date'] != ''){
+                $params['end_date'] = $_POST['end_date'];
+            }
+        }
+
+        $proposal = $this->finance_model->getProposalApproved($params);
         $data = array(
             'proposal' => $proposal
         );
@@ -43,9 +82,10 @@ class Finance extends CI_Controller
 
     public function detailProposal($number)
     {
+        $params['number'] = $number;
         $data = array(
             'number' => $number,
-            'proposal' => $this->finance_model->getProposalApproved($number)->row(),
+            'proposal' => $this->finance_model->getProposalApproved($params)->row(),
             'item' => $this->finance_model->getItemProposal($number),
             'objective' => $this->finance_model->getObjectiveProposal($number),
             'mechanism' => $this->finance_model->getMechanismProposal($number),
