@@ -27,9 +27,9 @@ class Finance_model extends CI_Model
         $this->db->update('master_user', $params);
     }
 
-    public function getProposalApproved($number = null)
+    public function getProposalApproved($params)
     {
-        $sql = "select t1.id, t1.Number, t3.BrandName, t1.StartDatePeriode, 
+        $sql = "select distinct t1.id, t1.Number, t3.BrandName, t1.StartDatePeriode, 
         t1.EndDatePeriode, t2.promo_name as ActivityName, 
         t1.Status,t1.CreatedBy, t1.CreatedDate, t4.TotalCosting, t6.GroupName,
         (select count(id) from tb_proposal_skp where ProposalNumber = t1.Number and NoSKP != '') as jml_skp
@@ -40,10 +40,39 @@ class Finance_model extends CI_Model
         inner join tb_proposal_group t5 on t1.Number = t5.ProposalNumber 
         inner join m_group t6 on t6.GroupCode = t5.GroupCustomer 
         where [Status] = 'approved'";
-        if (!is_null($number)) {
+        if (isset($params['number'])) {
+            $number = $params['number'];
             $sql .= " and t1.Number = '$number'";
         }
+
+        if (isset($params['brand'])) {
+            $brand = implode(',', $params['brand']);
+            $sql .= " and t1.BrandCode IN (select * from STRING_SPLIT('$brand', ','))";
+        }
+
+        if (isset($params['group'])) {
+            $group = implode(',', $params['group']);
+            $sql .= " and t6.GroupCode IN (select * from STRING_SPLIT('$group', ','))";
+        }
+
+        if (isset($params['activity'])) {
+            $activity = implode(',', $params['activity']);
+            $sql .= " and t1.Activity IN (select * from STRING_SPLIT('$activity', ','))";
+        }
+
+        if (isset($params['start_date'])) {
+            $start_date = $params['start_date'];
+            $sql .= " and FORMAT(t1.StartDatePeriode, 'yyyyMMdd') > FORMAT(CONVERT(DATE,'$start_date'), 'yyyyMMdd')";
+        }
+
+        if (isset($params['end_date'])) {
+            $end_date = $params['end_date'];
+            $sql .= " and FORMAT(t1.EndDatePeriode, 'yyyyMMdd') < FORMAT(CONVERT(DATE,'$end_date'), 'yyyyMMdd')";
+        }
+
+
         $sql .= " order by t1.CreatedDate desc";
+        // echo $sql;
         $query = $this->db->query($sql);
         return $query;
     }
@@ -254,7 +283,8 @@ class Finance_model extends CI_Model
         return $query;
     }
 
-    public function getCustomerBySkp($skp){
+    public function getCustomerBySkp($skp)
+    {
         $sql = "select distinct 
         t1.id, t1.ProposalNumber,
         t2.GroupName as GroupCustomer, 
@@ -270,9 +300,26 @@ class Finance_model extends CI_Model
         return $query;
     }
 
-    public function getBrandProposal(){
+    public function getBrandProposal()
+    {
         $sql = "select distinct t1.BrandCode, t2.BrandName from tb_proposal t1
         inner join m_brand t2 on t1.BrandCode = t2.BrandCode";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getGroupProposal()
+    {
+        $sql = "select distinct t1.GroupCustomer, t2.GroupName from tb_proposal_group t1
+        inner join m_group t2 on t1.GroupCustomer = t2.GroupCode";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getActivityProposal()
+    {
+        $sql = "select distinct t1.Activity as id, t2.promo_name as ActivityName from tb_proposal t1
+        inner join m_promo t2 on t1.Activity = t2.id";
         $query = $this->db->query($sql);
         return $query;
     }
