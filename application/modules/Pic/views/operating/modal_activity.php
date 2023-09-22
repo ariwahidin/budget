@@ -35,7 +35,7 @@
 </div>
 <script>
     $(document).ready(function(){
-        $('#table_activity_modal').DataTable();
+        $('#table_activity_modal').DataTable({resposive : true});
         $('#modal_pilih_activity').modal('show');
     });
 </script>

@@ -63,9 +63,13 @@
 </div>
 <?php $this->view('footer') ?>
 <script>
+<<<<<<< HEAD
     $('.table-responsive').DataTable({
         responsive: true
     });
+=======
+    $('.table_operating').DataTable({resposive : true});
+>>>>>>> refs/remotes/origin/main
 
     function loading() {
         div_loading = document.getElementById('muncul_loading');

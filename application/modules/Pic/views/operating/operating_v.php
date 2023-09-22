@@ -65,7 +65,7 @@
 </div>
 <?php $this->view('footer') ?>
 <script>
-    $('.table_operating').dataTable();
+    $('.table_operating').DataTable({resposive : true});
 
     function loading() {
         div_loading = document.getElementById('muncul_loading');

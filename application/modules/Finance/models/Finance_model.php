@@ -205,4 +205,11 @@ class Finance_model extends CI_Model
         $query = $this->db->query($sql);
         return $query;
     }
+
+    public function getBrandProposal(){
+        $sql = "select distinct t1.BrandCode, t2.BrandName from tb_proposal t1
+        inner join m_brand t2 on t1.BrandCode = t2.BrandCode";
+        $query = $this->db->query($sql);
+        return $query;
+    }
 }

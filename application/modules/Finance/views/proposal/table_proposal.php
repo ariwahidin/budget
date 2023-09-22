@@ -29,8 +29,8 @@
                 <td><?= $data->jml_skp ?></td>
                 <td><?= $data->Status ?></td>
                 <td>
-                    <a href="<?= base_url($_SESSION['page']) ?>/detailProposal/<?= $data->Number ?>" class="btn btn-primary btn-xs">Detail</a>
-                    <a onclick="tambahskpb(this)" data-x="<?= $data->Number; ?>" class="btn btn-primary btn-xs">Tambah SKP</a>
+                    <a href="<?= base_url($_SESSION['page']) ?>/detailProposal/<?= $data->Number ?>" class="btn btn-info btn-xs">Detail</a>
+                    <a onclick="tambahskpb(this)" data-x="<?= $data->Number; ?>" class="btn btn-primary btn-xs">Add SKP</a>
                 </td>
             </tr>
         <?php } ?>
@@ -40,7 +40,7 @@
     $(document).ready(function() {
         $('#tableProposal').DataTable({
             responsive: true,
-            "scrollX": true
+            // "scrollX": true
         });
 
         tambahskpb = (button) => {

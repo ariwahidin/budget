@@ -50,5 +50,5 @@
 </div>
 <?php $this->view('footer') ?>
 <script>
-    $('.table_budget').dataTable();
+    $('.table_budget').DataTable({resposive : true});
 </script>

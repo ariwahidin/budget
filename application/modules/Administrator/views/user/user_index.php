@@ -86,7 +86,7 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#tableUser').DataTable()
+        $('#tableUser').DataTable({resposive : true})
     })
 
     function loadModalUser() {

@@ -82,7 +82,7 @@
 <?php $this->view('footer'); ?>
 <script>
     $(document).ready(function() {
-        $('#table_proposal').DataTable();
+        $('#table_proposal').DataTable({resposive : true});
 
         $('#btnReportDetail').on('click', function() {
             window.location.href = "<?= base_url($_SESSION['page']) . '/reportDetail' ?>"

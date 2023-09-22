@@ -65,6 +65,6 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#laporan_data').DataTable();
+        $('#laporan_data').DataTable({resposive : true});
     })
 </script>

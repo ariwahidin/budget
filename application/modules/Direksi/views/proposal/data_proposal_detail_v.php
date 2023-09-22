@@ -457,7 +457,7 @@
 <?php $this->view('footer') ?>
 <script>
     $(document).ready(function() {
-        $('#tableDetailItem').DataTable()
+        $('#tableDetailItem').DataTable({resposive : true})
         $('#btnBack').on('click', function() {
             history.back()
         })

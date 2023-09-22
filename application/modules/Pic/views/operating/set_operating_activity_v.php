@@ -147,8 +147,8 @@
 <?php $this->view('footer') ?>
 <script>
     $(document).ready(function() {
-        $('.table_operating').DataTable();
-        $('#table_activity').DataTable();
+        $('.table_operating').DataTable({resposive : true});
+        $('#table_activity').DataTable({resposive : true});
     })
 
     function showModalActivity() {

@@ -314,7 +314,7 @@
         })
     }
 
-    $('#tableCustomer').DataTable()
+    $('#tableCustomer').DataTable({resposive : true})
 
     function lihatGambar(button) {
         const id = $(button).data('id')

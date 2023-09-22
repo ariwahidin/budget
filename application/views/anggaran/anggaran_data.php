@@ -87,7 +87,7 @@
 <div id="wadahModal">
 </div>
 <script>
-    $('#table_anggaran').DataTable();
+    $('#table_anggaran').DataTable({resposive : true});
     $('#set_new_budget').on('click', function(){
         $('#show_modal_set_new_budget').load('<?=site_url('Anggaran_C/showModalSetNewBudget')?>')
     })
