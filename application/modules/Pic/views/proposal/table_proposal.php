@@ -1,10 +1,23 @@
-<table class="table table-responsive table-bordered table-striped" id="table_proposal">
+<style>
+    #table_proposal td:nth-child(5) {
+        height: 10px;
+        overflow: hidden;
+        white-space: nowrap;
+        display: inline-block;
+    }
+
+    #table_proposal td:nth-child(5):hover {
+        height: unset;
+    }
+</style>
+<table style="font-size: 12px;" class="table table-responsive table-bordered table-striped" id="table_proposal">
     <thead>
         <tr>
             <th>No.</th>
             <th>No Proposal</th>
             <th>Ref Code</th>
             <th>Brand</th>
+            <th>Group</th>
             <th>Activity</th>
             <th>Start Periode</th>
             <th>End Periode</th>
@@ -22,6 +35,15 @@
                 <td><?= $data->Number ?></td>
                 <td><?= $data->NoRef ?></td>
                 <td><?= getBrandName($data->BrandCode) ?></td>
+                <td>
+                    <ul>
+                        <?php
+                        foreach (getGroupNameFromProposal($data->Number)->result() as $g) { ?>
+                            <li><?= $g->GroupName ?></li>
+                        <?php }
+                        ?>
+                    </ul>
+                </td>
                 <td><?= getActivityName($data->Activity) ?></td>
                 <td><?= date('d M Y', strtotime($data->StartDatePeriode)) ?></td>
                 <td><?= date('d M Y', strtotime($data->EndDatePeriode)) ?></td>
@@ -51,6 +73,8 @@
 </table>
 <script>
     $(document).ready(function() {
-        $('#table_proposal').DataTable({resposive : true});
+        $('#table_proposal').DataTable({
+            resposive: true
+        });
     });
 </script>

@@ -541,6 +541,7 @@ class Pic extends CI_Controller
     {
         $params['user_code'] = $_SESSION['user_code'];
 
+        // var_dump($_POST);
         if (isset($_POST['brand'])) {
             if (count($_POST['brand']) > 0) {
                 $params['brand'] = implode(",", $_POST['brand']);
@@ -559,6 +560,12 @@ class Pic extends CI_Controller
             }
         }
 
+        if (isset($_POST['group'])) {
+            if (count($_POST['group']) > 0) {
+                $params['group'] = implode(",", $_POST['group']);
+            }
+        }
+
         $proposal = $this->pic_model->getProposal($params);
         $data = array(
             'proposal' => $proposal,
@@ -571,7 +578,8 @@ class Pic extends CI_Controller
     {
         $data = array(
             'brand' => $this->pic_model->getBrandProposalByPic(),
-            'activity' => $this->pic_model->getActivity()
+            'activity' => $this->pic_model->getActivity(),
+            'group' => $this->pic_model->getGroupFromProposal()
         );
         $this->load->view('proposal/data_proposal_v', $data);
     }
@@ -642,7 +650,7 @@ class Pic extends CI_Controller
         $total_costing = $this->pic_model->getTotalCosting($number)->row()->total_costing;
         $itemGroup = $this->pic_model->getProposalItemGroupDetail($number);
 
-        var_dump($itemGroup->result());
+        // var_dump($itemGroup->result());
 
 
         $array_group = [];

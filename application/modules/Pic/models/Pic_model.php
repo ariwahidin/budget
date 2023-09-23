@@ -849,8 +849,12 @@ class Pic_model extends CI_Model
 
     public function getProposal($params = null)
     {
-        $sql = "SELECT DISTINCT t1.*, t2.Budget_type FROM tb_proposal t1 
-        inner join tb_operating_proposal t2 on t1.[Number] = t2.ProposalNumber";
+        $sql = "SELECT DISTINCT t1.*, t2.Budget_type
+        --,t3.GroupCustomer, t4.GroupName
+        FROM tb_proposal t1 
+        inner join tb_operating_proposal t2 on t1.[Number] = t2.ProposalNumber
+        inner join tb_proposal_group t3 on t1.[Number] = t3.ProposalNumber
+        inner join m_group t4 on t3.GroupCustomer = t4.GroupCode";
         if (!empty($params['user_code'])) {
             $user_code = $params['user_code'];
             $sql .= " WHERE t1.BrandCode IN(SELECT BrandCode FROM tb_pic_brand WHERE UserCode = '$user_code')";
@@ -868,6 +872,11 @@ class Pic_model extends CI_Model
             if (isset($params['status'])) {
                 $status = $params['status'];
                 $sql .= " AND t1.Status IN (SELECT * FROM STRING_SPLIT('$status', ','))";
+            }
+
+            if(isset($params['group'])){
+                $group = $params['group'];
+                $sql .= " AND t3.GroupCustomer IN (SELECT * FROM STRING_SPLIT('$group', ','))";
             }
         }
 
@@ -1819,4 +1828,15 @@ class Pic_model extends CI_Model
 
     //     }
     // }
+
+    public function getGroupFromProposal(){
+        $user_code = $this->session->userdata('user_code');
+        $sql = "select distinct t1.GroupCustomer, t3.GroupName
+        from tb_proposal_group t1
+        inner join tb_proposal t2 on t1.ProposalNumber = t2.Number
+        inner join m_group t3 on t1.GroupCustomer = t3.GroupCode
+        where t2.UserCode = '$user_code'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
 }

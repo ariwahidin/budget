@@ -21,7 +21,7 @@
                     </div>
                     <div class="box-body">
                         <div class="row">
-                            <div class="col col-md-3">
+                            <div class="col col-md-2">
                                 <label for="">Brand</label><br>
                                 <select class="form-control select2" multiple name="" id="filter_brand">
                                     <?php foreach ($brand->result() as $data) { ?>
@@ -29,7 +29,17 @@
                                     <?php } ?>
                                 </select>
                             </div>
-                            <div class="col col-md-3">
+
+                            <div class="col col-md-2">
+                                <label for="">Group</label><br>
+                                <select class="form-control select2" multiple name="" id="filter_group">
+                                    <?php foreach ($group->result() as $data) { ?>
+                                        <option value="<?= $data->GroupCustomer ?>"><?= $data->GroupName ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+
+                            <div class="col col-md-2">
                                 <label for="">Activity</label><br>
                                 <select class="form-control select2" multiple name="" id="filter_activity">
                                     <?php foreach ($activity->result() as $data) { ?>
@@ -38,7 +48,7 @@
                                 </select>
                             </div>
 
-                            <div class="col col-md-3">
+                            <div class="col col-md-2">
                                 <label for="">Status</label><br>
                                 <select class="form-control select2" multiple name="" id="filter_status">
                                     <option value="open">Open</option>
@@ -86,11 +96,14 @@
         var brand = $('#filter_brand').val()
         var activity = $('#filter_activity').val()
         var status = $('#filter_status').val()
-        if (brand.length > 0 || activity.length > 0) {
+        var group = $('#filter_group').val()
+        console.log(group)
+        if (brand.length > 0 || activity.length > 0 || status.length > 0 || group.length > 0) {
             $('#boxTablePrposal').load("<?= base_url($_SESSION['page']) . '/loadTableProposal' ?>", {
                 brand,
                 activity,
                 status,
+                group
             }, function() {
 
             })

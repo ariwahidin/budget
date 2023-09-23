@@ -1199,3 +1199,14 @@ function decrypt($s)
     $qDecoded    = base64_decode($s);
     return ($qDecoded);
 }
+
+function getGroupNameFromProposal($ProposalNumber){
+    $ci = &get_instance();
+    $sql = "select distinct t1.GroupCustomer, t3.GroupName
+    from tb_proposal_group t1
+    inner join tb_proposal t2 on t1.ProposalNumber = t2.Number
+    inner join m_group t3 on t1.GroupCustomer = t3.GroupCode
+    where t1.ProposalNumber = '$ProposalNumber'";
+    $query = $ci->db->query($sql);
+    return $query;
+}
