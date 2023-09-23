@@ -138,6 +138,21 @@ class Finance extends CI_Controller
         $this->load->view('proposal/tambahskpb', $data);
     }
 
+    public function loadImageSkp()
+    {
+        $id = $this->input->post('id');
+        $image = null;
+        if ($id != null) {
+            $image = 'uploads/img/skp/' . $this->finance_model->getSKPById($id)->row()->Img;
+        }
+
+        $data = array(
+            'image' => $image
+        );
+
+        $this->load->view('proposal/modal_image_skp', $data);
+    }
+
     public function loadModalInputSKP()
     {
         $number = $this->input->post('number');

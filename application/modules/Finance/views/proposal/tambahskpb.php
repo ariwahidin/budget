@@ -22,7 +22,7 @@
 
                                 <td><input type="text" class="form-control input-sm data-ket" placeholder="Keterangan" value="<?= $data->Ket ?>"></td>
                                 <td>
-                                    <input onchange="compressImage(this)" type="file" id="<?= "img_ori_" . $data->SubGroupCode ?>" data-sub-group="<?= $data->SubGroupCode ?>" class="form-control input-sm" accept="image/*">
+                                    <input onchange="compressImage(this)" value="<?= $data->Img ?>" type="file" id="<?= "img_ori_" . $data->SubGroupCode ?>" data-sub-group="<?= $data->SubGroupCode ?>" class="form-control input-sm" accept="image/*">
                                     <input type="hidden" class="img-comp" id="<?= "img_comp_" . $data->SubGroupCode ?>" name="gambar_kompres" required>
                                 </td>
                                 <td>
@@ -40,6 +40,8 @@
         </div>
     </div>
 </div>
+
+<div id="modalGambarSKP"></div>
 <script>
     rupiah();
     function simpanSKP(button) {
@@ -174,6 +176,16 @@
                 console.error("Terjadi kesalahan:", error);
             });
     });
-
     
+    
+    function lihatGambar(button) {
+
+        let id = $(button).data('id');
+        console.log(id);
+        $('#modalGambarSKP').load("<?= base_url($_SESSION['page']) ?>/loadImageSkp", {
+            id
+        }, function() {
+            $('#modal-image-skp').modal('show')
+        });
+    };
 </script>

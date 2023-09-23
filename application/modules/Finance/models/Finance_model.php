@@ -126,6 +126,14 @@ class Finance_model extends CI_Model
         return $query;
     }
 
+    
+    public function getSKPById($id)
+    {
+        $sql = "select * from tb_proposal_skp where id='$id'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+    
     public function getProposalSKP($number)
     {
         /*
@@ -138,7 +146,7 @@ class Finance_model extends CI_Model
         return $query;
         */
 
-        $sql = "select distinct t5.id, t1.ProposalNumber, t1.GroupCustomer as GroupCode, 
+        $sql = "select distinct t5.id, t1.ProposalNumber, t1.GroupCustomer as GroupCode, t5.Valueskp, t5.Img,
         t2.GroupName, 
         --t1.CustomerCode, t3.CustomerName, 
         t4.SubGroupCode, 
