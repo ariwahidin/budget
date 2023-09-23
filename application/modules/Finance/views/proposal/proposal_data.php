@@ -24,7 +24,7 @@
                                     </div>
 
                                     <div class="col col-md-2">
-                                        <label for="">Group Customer</label><br>
+                                        <label for="">Group</label><br>
                                         <select class="form-control select2" multiple name="" id="filter_group">
                                             <?php foreach ($group->result() as $data) { ?>
                                                 <option value="<?= $data->GroupCustomer ?>"><?= $data->GroupName ?></option>
