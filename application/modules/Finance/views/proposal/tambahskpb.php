@@ -9,7 +9,7 @@
             <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
                 <div class="form-group">
                     <table class="table table-responsive table-bordered" style="font-size: 12px;">
-                        <?php foreach ($group->result() as $data) { ?>
+                        <?php  foreach ($group->result() as $data) { ?>
                             <tr>
                                 <td><?= $data->SubGroupName ?></td>
                                 <td>

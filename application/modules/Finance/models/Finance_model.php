@@ -148,7 +148,7 @@ class Finance_model extends CI_Model
 
         $sql = "select distinct t5.id, t1.ProposalNumber, t1.GroupCustomer as GroupCode, t5.Valueskp, t5.Img,
         t2.GroupName, 
-        --t1.CustomerCode, t3.CustomerName, 
+        t1.CustomerCode, t3.CustomerName, 
         t4.SubGroupCode, 
         t4.SubGroupName,
         t5.NoSKP, t5.Ket
