@@ -9,6 +9,10 @@
     #table_proposal td:nth-child(5):hover {
         height: unset;
     }
+    
+    th,td {
+        /* min-width: 200px; */
+    }
 </style>
 <table style="font-size: 12px;" class="table table-responsive table-bordered table-striped" id="table_proposal">
     <thead>

@@ -874,9 +874,19 @@ class Pic_model extends CI_Model
                 $sql .= " AND t1.Status IN (SELECT * FROM STRING_SPLIT('$status', ','))";
             }
 
-            if(isset($params['group'])){
+            if (isset($params['group'])) {
                 $group = $params['group'];
                 $sql .= " AND t3.GroupCustomer IN (SELECT * FROM STRING_SPLIT('$group', ','))";
+            }
+
+            if (isset($params['start_date'])) {
+                $start_date = $params['start_date'];
+                $sql .= " AND FORMAT(StartDatePeriode, 'yyyyMMdd') > FORMAT(CONVERT(DATE,'$start_date'), 'yyyyMMdd')";
+            }
+
+            if (isset($params['end_date'])) {
+                $end_date = $params['end_date'];
+                $sql .= " AND FORMAT(EndDatePeriode, 'yyyyMMdd') < FORMAT(CONVERT(DATE,'$end_date'), 'yyyyMMdd')";
             }
         }
 
@@ -1829,7 +1839,8 @@ class Pic_model extends CI_Model
     //     }
     // }
 
-    public function getGroupFromProposal(){
+    public function getGroupFromProposal()
+    {
         $user_code = $this->session->userdata('user_code');
         $sql = "select distinct t1.GroupCustomer, t3.GroupName
         from tb_proposal_group t1
