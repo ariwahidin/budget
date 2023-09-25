@@ -850,11 +850,10 @@ class Pic_model extends CI_Model
     public function getProposal($params = null)
     {
         $sql = "SELECT DISTINCT t1.*, t2.Budget_type
-        --,t3.GroupCustomer, t4.GroupName
         FROM tb_proposal t1 
         inner join tb_operating_proposal t2 on t1.[Number] = t2.ProposalNumber
-        inner join tb_proposal_group t3 on t1.[Number] = t3.ProposalNumber
-        inner join m_group t4 on t3.GroupCustomer = t4.GroupCode";
+        left join tb_proposal_group t3 on t1.[Number] = t3.ProposalNumber
+        left join m_group t4 on t3.GroupCustomer = t4.GroupCode";
         if (!empty($params['user_code'])) {
             $user_code = $params['user_code'];
             $sql .= " WHERE t1.BrandCode IN(SELECT BrandCode FROM tb_pic_brand WHERE UserCode = '$user_code')";
