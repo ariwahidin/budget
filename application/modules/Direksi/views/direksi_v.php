@@ -139,15 +139,15 @@
                                         <tbody>
                                             <?php $no = 1;
                                             foreach ($anp->result() as $data) { ?>
-                                                <tr role="row" class="odd">
+                                                <tr role="row" class="odd" data-code="<?= $data->BrandCode; ?>" data-toggle="modal" data-target="#dasd">
                                                     <th><?= $no++ ?></th>
                                                     <td><?= $data->BrandName ?></td>
                                                     <td><?= $data->StartPeriode ?></td>
                                                     <td><?= $data->EndPeriode ?></td>
                                                     <td style="text-align: right;"><?= number_format($data->TotalOperatingBudget) ?></td>
                                                     <td style="text-align: right;"><?= number_format($data->TotalCosting) ?></td>
-                                                    <td>0</td>
-                                                    <td style="text-align: right;background-color: #FFDBAA;"> <?= number_format($data->IncomingAmount) ?></td>
+                                                    <td><?= number_format($data->Totaldn); ?></td>
+                                                    <td style="text-align: right;background-color: #FFDBAA;"> <?= number_format($data->TotalIncomingAmount) ?></td>
                                                     <td style="background-color: #FFB7B7;"></td>
                                                 </tr>
                                             <?php } ?>
@@ -163,9 +163,21 @@
         </div>
     </section>
 </div>
+<div id="dasd" class="modal"  tabindex="-1" role="dialog"></div>
 <?php $this->view('footer') ?>
 <script>
-    $('#btnDownloadExcel').on('click', function() {
-        $('#formCetakExcel').submit()
-    })
+$('#dasd').on('show.bs.modal', function (event) {
+    let button = $(event.relatedTarget), code = button.data('code'), modal = $(this);
+    let url = '<?= base_url($_SESSION['page']) ?>/cekdir';
+    $.ajax({
+        type:'POST',
+        url:"<?= base_url($_SESSION['page']) . '/cekdir' ?>",
+        data:'code='+code,
+        success:function(response){
+            $('#dasd').html(response);
+        }
+    });
+});
+
+
 </script>

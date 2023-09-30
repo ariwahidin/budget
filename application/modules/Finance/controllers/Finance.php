@@ -77,6 +77,7 @@ class Finance extends CI_Controller
         $data = array(
             'proposal' => $proposal
         );
+        
         $this->load->view('proposal/table_proposal', $data);
     }
 

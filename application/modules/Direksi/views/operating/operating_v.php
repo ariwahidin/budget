@@ -12,7 +12,7 @@
                         <form action="<?= base_url($_SESSION['page']) ?>/loadDetailBudget" method="POST" id="formDetailBudget">
                             <input type="hidden" id="budget_code" name="budget_code">
                         </form>
-                        <table class="table table-bordered table-responsive table_operating" style="font-size:12px">
+                        <table id="tabel1" class="table table-bordered table-responsive table_operating" style="font-size:12px">
                             <thead>
                                 <tr>
                                     <th>No.</th>
@@ -61,15 +61,12 @@
         </div>
     </section>
 </div>
+
 <?php $this->view('footer') ?>
 <script>
-<<<<<<< HEAD
-    $('.table-responsive').DataTable({
+    $('#tabel1').DataTable({
         responsive: true
     });
-=======
-    $('.table_operating').DataTable({resposive : true});
->>>>>>> refs/remotes/origin/main
 
     function loading() {
         div_loading = document.getElementById('muncul_loading');

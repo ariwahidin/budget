@@ -1,3 +1,34 @@
+<?php 
+
+function pecahgroup($a){
+    $a = strtolower($a);
+    $arr = explode("~~", $a);
+    $arr = array_unique($arr);
+    $res = "<ul>";
+
+    foreach ($arr as $value) {
+        $value = trim($value);
+        if ($value !== "") {
+            $res .= "<li>" . ucwords($value) . "</li>";
+        }
+    }
+
+    $res .= "</ul>";
+    return $res;
+}
+?>
+<style>
+    #tableProposal td:nth-child(4) {
+        height: 10px;
+        overflow: hidden;
+        white-space: nowrap;
+        display: inline-block;
+    }
+
+    #tableProposal td:nth-child(4):hover {
+        height: unset;
+    }
+</style>
 <table class="table table-hover text-nowrap table-bordered table-striped table-responsive geserkk" id="tableProposal" style="font-size: 12px;">
     <thead>
         <tr>
@@ -21,7 +52,7 @@
                 <td><?= $no++ ?></td>
                 <td><?= $data->Number ?></td>
                 <td><?= $data->BrandName ?></td>
-                <td><?= $data->GroupName ?></td>
+                <td><?= pecahgroup($data->GroupName); ?></td>
                 <td><?= date('d M Y', strtotime($data->StartDatePeriode)) ?></td>
                 <td><?= date('d M Y', strtotime($data->EndDatePeriode)) ?></td>
                 <td><?= $data->ActivityName ?></td>

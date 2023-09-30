@@ -25,7 +25,7 @@ class Direksi extends CI_Controller
 
     public function index()
     {
-        $anp = $this->direksi_model->getAnpForManagement();
+        $anp = $this->direksi_model->anpdir1();
         $resumeAnp = $this->direksi_model->getResumeAnp();
         // var_dump($resumeAnp->result());
         $data = array(
@@ -35,6 +35,31 @@ class Direksi extends CI_Controller
 
         // var_dump($this->session->userdata());
         $this->load->view('direksi_v', $data);
+    }
+
+    public function cekdir(){
+        $kode_brand = $_POST['code'];
+        $costkot = $this->direksi_model->costkot($kode_brand);
+        $data['costkot'] = $costkot;
+        $data['hmaster']  = $this->direksi_model->anpdir1($kode_brand);
+        $data['filteract']  = $this->direksi_model->filteract($kode_brand);
+        $data['filterkota']  = $this->direksi_model->filterkota($kode_brand);
+        $data['brand'] =  $this->direksi_model->getBrand($kode_brand)->row();
+        $data['operating'] = $this->direksi_model->getBudgetOperatingbybrand($kode_brand);
+        $data['header']  = $this->direksi_model->getHeaderOperatingbybrand($kode_brand);
+        $data['proposal']  = $this->direksi_model->getProposalbybrand($kode_brand);
+
+        
+        // var_dump($this->session->userdata());
+        $this->load->view('cekdir', $data);
+    }
+
+
+    public function propd(){
+        $kode_brand = $_POST['code'];
+        $actx = $_POST['actx'];
+        $data['proposal']  = $this->direksi_model->getProposalbybrand($kode_brand,$actx);
+        $this->load->view('propd', $data);
     }
 
     public function downloadExcel()
@@ -550,7 +575,6 @@ class Direksi extends CI_Controller
     {
         $budgetCode = $this->input->post('budget_code');
         $operating = $this->direksi_model->getBudgetOperating($budgetCode);
-
         $budget_detail_header = $this->direksi_model->getHeaderOperating($budgetCode);
         $data = array(
             'budget_code' => $budgetCode,

@@ -18,9 +18,13 @@ class Direksi_model extends CI_Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function getBrand()
+    public function getBrand($a = null)
     {
         $sql = "SELECT BrandCode, BrandName FROM m_brand";
+        if($a){
+            $sql .= " where BrandCode = '".$a."'";
+        }
+
         $query = $this->db->query($sql);
         return $query;
     }
@@ -139,6 +143,21 @@ class Direksi_model extends CI_Model
             INNER JOIN m_brand t2 ON ss.BrandCode = t2.BrandCode
             GROUP BY BudgetCode, ss.BrandCode, t2.BrandName, ss.ExchangeRate, ss.Valas";
         }
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getHeaderOperatingbybrand($brand)
+    {
+        $sql = "SELECT MIN([Month]) AS StartPeriode, 
+        MAX([Month]) AS EndPeriode, 
+        AVG(ExchangeRate) AS ExchangeRate,
+        SUM([PKAnpIDR]) AS TotalPKAnpIDR,
+        SUM(PrincipalTargetValas) AS TotalPrincipalTargetValas,
+        SUM(PrincipalTargetIDR) AS TotalPrincipalTargetIDR,
+        SUM([PrincipalAnpIDR]) AS TotalTargetAnp, 
+        SUM(OperatingBudget) AS TotalOperating 
+        FROM tb_operating WHERE BrandCode = '$brand'";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -282,6 +301,25 @@ class Direksi_model extends CI_Model
             'CreatedDate' => $date,
         );
         $this->db->insert('tb_operating_proposal', $operating);
+    }
+
+
+    public function getProposalbybrand($kode_brand = null,$actx=null)
+    {
+        $sql = "SELECT t1.*, t2.TotalCosting FROM tb_proposal t1
+		LEFT JOIN tb_operating_proposal t2 on t1.Number = t2.ProposalNumber
+        WHERE t1.Status != 'canceled'";
+        if ($kode_brand != null) {
+            $sql .= " and t1.BrandCode = '".$kode_brand."'";
+        }
+
+        if ($actx != null) {
+            $sql .= " and t1.Activity = '".$actx."'";
+        }
+        
+        $sql .= " ORDER BY t1.id DESC";
+        $query = $this->db->query($sql);
+        return $query;
     }
 
     public function getProposal($number = null)
@@ -541,6 +579,142 @@ class Direksi_model extends CI_Model
         return $query;
     }
 
+    public function costkot($brand_code){
+        $arr0 = [];
+        $sql ="SELECT  t1.Number, sum(t2.TotalCosting) as totalang
+        FROM tb_proposal t1
+        LEFT JOIN tb_operating_proposal t2 ON t1.Number = t2.ProposalNumber ";
+
+        
+        if($brand_code){
+            $sql .= " where t1.BrandCode = '".$brand_code."' and t1.Status != 'canceled'";
+        } else{
+            $sql .= " where t1.Status != 'canceled'";
+        }
+
+        $sql .=" GROUP BY t1.Number";
+        $query = $this->db->query($sql);
+        foreach ($query->result() as $key => $value) {
+            
+            $sql1 ="select mc.City from tb_proposal_customer t3 left join m_customer mc on mc.CardCode = t3.CustomerCode ";
+            $sql1 .= " where t3.ProposalNumber = '".$value->Number."' ";
+            $query1 = $this->db->query($sql1);
+            foreach ($query1->result() as $key1 => $value1) {
+                $arrk['city'] = $value1->City;
+                $arrk['totalang'] = $value->totalang;
+                array_push($arr0,$arrk);
+            }
+        }
+
+                
+        // Array untuk menyimpan totalang berdasarkan city
+        $totalangByCity = [];
+
+        // Loop melalui data
+        foreach ($arr0 as $item) {
+            $city = $item["city"];
+            $totalang = $item["totalang"];
+            
+            // Jika city belum ada dalam $totalangByCity, inisialisasi dengan nilai totalang
+            if (!isset($totalangByCity[$city])) {
+                $totalangByCity[$city] = $totalang;
+            } else {
+                // Jika city sudah ada, tambahkan nilai totalang ke total yang ada
+                $totalangByCity[$city] += $totalang;
+            }
+        }
+
+        return $totalangByCity;
+
+    }
+
+
+    public function filterkota($brand_code){
+        $sql = "select mc.City,sum(t2.TotalCosting) as totalang FROM tb_proposal t1
+        INNER JOIN tb_operating_proposal t2 ON t1.Number = t2.ProposalNumber
+        INNER join tb_proposal_customer tc on t1.Number = tc.ProposalNumber
+        INNER join m_customer mc on mc.CardCode = tc.CustomerCode
+        INNER JOIN m_brand t3 ON t1.BrandCode = t3.BrandCode";
+        
+        if($brand_code){
+            $sql .= " where t1.BrandCode = ".$brand_code." and t1.Status != 'canceled'";
+        } else{
+            $sql .= "where t1.Status != 'canceled'";
+        }
+
+        $sql .=" and mc.city is not null GROUP BY mc.City";
+        
+        $query = $this->db->query($sql);
+        return $query;
+        
+    }
+
+    public function filteract($brand_code){
+        $sql ="SELECT 
+        t2.ActivityCode, t4.promo_name,
+        t1.BudgetCode, t3.BrandName, t1.BrandCode,
+        sum(t2.TotalCosting) as totalang
+    FROM tb_proposal t1
+    LEFT JOIN tb_operating_proposal t2 ON t1.Number = t2.ProposalNumber
+    INNER JOIN m_brand t3 ON t1.BrandCode = t3.BrandCode
+    INNER JOIN m_promo t4 ON t2.ActivityCode = t4.id";
+
+    
+    if($brand_code){
+        $sql .= " where t1.BrandCode = '".$brand_code."' and t1.Status != 'canceled'";
+    } else{
+        $sql .= "where t1.Status != 'canceled'";
+    }
+
+    $sql .="
+    GROUP BY t2.ActivityCode, t4.promo_name,
+        t1.BudgetCode, t3.BrandName, t1.BrandCode
+    ORDER BY t2.ActivityCode";
+    
+    $query = $this->db->query($sql);
+    return $query;
+
+    }
+
+    public function anpdir1($kode_brand = null){
+        $sql = "SELECT t1.BudgetCode, t3.BrandCode, t1.BrandName, t3.Code,
+        FORMAT(StartPeriode, 'MMM yyyy') as StartPeriode, 
+        FORMAT(EndPeriode, 'MMM yyyy') AS EndPeriode,
+        Year(EndPeriode) as EndYearPeriode,
+        (
+            SELECT sum(totaldn) as Totdn
+            FROM tb_dn_amount 
+            WHERE kdbrand  = Code 
+            AND (
+                (tahun = FORMAT(StartPeriode, 'yyyy') 
+                AND bulan >= FORMAT(StartPeriode, 'MM')) OR 
+                (tahun  = FORMAT(EndPeriode, 'yyyy') 
+                AND bulan <= FORMAT(EndPeriode, 'MM'))
+            )
+        ) as Totaldn,
+        (
+            SELECT sum(IncomingAmount) as tot
+            FROM tb_incoming_amount
+            WHERE Code = t3.Code 
+            AND (
+                (Year = FORMAT(StartPeriode, 'yyyy') 
+                AND Month >= FORMAT(StartPeriode, 'MM')) OR 
+                (Year = FORMAT(EndPeriode, 'yyyy') 
+                AND Month <= FORMAT(EndPeriode, 'MM'))
+            )
+        ) as TotalIncomingAmount,
+        TotalOperatingBudget, t2.TotalCosting
+    FROM AnpView t1
+    LEFT JOIN CostingByBudgetCodeView t2 ON t1.BudgetCode = t2.BudgetCode
+    LEFT JOIN m_brand_anp t3 ON t3.BrandCode = t1.BrandCode 
+    ";
+        if($kode_brand){
+            $sql .= " where t3.BrandCode ='".$kode_brand."'";
+        }
+        $sql .= "ORDER BY TotalIncomingAmount DESC";
+        $query = $this->db->query($sql);
+        return $query;
+    }
     public function getAnpForManagement()
     {
         $sql = "EXEC getAnpForManagement";
@@ -578,6 +752,7 @@ class Direksi_model extends CI_Model
         $query = $this->db->query($sql);
         return $query;
     }
+    
 
     public function getProposalpic($params = null)
     {
@@ -621,6 +796,21 @@ class Direksi_model extends CI_Model
     {
         $sql = "SELECT DISTINCT t1.BrandCode, t1.BrandName FROM ProposalTarikanExcelView t1 
         LEFT JOIN tb_pic_brand t2 on t1.BrandCode = t2.BrandCode ";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getBudgetOperatingbybrand($brand)
+    {
+        $sql = "select
+        BrandName,BrandCode, Valas,ExchangeRate, ActualAnp,
+        [Month] as Periode,
+        PrincipalTargetIDR as PrincipalTarget,
+        PrincipalAnpIDR as AnpPrincipal,
+        PKTargetIDR,
+        PKAnpIDR,
+        OperatingBudget
+        from tb_operating where BrandCode = '$brand'";
         $query = $this->db->query($sql);
         return $query;
     }

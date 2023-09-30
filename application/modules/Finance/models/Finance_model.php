@@ -29,9 +29,11 @@ class Finance_model extends CI_Model
 
     public function getProposalApproved($params)
     {
+        /*
         $sql = "select distinct t1.id, t1.Number, t3.BrandName, t1.StartDatePeriode, 
         t1.EndDatePeriode, t2.promo_name as ActivityName, 
         t1.Status,t1.CreatedBy, t1.CreatedDate, t4.TotalCosting, t6.GroupName,
+        t6.GroupName _CONCAT(t6.GroupName SEPARATOR ', ') AS GroupName,
         (select count(id) from tb_proposal_skp where ProposalNumber = t1.Number and NoSKP != '') as jml_skp
         from tb_proposal t1
         inner join m_promo t2 on t1.Activity = t2.id 
@@ -71,8 +73,67 @@ class Finance_model extends CI_Model
         }
 
 
-        $sql .= " order by t1.CreatedDate desc";
+        $sql .= " GROUP BY  t1.Number order by t1.CreatedDate desc";
         // echo $sql;
+        */
+        $sql = "SELECT 
+            t1.id, 
+            t1.Number, 
+            t3.BrandName, 
+            t1.StartDatePeriode, 
+            t1.EndDatePeriode, 
+            t2.promo_name AS ActivityName, 
+            t1.Status, 
+            t1.CreatedBy, 
+            t1.CreatedDate, 
+            t4.TotalCosting, 
+            STUFF((
+                SELECT '~~' + t6.GroupName
+                FROM tb_proposal_customer t5
+                INNER JOIN m_group t6 ON t6.GroupCode = t5.GroupCustomer
+                WHERE t5.ProposalNumber = t1.Number
+                FOR XML PATH(''), TYPE
+            ).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS GroupName,
+            (SELECT COUNT(id) FROM tb_proposal_skp WHERE ProposalNumber = t1.Number AND NoSKP != '') AS jml_skp
+        FROM tb_proposal t1
+        
+        INNER JOIN m_promo t2 ON t1.Activity = t2.id
+        INNER JOIN m_brand t3 ON t1.BrandCode = t3.BrandCode
+        INNER JOIN tb_operating_proposal t4 ON t1.Number = t4.ProposalNumber
+        WHERE [Status] = 'approved'";
+        
+        if (isset($params['number'])) {
+            $number = $params['number'];
+            $sql .= " and t1.Number = '$number'";
+        }
+
+        if (isset($params['brand'])) {
+            $brand = implode(',', $params['brand']);
+            $sql .= " and t1.BrandCode IN (select * from STRING_SPLIT('$brand', ','))";
+        }
+
+        if (isset($params['group'])) {
+            $group = implode(',', $params['group']);
+            $sql .= " and t6.GroupCode IN (select * from STRING_SPLIT('$group', ','))";
+        }
+
+        if (isset($params['activity'])) {
+            $activity = implode(',', $params['activity']);
+            $sql .= " and t1.Activity IN (select * from STRING_SPLIT('$activity', ','))";
+        }
+
+        if (isset($params['start_date'])) {
+            $start_date = $params['start_date'];
+            $sql .= " and FORMAT(t1.StartDatePeriode, 'yyyyMMdd') > FORMAT(CONVERT(DATE,'$start_date'), 'yyyyMMdd')";
+        }
+
+        if (isset($params['end_date'])) {
+            $end_date = $params['end_date'];
+            $sql .= " and FORMAT(t1.EndDatePeriode, 'yyyyMMdd') < FORMAT(CONVERT(DATE,'$end_date'), 'yyyyMMdd')";
+        }
+
+        $sql .= "ORDER BY t1.CreatedDate DESC";
+        
         $query = $this->db->query($sql);
         return $query;
     }
