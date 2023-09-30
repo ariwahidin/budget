@@ -566,6 +566,18 @@ class Pic extends CI_Controller
             }
         }
 
+        if (isset($_POST['start_date'])) {
+            if (($_POST['start_date']) != "") {
+                $params['start_date'] = $_POST['start_date'];
+            }
+        }
+
+        if (isset($_POST['end_date'])) {
+            if (($_POST['end_date']) != "") {
+                $params['end_date'] = $_POST['end_date'];
+            }
+        }
+
         $proposal = $this->pic_model->getProposal($params);
         $data = array(
             'proposal' => $proposal,

@@ -56,9 +56,21 @@
                                     <option value="canceled">Canceled</option>
                                 </select>
                             </div>
-                            <div class="col col-md-3">
-                                <label for="">Action</label>
-                                <br>
+
+                            <div class="col col-md-2">
+                                <label for="">Start Periode</label><br>
+                                <input type="date" class="form-control" id="start_date">
+                            </div>
+
+                            <div class="col col-md-2">
+                                <label for="">End Periode</label><br>
+                                <input type="date" class="form-control" id="end_date">
+                            </div>
+
+
+                        </div>
+                        <div style="margin-top: 10px;" class="box-footer">
+                            <div class="pull-right">
                                 <button onclick="prosesFilter()" class="btn btn-flat btn-default">Filter</button>
                                 <button onclick="resetFilter()" class="btn btn-flat  btn-warning">Reset</button>
                                 <form style="display: inline;" action="<?= base_url($_SESSION['page'] . '/exportResumeProposalToExcel') ?>" method="POST">
@@ -97,13 +109,17 @@
         var activity = $('#filter_activity').val()
         var status = $('#filter_status').val()
         var group = $('#filter_group').val()
+        var start_date = $('#start_date').val()
+        var end_date = $('#end_date').val()
         console.log(group)
-        if (brand.length > 0 || activity.length > 0 || status.length > 0 || group.length > 0) {
+        if (brand.length > 0 || activity.length > 0 || status.length > 0 || group.length > 0 || start_date.trim() != "" || end_date.trim() != "") {
             $('#boxTablePrposal').load("<?= base_url($_SESSION['page']) . '/loadTableProposal' ?>", {
                 brand,
                 activity,
                 status,
-                group
+                group,
+                start_date,
+                end_date,
             }, function() {
 
             })
@@ -114,6 +130,10 @@
         $('#boxTablePrposal').load("<?= base_url($_SESSION['page']) . '/loadTableProposal' ?>", {}, function() {
             $('#filter_brand').val(null).trigger('change') // mengosongkan filter
             $('#filter_activity').val(null).trigger('change')
+            $('#filter_status').val(null).trigger('change')
+            $('#filter_group').val(null).trigger('change')
+            $('#start_date').val(null).trigger('change')
+            $('#end_date').val(null).trigger('change')
         })
     }
 

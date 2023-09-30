@@ -850,11 +850,10 @@ class Pic_model extends CI_Model
     public function getProposal($params = null)
     {
         $sql = "SELECT DISTINCT t1.*, t2.Budget_type
-        --,t3.GroupCustomer, t4.GroupName
         FROM tb_proposal t1 
         inner join tb_operating_proposal t2 on t1.[Number] = t2.ProposalNumber
-        inner join tb_proposal_group t3 on t1.[Number] = t3.ProposalNumber
-        inner join m_group t4 on t3.GroupCustomer = t4.GroupCode";
+        left join tb_proposal_group t3 on t1.[Number] = t3.ProposalNumber
+        left join m_group t4 on t3.GroupCustomer = t4.GroupCode";
         if (!empty($params['user_code'])) {
             $user_code = $params['user_code'];
             $sql .= " WHERE t1.BrandCode IN(SELECT BrandCode FROM tb_pic_brand WHERE UserCode = '$user_code')";
@@ -874,9 +873,19 @@ class Pic_model extends CI_Model
                 $sql .= " AND t1.Status IN (SELECT * FROM STRING_SPLIT('$status', ','))";
             }
 
-            if(isset($params['group'])){
+            if (isset($params['group'])) {
                 $group = $params['group'];
                 $sql .= " AND t3.GroupCustomer IN (SELECT * FROM STRING_SPLIT('$group', ','))";
+            }
+
+            if (isset($params['start_date'])) {
+                $start_date = $params['start_date'];
+                $sql .= " AND FORMAT(StartDatePeriode, 'yyyyMMdd') > FORMAT(CONVERT(DATE,'$start_date'), 'yyyyMMdd')";
+            }
+
+            if (isset($params['end_date'])) {
+                $end_date = $params['end_date'];
+                $sql .= " AND FORMAT(EndDatePeriode, 'yyyyMMdd') < FORMAT(CONVERT(DATE,'$end_date'), 'yyyyMMdd')";
             }
         }
 
@@ -1829,7 +1838,8 @@ class Pic_model extends CI_Model
     //     }
     // }
 
-    public function getGroupFromProposal(){
+    public function getGroupFromProposal()
+    {
         $user_code = $this->session->userdata('user_code');
         $sql = "select distinct t1.GroupCustomer, t3.GroupName
         from tb_proposal_group t1
