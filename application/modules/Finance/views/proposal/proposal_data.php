@@ -77,6 +77,7 @@
     </section>
 </div>
 <div id="tambahskpb"></div>
+<div id="wadahModalDetailProposal"></div>
 <script>
     $(document).ready(function() {
         $('#boxProposal').load("<?= base_url($_SESSION['page']) . '/loadTableProposal' ?>", {}, function() {
@@ -84,14 +85,16 @@
         })
     })
 
-    // let prosesPerkalian = (a = null,b = null)=>{
-    //     a = a??3;
-    //     b = b??5;
-    //     let c = a * b;
-    //     console.log(c);
-    //     return a * b;
-    // };
-    // prosesPerkalian(5,5);
+    function loadDetailProposal(button) {
+        loadingShow()
+        let number = $(button).data('number');
+        $('#wadahModalDetailProposal').load("<?= base_url($_SESSION['page']) . '/loadModalDetailProposal' ?>", {
+            number
+        }, function() {
+            loadingHide()
+            $('#modal-detail-proposal').modal('show');
+        })
+    }
 
     function prosesFilter() {
         let brand = $('#filter_brand').val()
@@ -99,11 +102,6 @@
         let activity = $('#filter_activity').val()
         let start_date = $('#start_date').val()
         let end_date = $('#end_date').val()
-        // console.log(brand)
-        // console.log(group)
-        // console.log(activity)
-        // console.log(start_date)
-        // console.log(end_date)
         if (brand.length > 0 || group.length > 0 || activity.length > 0 || start_date != '' || end_date != '') {
             $('#boxProposal').load("<?= base_url($_SESSION['page']) . '/loadTableProposal' ?>", {
                 brand,
