@@ -133,6 +133,9 @@ class Finance_model extends CI_Model
         }
 
         $sql .= "ORDER BY t1.CreatedDate DESC";
+
+        echo $sql;
+        exit;
         
         $query = $this->db->query($sql);
         return $query;
