@@ -61,14 +61,14 @@ class Finance extends CI_Controller
             }
         }
 
-        if(isset($_POST['start_date'])){
-            if($_POST['start_date'] != ''){
+        if (isset($_POST['start_date'])) {
+            if ($_POST['start_date'] != '') {
                 $params['start_date'] = $_POST['start_date'];
             }
         }
 
-        if(isset($_POST['end_date'])){
-            if($_POST['end_date'] != ''){
+        if (isset($_POST['end_date'])) {
+            if ($_POST['end_date'] != '') {
                 $params['end_date'] = $_POST['end_date'];
             }
         }
@@ -77,7 +77,7 @@ class Finance extends CI_Controller
         $data = array(
             'proposal' => $proposal
         );
-        
+
         $this->load->view('proposal/table_proposal', $data);
     }
 
@@ -98,6 +98,25 @@ class Finance extends CI_Controller
 
         );
         $this->render('proposal/detail_proposal', $data);
+    }
+
+    public function loadModalDetailProposal()
+    {
+        $number = $this->input->post('number');
+        $data = array(
+            'number' => $number,
+            'proposal' => $this->finance_model->getProposalApproved($params)->row(),
+            'item' => $this->finance_model->getItemProposal($number),
+            'objective' => $this->finance_model->getObjectiveProposal($number),
+            'mechanism' => $this->finance_model->getMechanismProposal($number),
+            'comment' => $this->finance_model->getCommentProposal($number),
+            'other' => $this->finance_model->getCostingOther($number),
+            'group' => $this->finance_model->getProposalGroup($number),
+            'customer' => $this->finance_model->getCustomerProposal($number),
+            'total_costing' => $this->finance_model->getTotalCostingByNumberProposal($number)
+
+        );
+        $this->load->view('proposal/modal_detail_proposal', $data);
     }
 
 

@@ -1,6 +1,7 @@
-<?php 
+<?php
 
-function pecahgroup($a){
+function pecahgroup($a)
+{
     $a = strtolower($a);
     $arr = explode("~~", $a);
     $arr = array_unique($arr);
@@ -60,9 +61,9 @@ function pecahgroup($a){
                 <td><?= $data->jml_skp ?></td>
                 <td><?= $data->Status ?></td>
                 <td>
-                    <button class="btn btn-xs btn-default"><i class="fa fa-eye"></i></button>
-                    <a href="<?= base_url($_SESSION['page']) ?>/detailProposal/<?= $data->Number ?>" class="btn btn-info btn-xs">Detail</a>
-                    <a onclick="tambahskpb(this)" data-x="<?= $data->Number; ?>" class="btn btn-primary btn-xs">Add SKP</a>
+                    <button onclick="loadDetailProposal(this)" data-number="<?= $data->Number ?>" class="btn btn-xs btn-default"><i class="fa fa-eye"></i></button>
+                    <!-- <a href="<?= base_url($_SESSION['page']) ?>/detailProposal/<?= $data->Number ?>" class="btn btn-info btn-xs">Detail</a> -->
+                    <a onclick="tambahskpb(this)" data-x="<?= $data->Number; ?>" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> SKP</a>
                 </td>
             </tr>
         <?php } ?>
