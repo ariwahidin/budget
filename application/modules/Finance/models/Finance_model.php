@@ -100,8 +100,6 @@ class Finance_model extends CI_Model
         INNER JOIN m_promo t2 ON t1.Activity = t2.id
         INNER JOIN m_brand t3 ON t1.BrandCode = t3.BrandCode
         INNER JOIN tb_operating_proposal t4 ON t1.Number = t4.ProposalNumber
-        inner join tb_proposal_group t5 on t1.Number = t5.ProposalNumber 
-        inner join m_group t6 on t6.GroupCode = t5.GroupCustomer 
         WHERE [Status] = 'approved'";
         
         if (isset($params['number'])) {
