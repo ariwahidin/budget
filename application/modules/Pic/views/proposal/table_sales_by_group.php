@@ -24,7 +24,7 @@
                                 <td><?= $data->GroupName ?></td>
                                 <td><?= $data->Barcode ?></td>
                                 <td><?= $data->ItemName ?></td>
-                                <td><?= number_format($data->Qty) ?></td>
+                                <td><?= number_format($data->avgqty) ?></td>
                                 <td style="width: 100px;">
                                     <input type="number" class="form-control t_target" onkeyup="hitungEstimasi(this)" data-item-code="<?= $data->ItemCode?>" value="0">
                                     <input type="hidden" class="form-control t_group" value="<?= $data->GroupCode?>" readonly>

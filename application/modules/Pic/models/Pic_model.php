@@ -1756,8 +1756,7 @@ class Pic_model extends CI_Model
         // var_dump($end);
 
         $sql = "getSalesByCustomerGroup @GroupCode='$group_customer', @ItemCode = '$item_code', @CustomerCode = '$customer_code', @StartDate = '$start', @EndDate = '$end'";
-        echo $sql;
-        exit;
+        
         $salesByGroup = $this->db->query($sql);
         return $salesByGroup;
     }
