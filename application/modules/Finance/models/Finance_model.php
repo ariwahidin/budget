@@ -76,7 +76,7 @@ class Finance_model extends CI_Model
         $sql .= " GROUP BY  t1.Number order by t1.CreatedDate desc";
         // echo $sql;
         */
-        $sql = "SELECT 
+        $sql = "SELECT distinct
             t1.id, 
             t1.Number, 
             t3.BrandName, 
