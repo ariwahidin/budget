@@ -31,7 +31,7 @@
                                         <td class="Barcode"><?= $data->Barcode ?></td>
                                         <td class="ItemName"><?= $data->ItemName ?></td>
                                         <td class="Price"><?= round($data->Price) ?></td>
-                                        <td class="Quantity"><?= round($data->Quantity) ?></td>
+                                        <td class="Quantity"><?= number_format($data->AvgQty) ?></td>
                                     </tr>
                                 <?php } ?>
                             <?php } else { ?>
@@ -141,7 +141,7 @@
                                 inputAvg.setAttribute('onkeyup', 'formatNumber(this)');
                                 inputAvg.setAttribute('readonly', 'readonly');
                                 inputAvg.classList.add('form-control', 'input_avg_sales');
-                                inputAvg.value = Math.round(response.item[i].Quantity);
+                                inputAvg.value = Math.round(response.item[i].AvgQty);
                                 // inputAvg.value = 0;
                                 tdAvgSales.appendChild(inputAvg);
 

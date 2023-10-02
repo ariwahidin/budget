@@ -277,73 +277,73 @@ class Pic_model extends CI_Model
     public function getItemFromPenjualan($brand, $customer, $start, $end, $item = null, $barcode)
     {
 
-        $sql = "select * from
-        (
-        select t2.ItemCode, t2.ItemName, t2.FrgnName as Barcode, t2.BrandCode, t3.BrandName,
-        case when ss.Quantity IS NULL then 0 else ss.Quantity end AS Quantity, t2.Price  
-        from ( select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode, 
-        ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, 
-        Barcode collate SQL_Latin1_General_CP850_CI_AS as Barcode, CodeBrand as CodeBrand, 
-        BRAND collate SQL_Latin1_General_CP850_CI_AS as BrandName, SUM(Quantity) as Quantity, 
-        AVG(Price) as Price from tb_sales 
-        WHERE CardCode collate SQL_Latin1_General_CP850_CI_AS IN (select value FROM STRING_SPLIT('$customer', ',')) 
-        AND [Month] between '$start' and '$end' AND CodeBrand = '$brand' group by ItemCode, ItemName, Barcode, 
-        CodeBrand, BRAND union select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode, 
-        ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, FRGNNAME collate SQL_Latin1_General_CP850_CI_AS as Barcode, 
-        BrandCode as CodeBrand, BrandName collate SQL_Latin1_General_CP850_CI_AS as BrandName, '0' as Quantity, Price 
-        from tb_item WHERE ItemCode collate SQL_Latin1_General_CP850_CI_AS NOT IN( select distinct ItemCode from tb_sales 
-        WHERE CardCode IN (select value FROM STRING_SPLIT('$customer', ',')) AND [Month] between '$start' and '$end' 
-        AND CodeBrand = '$brand' ) 
-        AND tb_item.BrandCode = '$brand' )ss 
-        --order by ss.Quantity DESC
-        RIGHT JOIN m_item t2 ON ss.ItemCode = t2.ItemCode 
-        INNER JOIN m_brand t3 ON t2.BrandCode = t3.BrandCode
-        where t2.BrandCode = '$brand'
-        )xx";
-
-        // $sql = "
-        // select * from 
-        // (select t2.ItemCode, t2.ItemName, t2.FrgnName as Barcode, t2.BrandCode, t3.BrandName, 
-        // case when ss.Quantity IS NULL then 0 else ss.Quantity end AS Quantity, t2.Price, AvgQty
-        // from (
-        // --start query pak lim
-        // select a.*,a.quantity/c.bagi as AvgQty from (
-        // select ItemCode  as ItemCode, ItemName as ItemName, Barcode as Barcode, CodeBrand as CodeBrand, 
-        // BRAND as BrandName, SUM(Quantity) as Quantity, AVG(Price) as Price from tb_sales WHERE CardCode 
-        // IN (select value FROM STRING_SPLIT('$customer', ','))
-        // AND [Month] between '$start' and '$end' AND CodeBrand = '$brand' 
-        // group by ItemCode, ItemName, Barcode, CodeBrand, BRAND ) as a inner join 
+        // $sql = "select * from
         // (
-        // select b.itemcode,sum(b.bagi) as bagi from
-        // (select distinct itemcode,month([month]) as bulan,1 as bagi from tb_sales where CardCode 
-        // IN (select value FROM STRING_SPLIT('$customer', ','))
-        // AND [Month] between '$start' and '$end' AND CodeBrand = '$brand' 
-        // ) as b group by b.itemcode ) as c on a.itemcode=c.itemcode
-        // --end query pak lim
-        // union
-        // select 
-        // ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode, 
+        // select t2.ItemCode, t2.ItemName, t2.FrgnName as Barcode, t2.BrandCode, t3.BrandName,
+        // case when ss.Quantity IS NULL then 0 else ss.Quantity end AS Quantity, t2.Price  
+        // from ( select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode, 
         // ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, 
-        // FRGNNAME collate SQL_Latin1_General_CP850_CI_AS as Barcode, 
-        // BrandCode as CodeBrand, 
-        // BrandName collate SQL_Latin1_General_CP850_CI_AS as BrandName, 
-        // 0 as Quantity, Price, 0 as AvgQty 
-        // from tb_item WHERE ItemCode 
-        // collate SQL_Latin1_General_CP850_CI_AS 
-        // NOT IN(
-        // select distinct ItemCode 
-        // from tb_sales 
-        // WHERE CardCode 
-        // IN (select value FROM STRING_SPLIT('$customer', ',')) 
-        // AND [Month] between '$start' and '$end' AND CodeBrand = '$brand'
-        // ) 
-        // AND tb_item.BrandCode = '$brand'
-        // )ss
+        // Barcode collate SQL_Latin1_General_CP850_CI_AS as Barcode, CodeBrand as CodeBrand, 
+        // BRAND collate SQL_Latin1_General_CP850_CI_AS as BrandName, SUM(Quantity) as Quantity, 
+        // AVG(Price) as Price from tb_sales 
+        // WHERE CardCode collate SQL_Latin1_General_CP850_CI_AS IN (select value FROM STRING_SPLIT('$customer', ',')) 
+        // AND [Month] between '$start' and '$end' AND CodeBrand = '$brand' group by ItemCode, ItemName, Barcode, 
+        // CodeBrand, BRAND union select ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode, 
+        // ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, FRGNNAME collate SQL_Latin1_General_CP850_CI_AS as Barcode, 
+        // BrandCode as CodeBrand, BrandName collate SQL_Latin1_General_CP850_CI_AS as BrandName, '0' as Quantity, Price 
+        // from tb_item WHERE ItemCode collate SQL_Latin1_General_CP850_CI_AS NOT IN( select distinct ItemCode from tb_sales 
+        // WHERE CardCode IN (select value FROM STRING_SPLIT('$customer', ',')) AND [Month] between '$start' and '$end' 
+        // AND CodeBrand = '$brand' ) 
+        // AND tb_item.BrandCode = '$brand' )ss 
+        // --order by ss.Quantity DESC
         // RIGHT JOIN m_item t2 ON ss.ItemCode = t2.ItemCode 
-        // INNER JOIN m_brand t3 ON t2.BrandCode = t3.BrandCode 
-        // where 
-        // t2.BrandCode = '$brand' 
+        // INNER JOIN m_brand t3 ON t2.BrandCode = t3.BrandCode
+        // where t2.BrandCode = '$brand'
         // )xx";
+        
+        $sql = "
+        select * from 
+        (select t2.ItemCode, t2.ItemName, t2.FrgnName as Barcode, t2.BrandCode, t3.BrandName, 
+        case when ss.Quantity IS NULL then 0 else ss.Quantity end AS Quantity, t2.Price, AvgQty
+        from (
+        --start query pak lim
+        select a.*,a.quantity/c.bagi as AvgQty from (
+        select ItemCode  as ItemCode, ItemName as ItemName, Barcode as Barcode, CodeBrand as CodeBrand, 
+        BRAND as BrandName, SUM(Quantity) as Quantity, AVG(Price) as Price from tb_sales WHERE CardCode 
+        IN (select value FROM STRING_SPLIT('$customer', ','))
+        AND [Month] between '$start' and '$end' AND CodeBrand = '$brand' 
+        group by ItemCode, ItemName, Barcode, CodeBrand, BRAND ) as a inner join 
+        (
+        select b.itemcode,sum(b.bagi) as bagi from
+        (select distinct itemcode,month([month]) as bulan,1 as bagi from tb_sales where CardCode 
+        IN (select value FROM STRING_SPLIT('$customer', ','))
+        AND [Month] between '$start' and '$end' AND CodeBrand = '$brand' 
+        ) as b group by b.itemcode ) as c on a.itemcode=c.itemcode
+        --end query pak lim
+        union
+        select 
+        ItemCode collate SQL_Latin1_General_CP850_CI_AS as ItemCode, 
+        ItemName collate SQL_Latin1_General_CP850_CI_AS as ItemName, 
+        FRGNNAME collate SQL_Latin1_General_CP850_CI_AS as Barcode, 
+        BrandCode as CodeBrand, 
+        BrandName collate SQL_Latin1_General_CP850_CI_AS as BrandName, 
+        0 as Quantity, Price, 0 as AvgQty 
+        from tb_item WHERE ItemCode 
+        collate SQL_Latin1_General_CP850_CI_AS 
+        NOT IN(
+        select distinct ItemCode 
+        from tb_sales 
+        WHERE CardCode 
+        IN (select value FROM STRING_SPLIT('$customer', ',')) 
+        AND [Month] between '$start' and '$end' AND CodeBrand = '$brand'
+        ) 
+        AND tb_item.BrandCode = '$brand'
+        )ss
+        RIGHT JOIN m_item t2 ON ss.ItemCode = t2.ItemCode 
+        INNER JOIN m_brand t3 ON t2.BrandCode = t3.BrandCode 
+        where 
+        t2.BrandCode = '$brand' 
+        )xx";
 
         if ($item != null) {
             $sql .= " WHERE xx.ItemCode IN (select value FROM  STRING_SPLIT('$item', ','))";
@@ -356,8 +356,10 @@ class Pic_model extends CI_Model
         }
 
         $sql .= " order by xx.Quantity DESC";
+        
         $result = $this->db->query($sql);
         // print_r($sql);
+        
         return $result;
     }
 
@@ -1754,6 +1756,8 @@ class Pic_model extends CI_Model
         // var_dump($end);
 
         $sql = "getSalesByCustomerGroup @GroupCode='$group_customer', @ItemCode = '$item_code', @CustomerCode = '$customer_code', @StartDate = '$start', @EndDate = '$end'";
+        echo $sql;
+        exit;
         $salesByGroup = $this->db->query($sql);
         return $salesByGroup;
     }

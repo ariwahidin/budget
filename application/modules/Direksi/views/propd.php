@@ -39,6 +39,7 @@
                         </table>
 <script>
     
+angkakanan();
     $('#table_proposal').DataTable({resposive : true});
 </script>
 

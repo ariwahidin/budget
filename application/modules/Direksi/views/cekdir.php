@@ -205,6 +205,7 @@ $operating_percent = $operatingx * 100;
                             <?php } ?>
                         </table>
                     </div>
+<!--                     
                     <div class="col-lg-6">
                         <h4>Filter By Region</h4>
                         <table class="table table-responsive" id="tabel_kota">
@@ -234,7 +235,7 @@ $operating_percent = $operatingx * 100;
                             <?php } ?>
                         </table>
 
-                    </div>
+                    </div> -->
 
                 </div>
                 <hr>
@@ -309,8 +310,6 @@ $operating_percent = $operatingx * 100;
     </div>
 </div>
 <script>
-
-$(document).ready(function() {
     let encok = (par) => {
         let expar = par.split("-"), code = expar[0], acx = expar[1];
         $.ajax({
@@ -321,10 +320,14 @@ $(document).ready(function() {
 
                 $('#propd').html();
                 $('#propd').html(response);
-
+                angkakanan();
             }
         });
     };
+$(document).ready(function() {
+    
+    angkakanan();
+
     
     $('#tabel_act').DataTable({ resposive: true });
     $('#tabel_kota').DataTable({ resposive: true });
