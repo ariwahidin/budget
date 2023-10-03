@@ -1,4 +1,7 @@
 <style>
+    /* .modal {
+        background-color: green;
+    } */
     .modal-lg {
         width: 1200px !important;
     }

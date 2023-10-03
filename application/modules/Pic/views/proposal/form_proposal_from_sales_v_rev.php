@@ -721,6 +721,7 @@ $group_code = implode("','", $GroupCode);
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
+                    console.log('laoding dimulai');
                     loadingShow();
 
                     $("#containerSetDetail").load('<?= base_url($_SESSION['page'] . '/set_cart_item') ?>', {
@@ -733,6 +734,9 @@ $group_code = implode("','", $GroupCode);
                         start_date,
                         end_date,
                         brand,
+                    }, function() {
+                        loadingHide();
+                        console.log('loading selesai');
                     });
 
                     const btn_delete = document.querySelectorAll('.btn_delete_product'); // select all input elements of type "text"
@@ -752,7 +756,7 @@ $group_code = implode("','", $GroupCode);
                         btn_set_detail[i].disabled = true; // set the disabled property to true for each element
                         btn_set_detail[i].style.display = 'none';
                     }
-                    loadingHide();
+
                     //         }
                     //     },
                     //     error: function(xhr, status, error) {
