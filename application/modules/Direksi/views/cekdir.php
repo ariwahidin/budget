@@ -13,11 +13,12 @@ $target_anp_percent = $target_anp * 100;
 
 $besaranx = ceknum($header->row()->TotalPrincipalTargetIDR);
 $besarany = ceknum($header->row()->TotalTargetAnp);
-$presentase_0 = ($is_supplier_dana == 1) ? ($besaranx / $besarany)  : 0;
+$presentase_0 = ($is_supplier_dana == 1) ? (($besarany / $besaranx)*100)  : 0;
+
 
 $besarana = ceknum($header->row()->TotalPKTargetIDR) ?? 0;
 $besaranb = ceknum($header->row()->TotalPKAnpIDR) ?? 0;
-$presentase_1 = ($is_supplier_dana == 0) ? ($besarana / $besaranb) : 0;
+$presentase_1 = ($is_supplier_dana == 0) ? (($besaranb / $besarana)*100) : 0;
 
 
 $operatingx = 0;
@@ -93,7 +94,7 @@ $operating_percent = $operatingx * 100;
                             Supplier</td>
                         <td>Presentase</td>
                         <td>&nbsp;:&nbsp;
-                            <?= number_format($presentase_0,2,",",".") ?> %
+                            <?= number_format($presentase_0) ?> %
                         </td>
                     </tr>
                     <tr>
@@ -101,7 +102,7 @@ $operating_percent = $operatingx * 100;
                         <td><input type="checkbox" disabled="disabled" <?= $ceklist1 ?>> Pandurasa </td>
                         <td>Presentase</td>
                         <td>&nbsp;:&nbsp;
-                            <?= number_format($presentase_1,2,",",".") ?>%
+                            <?= number_format($presentase_1) ?>%
                         </td>
                     </tr>
                     <tr>

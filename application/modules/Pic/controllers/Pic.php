@@ -780,8 +780,9 @@ class Pic extends CI_Controller
             return false;
         }
 
+
         if (count($periode) != 12) {
-            echo json_encode(['budget' => 'harus_setahun']);
+            echo json_encode(['budget' => 'harus_setahun'.count($periode)]);
             return false;
         }
 

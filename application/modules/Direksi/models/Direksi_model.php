@@ -147,7 +147,7 @@ class Direksi_model extends CI_Model
         return $query;
     }
 
-    public function getHeaderOperatingbybrand($brand)
+    public function getHeaderOperatingbybrand($brand,$year = null, $periode = null)
     {
         $sql = "SELECT MIN([Month]) AS StartPeriode, 
         MAX([Month]) AS EndPeriode, 
@@ -158,6 +158,39 @@ class Direksi_model extends CI_Model
         SUM([PrincipalAnpIDR]) AS TotalTargetAnp, 
         SUM(OperatingBudget) AS TotalOperating 
         FROM tb_operating WHERE BrandCode = '$brand'";
+
+        
+        if(($year)&&($periode)){
+            $range0 = 3 * ($periode - 1);
+            $range1 = 3 * $periode;
+            $range0 = ($range0 >= 1) ? $range0 : 1;
+            $range1 = ($range1 < 12) ? $range1 : 12;
+            $periode0 = $year."-".$range0."-01";
+            $periode1 = $year."-".$range1."-01";
+
+            $sql0 = $sql." and Month between '$periode0' and '$periode1'";  
+    
+            $query0 = $this->db->query($sql0);
+            if($query0->num_rows() >= 1){
+                return $query0;
+            }else{
+
+                $sql = "SELECT MIN([Month]) AS StartPeriode, 
+                startp = '$periode0',
+                endp = '$periode1',
+                nullkah=1,
+                MAX([Month]) AS EndPeriode, 
+                AVG(ExchangeRate) AS ExchangeRate,
+                SUM([PKAnpIDR]) AS TotalPKAnpIDR,
+                SUM(PrincipalTargetValas) AS TotalPrincipalTargetValas,
+                SUM(PrincipalTargetIDR) AS TotalPrincipalTargetIDR,
+                SUM([PrincipalAnpIDR]) AS TotalTargetAnp, 
+                SUM(OperatingBudget) AS TotalOperating 
+                FROM tb_operating WHERE BrandCode = '$brand'";
+            }
+        }
+
+
         $query = $this->db->query($sql);
         return $query;
     }
@@ -677,7 +710,7 @@ class Direksi_model extends CI_Model
     }
 
     public function anpdir1($kode_brand = null){
-        $sql = "SELECT t1.BudgetCode, t3.BrandCode, t1.BrandName, t3.Code,
+        $sql = "SELECT t1.*, t1.BudgetCode, t3.BrandCode, t1.BrandName, t3.Code,
         FORMAT(StartPeriode, 'MMM yyyy') as StartPeriode, 
         FORMAT(EndPeriode, 'MMM yyyy') AS EndPeriode,
         Year(EndPeriode) as EndYearPeriode,
@@ -712,6 +745,7 @@ class Direksi_model extends CI_Model
             $sql .= " where t3.BrandCode ='".$kode_brand."'";
         }
         $sql .= "ORDER BY TotalIncomingAmount DESC";
+
         $query = $this->db->query($sql);
         return $query;
     }
@@ -751,6 +785,36 @@ class Direksi_model extends CI_Model
         $sql = "SELECT * FROM ProposalView";
         $query = $this->db->query($sql);
         return $query;
+    }
+
+    public function plan_list_brand($a=null){ 
+        $sql = "SELECT BrandCode, BrandName FROM tb_operating group by BrandCode, BrandName";
+        return $this->db->query($sql);
+    }
+    
+    public function plan_list_year($a=null){ 
+        $where = "";
+        if (count($a) > 0) {
+            $ax = implode(",", $a);
+            $where .= ($ax) ? " where BrandCode IN (SELECT * FROM STRING_SPLIT('$ax', ','))" : " ";
+        }
+        $sql = "SELECT Year FROM tb_operating $where group by Year";
+        return $this->db->query($sql);
+    }
+
+    public function plan_list_periode($a=null,$b=null){ 
+        $where = "";
+        if (count($a) > 0) {
+            $ax = implode(",", $a);
+            $where .= ($ax) ? " where BrandCode IN (SELECT * FROM STRING_SPLIT('$ax', ','))" : " ";
+            if (count($b) > 0) {
+                $bx = implode(",", $b);
+                $where .= ($bx) ? " and Year IN (SELECT * FROM STRING_SPLIT('$bx', ','))" : " ";
+            }
+        }
+
+        $sql = "SELECT distinct CASE when (MONTH(Month) % 3) != 0 then (MONTH(Month)/3) +1 else (MONTH(Month)/3) END AS periode FROM tb_operating $where";
+        return $this->db->query($sql);
     }
     
 
@@ -800,7 +864,7 @@ class Direksi_model extends CI_Model
         return $query;
     }
 
-    public function getBudgetOperatingbybrand($brand)
+    public function getBudgetOperatingbybrand($brand,$year = null, $periode = null)
     {
         $sql = "select
         BrandName,BrandCode, Valas,ExchangeRate, ActualAnp,
@@ -811,6 +875,37 @@ class Direksi_model extends CI_Model
         PKAnpIDR,
         OperatingBudget
         from tb_operating where BrandCode = '$brand'";
+
+        if(($year)&&($periode)){
+            $range0 = 3 * ($periode - 1);
+            $range1 = 3 * $periode;
+            $range0 = ($range0 >= 1) ? $range0 : 1;
+            $range1 = ($range1 < 12) ? $range1 : 12;
+            $periode0 = $year."-".$range0."-01";
+            $periode1 = $year."-".$range1."-01";
+
+            $sql0 = $sql." and Month between '$periode0' and '$periode1'";  
+            
+            $query0 = $this->db->query($sql0);
+            if($query0->num_rows() >= 1){
+                return $query0;
+            }else{
+                        
+                $sql = "select
+                BrandName,BrandCode, Valas,ExchangeRate, ActualAnp,
+                [Month] as Periode,
+                startp = '$periode0',
+                endp = '$periode1',
+                nullkah=1,
+                PrincipalTargetIDR as PrincipalTarget,
+                PrincipalAnpIDR as AnpPrincipal,
+                PKTargetIDR,
+                PKAnpIDR,
+                OperatingBudget
+                from tb_operating where BrandCode = '$brand'";
+            }
+        }
+
         $query = $this->db->query($sql);
         return $query;
     }

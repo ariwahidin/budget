@@ -617,12 +617,49 @@ class Direksi extends CI_Controller
 
 
     public function loadplan(){
-        $tahunlist = $this->direksi_model->getBrandProposalByPic();
+        $plan_list_brand = $this->direksi_model->plan_list_brand();
+        $plan_list_year = $this->direksi_model->plan_list_year();
+        $plan_list_periode = $this->direksi_model->plan_list_periode();
+        
+        $var_brand = $_POST['var_brand'] ?? null;
+        $var_year = $_POST['var_year'] ?? null;
+        $var_periode = $_POST['var_periode'] ?? null;
+        if ($var_brand){
+            $tahun_list = $this->direksi_model->plan_list_year($var_brand);
+            if ($var_year){
+                $tahun_list = $this->direksi_model->plan_list_periode($var_brand,$var_year);
+            }    
+            
+        }
+
+
         $data = array(
+            'plan_list_brand' => $plan_list_brand,
+            'plan_list_year' => $plan_list_year,
+            'plan_list_periode' => $plan_list_periode,
+
+            'var_brand' => $var_brand,
+            'var_year' => $var_year,
+            'var_periode' => $var_periode,
+            
             'brand' => $this->direksi_model->getBrandProposalByPic(),
             'activity' => $this->direksi_model->getActivity()
         );
 
+        if ($var_brand){
+            
+            $data['costkot'] = $this->direksi_model->costkot($var_brand);
+            $data['hmaster']  = $this->direksi_model->anpdir1($var_brand);
+            $data['filteract']  = $this->direksi_model->filteract($var_brand);
+            $data['filterkota']  = $this->direksi_model->filterkota($var_brand);
+            $data['brand'] =  $this->direksi_model->getBrand($var_brand)->row();
+            $data['operating'] = $this->direksi_model->getBudgetOperatingbybrand($var_brand,$var_year,$var_periode);
+            $data['header']  = $this->direksi_model->getHeaderOperatingbybrand($var_brand,$var_year,$var_periode);
+            $data['proposal']  = $this->direksi_model->getProposalbybrand($var_brand);
+            return $this->load->view('proposal/loadtableplan', $data);
+        }
+
+        
         $this->render('operating/loadplan', $data);
     }
 
