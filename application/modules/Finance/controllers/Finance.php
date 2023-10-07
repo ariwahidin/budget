@@ -103,6 +103,11 @@ class Finance extends CI_Controller
     public function loadModalDetailProposal()
     {
         $number = $this->input->post('number');
+
+
+        // var_dump($number);
+        $params['number'] = $number;
+        // exit;
         $data = array(
             'number' => $number,
             'proposal' => $this->finance_model->getProposalApproved($params)->row(),
