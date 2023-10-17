@@ -23,8 +23,7 @@ class Direksi extends CI_Controller
         $this->load->view('footer');
     }
 
-    public function index()
-    {
+    public function index(){
         $anp = $this->direksi_model->anpdir1();
         $resumeAnp = $this->direksi_model->getResumeAnp();
         // var_dump($resumeAnp->result());
@@ -42,14 +41,13 @@ class Direksi extends CI_Controller
         $costkot = $this->direksi_model->costkot($kode_brand);
         $data['costkot'] = $costkot;
         $data['hmaster']  = $this->direksi_model->anpdir1($kode_brand);
-        $data['filteract']  = $this->direksi_model->filteract($kode_brand);
+        $data['filteract']  = $this->direksi_model->filteract2($kode_brand);
         $data['filterkota']  = $this->direksi_model->filterkota($kode_brand);
         $data['brand'] =  $this->direksi_model->getBrand($kode_brand)->row();
         $data['operating'] = $this->direksi_model->getBudgetOperatingbybrand($kode_brand);
         $data['header']  = $this->direksi_model->getHeaderOperatingbybrand($kode_brand);
         $data['proposal']  = $this->direksi_model->getProposalbybrand($kode_brand);
 
-        
         // var_dump($this->session->userdata());
         $this->load->view('cekdir', $data);
     }
@@ -620,18 +618,24 @@ class Direksi extends CI_Controller
         $plan_list_brand = $this->direksi_model->plan_list_brand();
         $plan_list_year = $this->direksi_model->plan_list_year();
         $plan_list_periode = $this->direksi_model->plan_list_periode();
-        
+
         $var_brand = $_POST['var_brand'] ?? null;
         $var_year = $_POST['var_year'] ?? null;
         $var_periode = $_POST['var_periode'] ?? null;
+        
         if ($var_brand){
             $tahun_list = $this->direksi_model->plan_list_year($var_brand);
             if ($var_year){
                 $tahun_list = $this->direksi_model->plan_list_periode($var_brand,$var_year);
-            }    
-            
+            }        
         }
 
+        $range0 = 3 * ($var_periode - 1);
+        $range1 = 3 * $var_periode;
+        $range0 = ($range0 >= 1) ? $range0 : 1;
+        $range1 = ($range1 < 12) ? $range1 : 12;
+        $periode0 = $year."-".$range0."-01";
+        $periode1 = $year."-".$range1."-01";
 
         $data = array(
             'plan_list_brand' => $plan_list_brand,
@@ -647,7 +651,29 @@ class Direksi extends CI_Controller
         );
 
         if ($var_brand){
-            
+
+            // // for($i = $range0+1; $i <= $range1; $i++){
+            // //     echo $i."<br>";
+            // // }
+
+            // // exit;
+
+            // //$end = $end->modify('+1 month');
+            // $interval = new DateInterval('P1M');
+            // $daterange = new DatePeriod($periode0, $interval, $periode1);
+            // $periode = array();
+    
+            // foreach ($daterange as $date) {
+            //     array_push($periode, $date->format("Y-m-d"));
+            // }
+    
+            // // $data = array(
+            // //     'brand' => $var_brand,
+            // //     'start_month' => $periode0,
+            // //     'end_month' => $periode1,
+            // //     'periode' => $periode,
+            // // );
+
             $data['costkot'] = $this->direksi_model->costkot($var_brand);
             $data['hmaster']  = $this->direksi_model->anpdir1($var_brand);
             $data['filteract']  = $this->direksi_model->filteract($var_brand);

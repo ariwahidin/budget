@@ -157,8 +157,11 @@
                 return false;
             }
         }
-        for (var i = 0; i < all_input.length; i++) {
-            if (all_input[s].value == '') {
+
+        if(all_input){
+
+            for (var i = 0; i < all_input.length; i++) {
+            if (all_input[i].value == '') {
                 //alert("Semua Wajib Diisi");
                 Swal.fire({
                     icon: 'warning',
@@ -168,6 +171,7 @@
                 })
                 return false;
             }
+        }
         }
 
         var formData = new FormData(document.getElementById("formCreateOperating"));

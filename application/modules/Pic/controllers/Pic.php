@@ -758,7 +758,9 @@ class Pic extends CI_Controller
         // die;
         $brand = str_replace(array(' ', "\t"), '', $_POST['brand']);;
         $start_month = date('Y-m-d', strtotime($_POST['start_month']));
-        $end_month = date('Y-m-d', strtotime($_POST['end_month']));
+        //$end_month = date('Y-m-d', strtotime($_POST['end_month']));
+        
+        $end_month = date('Y-m-d', strtotime($_POST['start_month']." +3 month"));
         $begin = new DateTime($start_month);
         $end = new DateTime($end_month);
         $end = $end->modify('+1 month');
@@ -781,10 +783,10 @@ class Pic extends CI_Controller
         }
 
 
-        if (count($periode) != 12) {
-            echo json_encode(['budget' => 'harus_setahun'.count($periode)]);
-            return false;
-        }
+        // if (count($periode) != 12) {
+        //     echo json_encode(['budget' => 'harus_setahun'.count($periode)]);
+        //     return false;
+        // }
 
         echo json_encode(['budget' => 'siap']);
     }
@@ -793,10 +795,12 @@ class Pic extends CI_Controller
     {
         $brand = $_POST['brand'];
         $start_month = date('Y-m-d', strtotime($_POST['start_month']));
+        
+        //$end_month = date('Y-m-d', strtotime($_POST['start_month']." +3 month"));
         $end_month = date('Y-m-d', strtotime($_POST['end_month']));
         $begin = new DateTime($start_month);
         $end = new DateTime($end_month);
-        $end = $end->modify('+1 month');
+        //$end = $end->modify('+1 month');
         $interval = new DateInterval('P1M');
         $daterange = new DatePeriod($begin, $interval, $end);
         $periode = array();

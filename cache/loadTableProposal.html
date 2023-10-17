@@ -1,0 +1,397 @@
+<style>
+    #table_proposal td:nth-child(5) {
+        height: 10px;
+        overflow: hidden;
+        white-space: nowrap;
+        display: inline-block;
+    }
+
+    #table_proposal td:nth-child(5):hover {
+        height: unset;
+    }
+    
+    th,td {
+        /* min-width: 200px; */
+    }
+</style>
+<table style="font-size: 12px;" class="table table-responsive table-bordered table-striped" id="table_proposal">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>No Proposal</th>
+            <th>Ref Code</th>
+            <th>Brand</th>
+            <th>Group</th>
+            <th>Activity</th>
+            <th>Start Periode</th>
+            <th>End Periode</th>
+            <th>Pic</th>
+            <th>Status</th>
+            <th>Management</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+                    <tr>
+                <td>1</td>
+                <td>PK00520230014</td>
+                <td>127/20230014</td>
+                <td>HERO</td>
+                <td>
+                    <ul>
+                                                    <li>FOODHALL GROUP</li>
+                                                    <li>HERO GROUP</li>
+                                            </ul>
+                </td>
+                <td>Banded Promo (WH)</td>
+                <td>16 Sep 2023</td>
+                <td>16 Dec 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Open</span>
+                </td>
+                <td>
+                                    </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230014" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230014" class="btn btn-danger btn-xs">Pdf</a>
+                                            <button onclick="cancelProposal(this)" data-proposal-number="PK00520230014" class="btn btn-warning btn-xs">Cancel</button>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>2</td>
+                <td>PK00520230013</td>
+                <td>148/20230013</td>
+                <td>SANITARIUM</td>
+                <td>
+                    <ul>
+                                                    <li>TBD Food Service</li>
+                                            </ul>
+                </td>
+                <td>Sponsorship</td>
+                <td>14 Sep 2023</td>
+                <td>13 Oct 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Open</span>
+                </td>
+                <td>
+                                    </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230013" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230013" class="btn btn-danger btn-xs">Pdf</a>
+                                            <button onclick="cancelProposal(this)" data-proposal-number="PK00520230013" class="btn btn-warning btn-xs">Cancel</button>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>3</td>
+                <td>PK00520230012</td>
+                <td>148/20230012</td>
+                <td>SANITARIUM</td>
+                <td>
+                    <ul>
+                                                    <li>DIAMOND</li>
+                                            </ul>
+                </td>
+                <td>Sponsorship</td>
+                <td>18 Sep 2023</td>
+                <td>18 Sep 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Open</span>
+                </td>
+                <td>
+                                                                        <span class="label label-success"><i class="fa fa-check"></i>Jeffry 13/09/23</span><br>
+                                                            </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230012" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230012" class="btn btn-danger btn-xs">Pdf</a>
+                                            <button onclick="cancelProposal(this)" data-proposal-number="PK00520230012" class="btn btn-warning btn-xs">Cancel</button>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>4</td>
+                <td>PK00520230011</td>
+                <td>127/20230011</td>
+                <td>HERO</td>
+                <td>
+                    <ul>
+                                                    <li>HERO GROUP</li>
+                                            </ul>
+                </td>
+                <td>Rafraction</td>
+                <td>04 Sep 2023</td>
+                <td>30 Sep 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Canceled</span>
+                </td>
+                <td>
+                                    </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230011" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230011" class="btn btn-danger btn-xs">Pdf</a>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>5</td>
+                <td>PK00520230010</td>
+                <td>127/20230010</td>
+                <td>HERO</td>
+                <td>
+                    <ul>
+                                                    <li>RANCH MARKET GROUP</li>
+                                            </ul>
+                </td>
+                <td>Rafraction</td>
+                <td>15 Sep 2023</td>
+                <td>30 Sep 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Open</span>
+                </td>
+                <td>
+                                                                        <span class="label label-success"><i class="fa fa-check"></i>Jeffry 13/09/23</span><br>
+                                                            </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230010" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230010" class="btn btn-danger btn-xs">Pdf</a>
+                                            <button onclick="cancelProposal(this)" data-proposal-number="PK00520230010" class="btn btn-warning btn-xs">Cancel</button>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>6</td>
+                <td>PK00520230009</td>
+                <td>127/20230009</td>
+                <td>HERO</td>
+                <td>
+                    <ul>
+                                                    <li>FOODHALL GROUP</li>
+                                                    <li>GRAND LUCKY</li>
+                                            </ul>
+                </td>
+                <td>Rafraction</td>
+                <td>24 Aug 2023</td>
+                <td>31 Aug 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Canceled</span>
+                </td>
+                <td>
+                                                                        <span class="label label-success"><i class="fa fa-check"></i>Jeffry 24/08/23</span><br>
+                                                                                                <span class="label label-success"><i class="fa fa-check"></i>Jennifer 24/08/23</span><br>
+                                                                                                <span class="label label-success"><i class="fa fa-check"></i>Alice 25/08/23</span><br>
+                                                            </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230009" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230009" class="btn btn-danger btn-xs">Pdf</a>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>7</td>
+                <td>PK00520230008</td>
+                <td>HER/EC/27032023/2023</td>
+                <td>HERO</td>
+                <td>
+                    <ul>
+                                            </ul>
+                </td>
+                <td>Rafraction</td>
+                <td>01 Mar 2023</td>
+                <td>30 Apr 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Canceled</span>
+                </td>
+                <td>
+                                                                        <span class="label label-success"><i class="fa fa-check"></i>Jeffry 03/08/23</span><br>
+                                                            </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230008" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230008" class="btn btn-danger btn-xs">Pdf</a>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>8</td>
+                <td>PK00520230007</td>
+                <td>0601HER/23/06</td>
+                <td>HERO</td>
+                <td>
+                    <ul>
+                                                    <li>LION SUPERINDO</li>
+                                            </ul>
+                </td>
+                <td>Rafraction</td>
+                <td>15 Dec 2023</td>
+                <td>31 Dec 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Canceled</span>
+                </td>
+                <td>
+                                                                        <span class="label label-success"><i class="fa fa-check"></i>Jeffry 06/07/23</span><br>
+                                                            </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230007" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230007" class="btn btn-danger btn-xs">Pdf</a>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>9</td>
+                <td>PK00520230006</td>
+                <td>0601HER/23/05</td>
+                <td>HERO</td>
+                <td>
+                    <ul>
+                                                    <li>LION SUPERINDO</li>
+                                            </ul>
+                </td>
+                <td>Rafraction</td>
+                <td>03 Sep 2023</td>
+                <td>09 Sep 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Canceled</span>
+                </td>
+                <td>
+                                                                        <span class="label label-success"><i class="fa fa-check"></i>Jeffry 06/07/23</span><br>
+                                                            </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230006" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230006" class="btn btn-danger btn-xs">Pdf</a>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>10</td>
+                <td>PK00520230005</td>
+                <td>0601HER/23/04</td>
+                <td>HERO</td>
+                <td>
+                    <ul>
+                                                    <li>LION SUPERINDO</li>
+                                            </ul>
+                </td>
+                <td>Rafraction</td>
+                <td>25 Jun 2023</td>
+                <td>30 Jun 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Canceled</span>
+                </td>
+                <td>
+                                                                        <span class="label label-success"><i class="fa fa-check"></i>Jeffry 06/07/23</span><br>
+                                                            </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230005" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230005" class="btn btn-danger btn-xs">Pdf</a>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>11</td>
+                <td>PK00520230004</td>
+                <td>0601HER/23/03</td>
+                <td>HERO</td>
+                <td>
+                    <ul>
+                                                    <li>LION SUPERINDO</li>
+                                            </ul>
+                </td>
+                <td>Rafraction</td>
+                <td>07 Apr 2023</td>
+                <td>21 Apr 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Canceled</span>
+                </td>
+                <td>
+                                                                        <span class="label label-success"><i class="fa fa-check"></i>Jeffry 30/06/23</span><br>
+                                                            </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230004" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230004" class="btn btn-danger btn-xs">Pdf</a>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>12</td>
+                <td>PK00520230003</td>
+                <td>0601HER/23/02</td>
+                <td>HERO</td>
+                <td>
+                    <ul>
+                                                    <li>LION SUPERINDO</li>
+                                            </ul>
+                </td>
+                <td>Rafraction</td>
+                <td>19 Mar 2023</td>
+                <td>30 Mar 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Canceled</span>
+                </td>
+                <td>
+                                                                        <span class="label label-success"><i class="fa fa-check"></i>Jeffry 30/06/23</span><br>
+                                                            </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230003" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230003" class="btn btn-danger btn-xs">Pdf</a>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>13</td>
+                <td>PK00520230002</td>
+                <td>0601HER/23/01</td>
+                <td>HERO</td>
+                <td>
+                    <ul>
+                                                    <li>LION SUPERINDO</li>
+                                            </ul>
+                </td>
+                <td>Rafraction</td>
+                <td>22 Jan 2023</td>
+                <td>29 Jan 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Canceled</span>
+                </td>
+                <td>
+                                                                        <span class="label label-success"><i class="fa fa-check"></i>Jeffry 30/06/23</span><br>
+                                                            </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230002" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230002" class="btn btn-danger btn-xs">Pdf</a>
+                                    </td>
+            </tr>
+                    <tr>
+                <td>14</td>
+                <td>PK00520230001</td>
+                <td>HER/EC/04012023/2023</td>
+                <td>HERO</td>
+                <td>
+                    <ul>
+                                                    <li>E-COMMERCE</li>
+                                            </ul>
+                </td>
+                <td>Rafraction</td>
+                <td>01 Jan 2023</td>
+                <td>30 Apr 2023</td>
+                <td>Janerit</td>
+                <td>
+                    <span class="">Canceled</span>
+                </td>
+                <td>
+                                                                        <span class="label label-success"><i class="fa fa-check"></i>Jeffry 30/06/23</span><br>
+                                                            </td>
+                <td style="min-width: 120px;">
+                    <a href="http://localhost/test/budget/pic/showProposalDetail/PK00520230001" class="btn btn-info btn-xs">Lihat</a>
+                    <a href="http://localhost/test/budget/pic/exportProposalToPdf/PK00520230001" class="btn btn-danger btn-xs">Pdf</a>
+                                    </td>
+            </tr>
+            </tbody>
+</table>
+<script>
+    $(document).ready(function() {
+        $('#table_proposal').DataTable({
+            resposive: true
+        });
+    });
+</script>

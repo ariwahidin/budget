@@ -300,14 +300,13 @@ class Pic_model extends CI_Model
         // INNER JOIN m_brand t3 ON t2.BrandCode = t3.BrandCode
         // where t2.BrandCode = '$brand'
         // )xx";
-        
         $sql = "
         select * from 
         (select t2.ItemCode, t2.ItemName, t2.FrgnName as Barcode, t2.BrandCode, t3.BrandName, 
         case when ss.Quantity IS NULL then 0 else ss.Quantity end AS Quantity, t2.Price, AvgQty
         from (
         --start query pak lim
-        select a.*,a.quantity/c.bagi as AvgQty from (
+        select a.*,a.quantity/3 as AvgQty from (
         select ItemCode  as ItemCode, ItemName as ItemName, Barcode as Barcode, CodeBrand as CodeBrand, 
         BRAND as BrandName, SUM(Quantity) as Quantity, AVG(Price) as Price from tb_sales WHERE CardCode 
         IN (select value FROM STRING_SPLIT('$customer', ','))
@@ -356,7 +355,6 @@ class Pic_model extends CI_Model
         }
 
         $sql .= " order by xx.Quantity DESC";
-        
         $result = $this->db->query($sql);
         // print_r($sql);
         
@@ -1756,9 +1754,8 @@ class Pic_model extends CI_Model
         // var_dump($end);
 
         $sql = "getSalesByCustomerGroup @GroupCode='$group_customer', @ItemCode = '$item_code', @CustomerCode = '$customer_code', @StartDate = '$start', @EndDate = '$end'";
-        echo $sql;
-        exit;
         
+
         $salesByGroup = $this->db->query($sql);
         return $salesByGroup;
     }

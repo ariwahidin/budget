@@ -1,0 +1,109 @@
+<link href="https://themesbrand.com/velzon/html/default/assets/css/bootstrap.min.css" rel="stylesheet"
+  type="text/css" />
+<!-- Icons Css -->
+<link href="https://themesbrand.com/velzon/html/default/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+<!-- App Css-->
+<link href="https://themesbrand.com/velzon/html/default/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+<!-- custom Css-->
+<link href="https://themesbrand.com/velzon/html/default/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+
+<body translate="no">
+  <div id="users" class="listtb" data-paging="10" data-pg="1" data-url="https://test.test/budget/data.json">
+    <input class="search" placeholder="Search">
+    <button class="sort" data-sort="name">
+      Sort by name
+    </button>
+    <table></table>
+    <div class="d-flex justify-content-end">
+      <div class="pagination-wrap hstack gap-2">
+        <a class="page-item pagination-prev disabled" href="javascript:void(0);">
+          Previous
+        </a>
+        <ul class="pagination listjs-pagination mb-0"></ul>
+        <a class="page-item pagination-next" href="javascript:void(0);">
+          Next
+        </a>
+      </div>
+    </div>
+
+  </div>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+
+  <script
+    src="https://themesbrand.com/velzon/html/default/assets/libs/list.pagination.js/list.pagination.min.js"></script>
+  <script>
+
+    let mainload = async (endpoint = null, postset = null, cFunction = null) => {
+      let res = await fetch(endpoint, postset);
+      if (res.status == 200) { data = await res.json(); return cFunction(data); }
+      else { return flashn(); }
+    };
+
+    let cleanstr = (a) => { return a.replace(/[^\w\s]/gi, ' ') };
+    let listjsx = (a) => {
+      [].forEach.call(document.querySelectorAll(a), (eltb) => {
+
+        let reinit = () => {
+
+          let pg = eltb.getAttribute("data-pg") || 1;
+          mainload(eltb.getAttribute("data-url") + '&page=' + pg, get = { method: 'GET' }, config = (data) => {
+
+
+            let thlist = [], eltbx = eltb.querySelector("table");
+            for (const x in data.subdist[0]) {
+              thlist.push(x);
+            };
+
+            if (eltbx.querySelector("thead")) { }
+            else {
+              eltbx.innerHTML = "";
+              eltbx.innerHTML += "<thead><tr>";
+              thlist.forEach((thx) => {
+                eltbx.querySelector("thead tr").innerHTML += "<th class='sort' data-sort='" + thx + "'>" + cleanstr(thx) + "</th>";
+              });
+              eltbx.innerHTML += "</tr></thead><tbody class='list'></tbody>";
+            }
+
+            if (!eltbx.querySelector("tbody")) {
+              eltbx.innerHTML += "<tbody></tbody>";
+            }
+
+            let tbodyx = eltbx.querySelector("tbody");
+            tbodyx.innerHTML = "";
+            data.subdist.forEach((tb, keytb) => {
+
+              tbodyx.innerHTML += "<tr class='tbx" + keytb + "'>";
+              thlist.forEach((thx) => {
+                tbodyx.querySelector(".tbx" + keytb).innerHTML += "<td class='" + thx + " sort'>" + tb[thx] + "</td>";
+              });
+
+              tbodyx.innerHTML += "</tr>";
+            });
+
+
+            let options = { valueNames: thlist, page: (eltb.getAttribute("data-paging") ?? 10), pagination: false };
+            new List(eltb.getAttribute("id"), options);
+
+            [].forEach.call(eltb.querySelector(".pagination").querySelectorAll("a"), (ellist) => {
+              ellist.removeAttribute("href");
+              ellist.onclick = (elkini) => {
+                console.log(elkini);
+                let pgel = elkini.target.innerText;
+                eltb.setAttribute("data-pg", pgel);
+                reinit();
+              };
+            });
+
+
+          });
+
+        };
+
+        reinit();
+      });
+    };
+
+    listjsx(".listtb");
+
+  </script>
+</body>

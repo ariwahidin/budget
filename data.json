@@ -1,0 +1,277 @@
+{
+	"subdist": [
+		{
+			"CardCode": "RT01LMP01",
+			"CardName": "PT. LIMEKT PAPER",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Jl MT Haryono 187, Kel Jagalan, Kec Semarang Tengah, Kota Semerang, Prov. Jawa Tengah",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTB1LCB01",
+			"CardName": "CAHAYA BOGA UTAMA CV",
+			"Serviced_by": "3PL BALI",
+			"Address": "JL. Kebo Iwa Selatan (Belakang Kebo Iwa Square) No.23",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RT01MSC01",
+			"CardName": "CV. MAJU SUKSES CEMERLANG",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "JL. MAPELONG LINK IV (KAIWOLO) WALIAN SATU - TOMOHON SELATAN",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS01IML01",
+			"CardName": "PT. INDOWIRA MESTI LANCAR",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "NULL",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS02DOW01",
+			"CardName": "PT. AKASIA SINAR ABADI",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "JL. AHMAD YANI KM.15.2 KOMP. PERGUDANGAN CIPTA JAYA GAMBUT NO.E 11, MALINTANG,KEC.GAMBUT,KAB.BANJAR",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS02MAS01",
+			"CardName": "MULTIBOGA ARYA SENTOSA PT",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Komp. Executive Industrial Park B, Belian Batam Kota Batam Kepulauan Riau 29464",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS02MGA01",
+			"CardName": "MEGAH AGUNG SURYA PT (RETAIL)",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "JL. SAYANGAN LRG TEMENGGUNG NO 276",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS01DMC01",
+			"CardName": "PT. DAMAI MAKMUR CEMERLANG",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "NULL",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS01MMA01",
+			"CardName": "MASINDO MITRA ABADI PT",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Komplek Cahaya Garden G No.8, Sadai, Bengkong, Batam",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RT01SMA01",
+			"CardName": "SURYA MANDIRI X CV",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "JL MATAHARI NO 100 RT 062, KARANG ANYAR TARAKAN BARAT, KOTA TARAKAN KALIMANTAN UTARA 77111",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS01TRS01",
+			"CardName": "TIGARAKSA SATRIA TBK PT",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Gedung Graha Sucofindo Lt.13, Jl. Raya Pasar Minggu Kav.34 Pancoran, Jakarta Selatan 12780",
+			"Area": "Dalam Kota"
+		},
+		{
+			"CardCode": "RTS01BS01",
+			"CardName": "BINTANG SWALAYAN",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Jl. Simpang Tiga No.23, Ramanuju, Purwakarta, Cilegon",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "SD01SFC01",
+			"CardName": "SEVEN FOOD COUNTRY PRIMA PT",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "KOMP TAMAN DUTA MAS BLOK A6, NO 24 RT 004 RW 012 JELAMBAR BARU, GROGOL PETAMBURAN JAKARTA BARAT",
+			"Area": "Dalam Kota"
+		},
+		{
+			"CardCode": "RT01BSB01",
+			"CardName": "CV BEFA SUKSES BERKAH",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Jl MT Haryono 187, Kel Jagalan, Kec Semarang Tengah, Kota Semerang, Prov. Jawa Tengah",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RT01FDU01",
+			"CardName": "PT. FELIXINDO DISTRIBUSI UTAMA",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "NULL",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RT01FSB01",
+			"CardName": "CV FIGO SUKSES BERKAH",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "JL. BENDUNGAN JAGO RAYA NO.38 RT.005 RW.003 SERDANG KEMAYORAN",
+			"Area": "Dalam Kota"
+		},
+		{
+			"CardCode": "RTS01GIT01",
+			"CardName": "PT. GITA",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "JL. INDRONOTO KM.0,7 NO.7B RT.006 RW.003 NGABEYAN KARTASURA",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS01SUR01",
+			"CardName": "SURYA PUTRA CV",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Jl. R.E Martadianta A No.2, RT005 RW029, Sungai Jawi Luar, Pontianak Barat, Pontianak",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS01SUW01",
+			"CardName": "SUBUH UTAMA WILLINDO PT (RETAIL)",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Komplek Pergudangan Sukarami Blok E.8, Rt.090 Rw.020 Talang Kelapa Alang Alang Lebar Kota Palembang",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS02SPN01",
+			"CardName": "SINAR PARAMITA NIAGA PT",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "PASAR IKAN LAMA BLOK B.23-24, PASAR PADI RANGKUI PANGKALPINANG",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS02SYS01",
+			"CardName": "SIE YELIANA SIDHARTA ; UD. PANGAN JAYA",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "JL. PANDAN SARI NO.5 RT.024 MARGA SARI BALIKPAPAN BARAT",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "SD01AJA01",
+			"CardName": "ARVINDA JAYA ABADI PT",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Jl. Raya Gedangan 214A Blok A1, Gedangan, Sidoarjo, Jawa Timur",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "SD01APJ01",
+			"CardName": "ASIA PANGANINDO JAYA PT",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Komplek Union Industrial Park D No.15, Tanjung Sengkuang, Batu Ampar, Batam, Kepulauan Riau",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RT01KMP01",
+			"CardName": "PT. KURNIA MAJU PERKASA",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "NULL",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RT01SRP01",
+			"CardName": "PT. SUKSES RIAU PERMATA",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "KOMP. PERGUDANGAN ANGKASA II BLOK B NO.07 SIMPANG BARU, TAMPAN",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RT01STM01",
+			"CardName": "SUFO TRITAMA MANDIRI PT (RETAIL)",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Sufo Tritama Mandiri Retail,Jl.Lintas Jambi-Palembang No.88,RT006 RW002,Pd Meja Mestong Muaro Jambi",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS01AMI01",
+			"CardName": "ANAK MAS INDAH PT",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Jl. Daan Mogot KM 12.8 Blok A1 No.3, RT009 RW002, Rawa Buaya, Cengkareng, Jakarta Barat",
+			"Area": "Dalam Kota"
+		},
+		{
+			"CardCode": "RTS01PNJ01",
+			"CardName": "PROSPERINDO NUSA JAYA CV (RETAIL)",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Komplek Union Industrial Park Block I No. 06, Tanjung Sengkuang Batu Ampar Kota Batam,Kepulauan Riau",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS01SDA02",
+			"CardName": "SAUDARA JAYA CV",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "KELAPA SAWIT RAYA NO 416 RT.004 RW.007, KEL. PLAMONGANSARI KEC. PEDURUNGAN,KOTA SEMARANG JAWA TENGAH",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS01JZV01",
+			"CardName": "JAZA VENUS CV",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Jl. Arcamanik Endah Raya No.109, RT001 RW001, Sukamiskin, Arcamanik, Bandung",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS01IBM01",
+			"CardName": "CV ICHIBAN MAKASSAR",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Jl. Bali No. 69, Makkasar",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS01SMP01",
+			"CardName": "PT. SUKSES MEDAN PERMATA",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Jl.Medan-Tj Morawa KM 11.5,Komplek SkyDex Business Hub B No.7 Bangun Sari Tj Morowa Kab Deli Serdang",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "SD01FTR01",
+			"CardName": "FATHUR BERSAUDARA CV",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Jl. Henggi Mimika Baru, Mimika Papua",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "SD01JJA01",
+			"CardName": "JERINDO JAYA ABADI PT (RETAIL)",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Retail, Komplek Pergudangan 88 B No.23, RT021 RW009, Pabean, Sedati, Sidoarjo 61253",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "SD01JP01",
+			"CardName": "JARI PERKASA CV",
+			"Serviced_by": "3PL BALI",
+			"Address": "Jl. Sunia Negara No.45, Pamogan, Denpasar Selatan, Denpasar",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "SD01MFS01",
+			"CardName": "CV MITRA FOOD SEJAHTERA",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "Jl. Kemayoran Baru No.41, Krembangan Selatan, Krembangan, Surabaya",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "SD01MIL01",
+			"CardName": "MUTI INDOFOOD LESTARI, CV",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "NULL",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RT01MPM01",
+			"CardName": "CV. MILAN PERDANA MAKASAR",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "NULL",
+			"Area": "Luar Kota"
+		},
+		{
+			"CardCode": "RTS01MIT01",
+			"CardName": "CV. MITRA BERSAUDARA",
+			"Serviced_by": "PK JAKARTA",
+			"Address": "NULL",
+			"Area": "Luar Kota"
+		}
+	]
+}

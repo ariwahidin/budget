@@ -14,8 +14,6 @@ th {
 }
 </style>
 <?php
-
-
 $cek_sumber_dana = $budget_detail_header->row()->TotalPrincipalTargetIDR ?? 0;
 $is_supplier_dana = ($cek_sumber_dana > 0) ? 1 : 0;
 $ceklist0 = ($is_supplier_dana == 1) ? "checked='checked'" : "";
@@ -102,7 +100,7 @@ $operating_percent = $operatingx * 100;
                             
                             <?php if($is_supplier_dana == 0){ ?>
                             <tr>
-                                <td>PK Target</td>
+                                <td>PK Sales Target (IMS)</td>
                                 <td>&nbsp;:&nbsp; <?= number_format($budget_detail_header->row()->TotalPKTargetIDR) ?></td>
                             </tr>
                             <tr>
@@ -132,7 +130,7 @@ $operating_percent = $operatingx * 100;
                                     <th>Kurs</th>
                                     <th>Principal Target</th>
                                     <th>Principal A&P</th>
-                                    <th>PK Target</th>
+                                    <th>PK Sales Target (IMS)</th>
                                     <th>PK A&P</th>
                                     <th>Operating</th>
                                 </tr>
