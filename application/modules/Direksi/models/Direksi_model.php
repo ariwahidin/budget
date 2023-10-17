@@ -152,7 +152,8 @@ class Direksi_model extends CI_Model
         $sql = "SELECT MIN([Month]) AS StartPeriode, 
         MAX([Month]) AS EndPeriode, 
         AVG(ExchangeRate) AS ExchangeRate,
-        SUM([PKAnpIDR]) AS TotalPKAnpIDR,
+        SUM(PKTargetIDR) AS TotalPKTargetIDR, 
+        SUM(PKAnpIDR) AS TotalPKAnpIDR,
         SUM(PrincipalTargetValas) AS TotalPrincipalTargetValas,
         SUM(PrincipalTargetIDR) AS TotalPrincipalTargetIDR,
         SUM([PrincipalAnpIDR]) AS TotalTargetAnp, 
@@ -682,30 +683,89 @@ class Direksi_model extends CI_Model
         
     }
 
+    
+    public function filteract2($budget_code)
+    {
+        $sql = "
+        SELECT
+    ROW_NUMBER() OVER (ORDER BY ss.BudgetActivity DESC) AS ID,
+    ss.ActivityName,
+    ss.[Percent],
+    ss.BudgetActivity,
+    tt.TotalCosting AS Used,
+    (ss.BudgetActivity - tt.TotalCosting) AS Saldo
+FROM
+    (
+        SELECT DISTINCT
+            BudgetCode,
+            BudgetCodeActivity,
+            BrandCode,
+            BrandName,
+            ActivityCode,
+            ActivityName,
+            BudgetActivity,
+            [BudgetActivity%] AS [Percent]
+        FROM
+            tb_operating_activity
+        WHERE
+            BrandCode = '$budget_code'
+    ) ss
+LEFT JOIN
+    (
+        SELECT
+            a1.BudgetCode,
+            a1.BudgetCodeActivity,
+            a1.ActivityCode,
+            SUM(a1.TotalCosting) AS TotalCosting
+        FROM
+            tb_operating_proposal a1
+        INNER JOIN
+            tb_proposal a2 ON a1.ProposalNumber = a2.Number
+            AND a2.Status IN ('open', 'approved')
+        WHERE
+            a1.BrandCode = '$budget_code'
+            AND a1.Budget_type = 'operating'
+        GROUP BY
+            a1.BudgetCode,
+            a1.BudgetCodeActivity,
+            a1.ActivityCode
+    ) tt ON ss.BudgetCodeActivity = tt.BudgetCodeActivity
+ORDER BY
+    ss.BudgetActivity DESC;
+
+        ";
+        
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+
     public function filteract($brand_code){
         $sql ="SELECT 
+        t5.BudgetActivity,
         t2.ActivityCode, t4.promo_name,
         t1.BudgetCode, t3.BrandName, t1.BrandCode,
         sum(t2.TotalCosting) as totalang
-    FROM tb_proposal t1
-    LEFT JOIN tb_operating_proposal t2 ON t1.Number = t2.ProposalNumber
-    INNER JOIN m_brand t3 ON t1.BrandCode = t3.BrandCode
-    INNER JOIN m_promo t4 ON t2.ActivityCode = t4.id";
+        FROM tb_proposal t1
+        LEFT JOIN tb_operating_proposal t2 ON t1.Number = t2.ProposalNumber
+        LEFT JOIN tb_operating_activity t5 ON t2.BudgetCodeActivity = t5.BudgetCodeActivity 
+        INNER JOIN m_brand t3 ON t1.BrandCode = t3.BrandCode
+        INNER JOIN m_promo t4 ON t2.ActivityCode = t4.id";
 
-    
-    if($brand_code){
-        $sql .= " where t1.BrandCode = '".$brand_code."' and t1.Status != 'canceled'";
-    } else{
-        $sql .= "where t1.Status != 'canceled'";
-    }
+        
+        if($brand_code){
+            $sql .= " where t1.BrandCode = '".$brand_code."' and t1.Status != 'canceled'";
+        } else{
+            $sql .= "where t1.Status != 'canceled'";
+        }
 
-    $sql .="
-    GROUP BY t2.ActivityCode, t4.promo_name,
-        t1.BudgetCode, t3.BrandName, t1.BrandCode
-    ORDER BY t2.ActivityCode";
-    
-    $query = $this->db->query($sql);
-    return $query;
+        $sql .="
+        GROUP BY t2.ActivityCode, t5.BudgetActivity, t4.promo_name,
+            t1.BudgetCode, t3.BrandName, t1.BrandCode
+        ORDER BY t2.ActivityCode";
+        
+        $query = $this->db->query($sql);
+        return $query;
 
     }
 
@@ -846,6 +906,7 @@ class Direksi_model extends CI_Model
 
         $sql .= " ORDER BY t1.id DESC";
 
+        
         // echo $sql;
         $query = $this->db->query($sql);
         return $query;

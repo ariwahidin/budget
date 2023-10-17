@@ -3,8 +3,7 @@
 
 $cek_sumber_dana = $header->row()->TotalPrincipalTargetIDR ?? 0;
 $is_supplier_dana = ($cek_sumber_dana > 0) ? 1 : 0;
-$ceklist0 = ($is_supplier_dana == 1) ? "checked='checked'" : "";
-$ceklist1 = ($is_supplier_dana == 0) ? "checked='checked'" : "";
+$is_pk_dana = ($header->row()->TotalPKTargetIDR > 0) ? 1 : 0;
 
 $target_anp = 0;
 if ($header->row()->TotalPrincipalTargetIDR == 0) { $target_anp = 0; } 
@@ -18,12 +17,16 @@ $presentase_0 = ($is_supplier_dana == 1) ? (($besarany / $besaranx)*100)  : 0;
 
 $besarana = ceknum($header->row()->TotalPKTargetIDR) ?? 0;
 $besaranb = ceknum($header->row()->TotalPKAnpIDR) ?? 0;
-$presentase_1 = ($is_supplier_dana == 0) ? (($besaranb / $besarana)*100) : 0;
+$presentase_1 = ($is_pk_dana == 1) ? (($besaranb / $besarana)*100) : 0;
 
 
 $operatingx = 0;
 $operatingx = ($header->row()->TotalOperating / ($header->row()->TotalTargetAnp + $header->row()->TotalPKAnpIDR));
 $operating_percent = $operatingx * 100;
+
+
+$ceklist0 = ($presentase_0 >= 1) ? "checked='checked'" : "";
+$ceklist1 = ($presentase_1 >= 1) ? "checked='checked'" : "";
 ?>
 <style>
     .modal-title {
@@ -92,7 +95,7 @@ $operating_percent = $operatingx * 100;
                         <td>Sumber Dana</td>
                         <td><input type="checkbox" disabled="disabled" <?= $ceklist0 ?>>
                             Supplier</td>
-                        <td>Presentase</td>
+                        <td>Presentase Pembelian</td>
                         <td>&nbsp;:&nbsp;
                             <?= number_format($presentase_0) ?> %
                         </td>
@@ -100,21 +103,12 @@ $operating_percent = $operatingx * 100;
                     <tr>
                         <td></td>
                         <td><input type="checkbox" disabled="disabled" <?= $ceklist1 ?>> Pandurasa </td>
-                        <td>Presentase</td>
+                        <td>Presentase Penjualan</td>
                         <td>&nbsp;:&nbsp;
                             <?= number_format($presentase_1) ?>%
                         </td>
                     </tr>
-                    <tr>
-                        <td>Start Periode</td>
-                        <td>&nbsp;:&nbsp;
-                            <?= date('M-Y', strtotime($operating->result()[0]->Periode)) ?>
-                        </td>
-                        <td>End Periode </td>
-                        <td>&nbsp;:&nbsp;
-                            <?= date('M-Y', strtotime($operating->result()[11]->Periode)) ?>
-                        </td>
-                    </tr>
+                    
                     <?php if($is_supplier_dana == 1){ ?>
                     <tr>
                         <td>Principal Target</td>
@@ -141,27 +135,43 @@ $operating_percent = $operatingx * 100;
                     </tr>
                     <?php } ?>
                     <tr>
+                        <td>Fiscal Year</td>
+                        <td>&nbsp;:&nbsp;
+                            <?= date('M-Y', strtotime($operating->result()[0]->Periode)) ?> - 
+                            
+                            <?= date('M-Y', strtotime($operating->result()[11]->Periode)) ?>
+                        <!-- </td>
+                        <td>Fiscal Year</td>
+                        <td>&nbsp;:&nbsp;
+                            <?= date('M-Y', strtotime($operating->result()[11]->Periode)) ?>
+                        </td> -->
+                        
+                        <td>Used Amount </td>
+                        <td>&nbsp;:&nbsp;
+                            <?= number_format($hmaster->row()->TotalCosting);  ?>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Operating (
                             <?= round($operating_percent); ?>%)
                         </td>
                         <td>&nbsp;:&nbsp;
                             <?= number_format($header->row()->TotalOperating);  ?>
                         </td>
-                        <td>Costing </td>
+                        
+                        <td>Claim Amount to PK</td>
                         <td>&nbsp;:&nbsp;
-                            <?= number_format($hmaster->row()->TotalCosting);  ?>
+                            <?= number_format($hmaster->row()->TotalIncomingAmount); ?>
                         </td>
                     </tr>
                     <tr>
+                        <td></td>
+                        <td></td>
                         <td>DN Amount (
                             <?= round($operating_percent); ?>%)
                         </td>
                         <td>&nbsp;:&nbsp;
                             <?= number_format($hmaster->row()->Totaldn); ?>
-                        </td>
-                        <td>Claim Amount </td>
-                        <td>&nbsp;:&nbsp;
-                            <?= number_format($hmaster->row()->TotalIncomingAmount); ?>
                         </td>
                     </tr>
                     <tr style="display:none">
@@ -177,31 +187,29 @@ $operating_percent = $operatingx * 100;
 
                 <hr>
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
                         <h4>Filter By Activity</h4>
-                        <table class="table table-responsive" id="tabel_act">
+                        <table  class="table table-bordered  table-striped table-hover dataTable" role="grid" id="tabel_act">
                             <thead>
                                 <tr onclick="encok('<?= $hmaster->row()->BrandCode ?>-')">
+                                    <th>ID</th>
                                     <th>Aktivitas</th>
-                                    <th>Costing</th>
-                                    <th>% Operating</th>
-                                    <th>% Costing</th>
+                                    <th>Operational Budget</th>
+                                    <th>Used Amount</th>
+                                    <th>% Used</th>
                                 </tr>
                             </thead>
-                            <?php foreach ($filteract->result() as $filterx) { ?>
+                            <?php 
+                                foreach ($filteract->result() as $filterx) { 
+                                    $persen = (($filterx->Used / $filterx->BudgetActivity) * 100);
+                                    $persen = ($filterx->Used >= $filterx->BudgetActivity) ? (($persen > 0) ? $persen : 0) : 0; 
+                            ?>
                             <tr onclick="encok('<?= $filterx->BrandCode." -".$filterx->ActivityCode; ?>')">
-                                <td>
-                                    <?= ucwords(strtolower($filterx->promo_name)); ?>
-                                </td>
-                                <td>
-                                    <?= number_format($filterx->totalang); ?>
-                                </td>
-                                <td>
-                                    <?= number_format((($filterx->totalang / $header->row()->TotalOperating) * 100), 2, ',', '.'); ?>
-                                </td>
-                                <td>
-                                    <?= number_format((($filterx->totalang / $hmaster->row()->TotalCosting) * 100), 2, ',', '.'); ?>
-                                </td>
+                                <td><?= ($filterx->ID); ?></td>
+                                <td><?= ucwords(strtolower($filterx->ActivityName)); ?></td>
+                                <td><?= number_format($filterx->BudgetActivity); ?></td>
+                                <td><?= number_format($filterx->Used); ?></td>
+                                <td><?= number_format($persen,0,".",",") ?? 0; ?></td>
                             </tr>
                             <?php } ?>
                         </table>
@@ -239,7 +247,7 @@ $operating_percent = $operatingx * 100;
                     </div> -->
 
                 </div>
-                <hr>
+                <!-- <hr>
                 <div id="propd">
                     <table class="table table-responsive table-bordered table-striped" id="table_proposal">
                         <thead>
@@ -300,7 +308,7 @@ $operating_percent = $operatingx * 100;
                     </table>
 
 
-                </div>
+                </div> -->
 
             </div>
             <div class="modal-footer">

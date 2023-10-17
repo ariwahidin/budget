@@ -318,4 +318,5 @@ switch (ENVIRONMENT)
  header('Access-Control-Allow-Origin: *');
  header("Access-Control-Allow-Methods: GET, OPTIONS");
  
- require_once BASEPATH.'core/CodeIgniter.php';
+ 
+require_once BASEPATH.'core/CodeIgniter.php';

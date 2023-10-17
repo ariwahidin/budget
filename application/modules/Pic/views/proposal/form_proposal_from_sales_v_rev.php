@@ -1,5 +1,6 @@
 <?php
 // var_dump($group_customer->result());
+$claim_to  =  $_POST['claim_to'] ?? NULL;
 ?>
 <?php $this->view('header'); ?>
 <div class="content-wrapper">
@@ -20,7 +21,7 @@
                 <div class="box">
 
                     <div class="box-body table-responsive">
-                        <table class="table table-bordered">
+                        <table id="tb1" class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>No. Proposal</th>
@@ -34,6 +35,11 @@
                                     <th style="display: none;">Unbooked</th>
                                     <th>Balance</th>
                                     <th>Total Costing</th>
+                                    <?php if($claim_to == "split"){ ?> 
+                                    <th style="display:none;">Pembagian</th>
+                                    <th style="display:none;">% Principal</th>
+                                    <th style="display:none;">% Pandurasa</th>
+                                    <?php } ?>
                                 </tr>
                             </thead>
 
@@ -51,7 +57,17 @@
                                     <td style="display: none;"><?= $_POST['budget_activity'] ?></td>
                                     <td style="display: none;"><?= $_POST['budget_booked'] ?></td>
                                     <td><?= $_POST['balance_budget'] ?></td>
-                                    <td><b id="td_total_costing"></b></td>
+                                    <td><strong class="totcos"></strong><b style="display:none" id="td_total_costing"></b></td>
+                                    <?php if($claim_to == "split"){ ?> 
+                                    <td style="display:none;">
+                                        <select name="persentipe" class="persentipe">
+                                            <option value="0">Persentase</option>
+                                            <option value="1">Amount</option>
+                                        </select>
+                                    </td>
+                                    <td style="display:none;"><input type="text" class="pk_persen" name="pk_persen" value="0"></td>
+                                    <td style="display:none;"><input type="text" class="principal_persen" name="principal_persen" value="0"></td>
+                                    <?php } ?>
                                 </tr>
                             </tbody>
                         </table>
@@ -518,10 +534,10 @@ $group_code = implode("','", $GroupCode);
     }
 
     function formatNumber(num) {
-        var value = num.value.replace(/,/g, '');
-        value = parseFloat(value);
-        return num.value = isNaN(value) ? '' : value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        var value = num.toString();
+        return isNaN(value) ? '' : value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
+
 
     function calculateValuePromo(elem) {
         var promo_value = parseFloat(elem.value.replace(/,/g, ''));
@@ -578,7 +594,7 @@ $group_code = implode("','", $GroupCode);
 
         var row = e.parentElement
         var input_costing = document.querySelectorAll(".input_costing")
-        var td_total_costing = document.getElementById("td_total_costing")
+        //var td_total_costing = document.getElementById("td_total_costing")
         var total_costing = 0
         for (i = 0; i < input_costing.length; i++) {
             if (!input_costing[i].value.replace(/,/g, '').isNaN) {
@@ -634,7 +650,7 @@ $group_code = implode("','", $GroupCode);
             total_costing += parseFloat(all_input_costing[x].value.replace(/,/g, ''));
         }
         var input_total_costing = document.getElementById('total_costing');
-        var td_total_costing = document.getElementById('td_total_costing');
+        //var td_total_costing = document.getElementById('td_total_costing');
         input_total_costing.value = !isNaN(parseFloat(total_costing)) ? total_costing.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0;
         // td_total_costing.innerText = !isNaN(parseFloat(total_costing)) ? total_costing.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0;
         calculateAllTotalCosting()
@@ -916,7 +932,69 @@ $group_code = implode("','", $GroupCode);
 
         var td_total_costing = document.getElementById("td_total_costing")
         td_total_costing.innerText = total_costing
+        var totcos = document.querySelector('.totcos')
+        totcos.innerText = formatNumber(total_costing)
+        let tb1 = document.querySelector("#tb1");
+        <?php if($claim_to == "split"){ ?> 
+        let pk_persen = document.querySelector(".pk_persen"),
+        principal_persen = document.querySelector(".principal_persen");
+        <?php } ?>
+        
+        console.log(tb1.querySelector("th:nth-child(12)").innerHTML);
     }
+
+    let  tb1 = document.querySelector("#tb1"), persentipe = document.querySelector(".persentipe"),
+    td12 = tb1.querySelector("td:nth-child(12)"), 
+    td13 = tb1.querySelector("td:nth-child(13)"), td14 = tb1.querySelector("td:nth-child(14)");
+
+    let maxpersen = (persenx = null) =>{
+        let a = td13.querySelector("input"), b = td14.querySelector("input");
+        a.value = 0;
+        b.value = 0;
+        persenx = (persenx) ? persenx : ((document.querySelector(".persentipe")) ? document.querySelector(".persentipe").value : null);
+        console.log(persenx);
+        if(persenx == "0"){
+            a.onkeyup =()=>{ 
+                console.log(a.value);
+                a.value = (a.value >= 100) ? 100 : a.value;
+                b.value = (100 - a.value);
+            };
+
+            b.onkeyup =()=>{ 
+                b.value = (b.value >= 100) ? 100 : b.value;
+                a.value = (100 - b.value);
+            };   
+        }
+    };
+
+    if(persentipe){
+        persentipe.onchange = () =>{
+        maxpersen(persentipe.value);
+    };
+
+    }
+
+    maxpersen();
+
+    <?php if($claim_to == "split"){ ?> 
+        tb1.querySelector("th:nth-child(12)").removeAttribute("style");
+        tb1.querySelector("th:nth-child(13)").removeAttribute("style");
+        tb1.querySelector("th:nth-child(14)").removeAttribute("style");
+        
+        td12.removeAttribute("style");
+        td13.removeAttribute("style");
+        td14.removeAttribute("style");
+
+    <?php } else{ ?>
+        tb1.querySelector("th:nth-child(12)").setAttribute("style","display:none");
+        tb1.querySelector("th:nth-child(13)").setAttribute("style","display:none");
+        tb1.querySelector("th:nth-child(14)").setAttribute("style","display:none");
+
+        
+        td12.setAttribute("style","display:none");
+        td13.setAttribute("style","display:none");
+        td14.setAttribute("style","display:none");
+    <?php } ?>
 
     function simpanProposal() {
 

@@ -11,6 +11,14 @@
     .table_header tr td {
         padding: 0 !important;
     }
+@media print {
+
+} 
+
+@page {
+            size: 14.85cm 10.5cm; /* Ukuran kertas setengah dari A4 (A4 = 21cm x 29.7cm) */
+            margin: 0; /* Margin nol agar tidak ada margin cetak */
+        }
 </style>
 <div class="content-wrapper">
     <section class="content-header">
@@ -28,7 +36,7 @@
         <form id="formCreate">
             <input type="hidden" id="json_customer" name="json_customer">
             <input type="hidden" id="json_group" name="json_group">
-            <div class="row">
+            <div class="row cetak">
                 <div class="col-md-5">
                     <div class="box box-info">
                         <div class="box-body">
@@ -166,6 +174,7 @@
                                             <option value="">--Pilih--</option>
                                             <option value="pandurasa">Pandurasa</option>
                                             <option value="principal">Principal</option>
+                                            <option value="split">Split</option>
                                         </select>
                                     </td>
                                 </tr>

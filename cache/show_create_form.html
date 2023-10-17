@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- <style>
+        #overlay {
+            position: fixed;
+            top: 0;
+            z-index: 100;
+            width: 100%;
+            height: 100%;
+            display: none;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .cv-spinner {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            width: 100px;
+            height: 100px;
+            border: 10px #ddd solid;
+            border-top: 10px #2e93e6 solid;
+            border-radius: 50%;
+            animation: sp-anime 0.8s infinite linear;
+        }
+
+        @keyframes sp-anime {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .is-hide {
+            display: none;
+        }
+    </style> -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Budget And Advertising</title>
+    <link rel="icon" type="image/x-icon" href="http://localhost/test/budget/assets/dist/img/pandurasa_kharisma_pt.png">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="http://localhost/test/budget/assets/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="http://localhost/test/budget/assets/bower_components/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="http://localhost/test/budget/assets/bower_components/Ionicons/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="http://localhost/test/budget/assets/dist/css/AdminLTE.min.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="http://localhost/test/budget/assets/bower_components/select2/dist/css/select2.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="http://localhost/test/budget/assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <link type="text/css" href="http://localhost/test/budget/assets/css/checkbox_dataTables.css" rel="stylesheet" />
+    <link type="text/css" href="http://localhost/test/budget/assets/css/jquery_dataTables.css" rel="stylesheet" />
+    <link type="text/css" href="http://localhost/test/budget/assets/css/select_dataTables.css" rel="stylesheet" />
+    <link type="text/css" href="http://localhost/test/budget/assets/css/sweetalert2.css" rel="stylesheet" />
+    <link rel="stylesheet" href="http://localhost/test/budget/assets//dist/css/skins/_all-skins.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!-- bootstrap datepicker -->
+    <link rel="stylesheet" href="http://localhost/test/budget/assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<style>
+    /* body { */
+    /* font-family: "Helvetica Neue", Helvetica, Arial, Helvetica, sans-serif; */
+    /* font-size: 1.124em; */
+    /* font-weight: normal; */
+    /* } */
+
+    .select2-selection__choice {
+        background-color: blueviolet !important;
+    }
+
+    section.content {
+        min-height: auto !important;
+    }
+</style>
+
+<style>
+    /* Absolute Center Spinner */
+    .loading {
+        content: 'tunggu';
+        position: fixed;
+        z-index: 9999;
+        height: 2em;
+        width: 2em;
+        overflow: show;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+
+    /* Transparent Overlay */
+    .loading:before {
+        content: 'tunggu';
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(rgba(20, 20, 20, .8), rgba(0, 0, 0, .8));
+        background: -webkit-radial-gradient(rgba(20, 20, 20, .8), rgba(0, 0, 0, .8));
+    }
+
+    /* :not(:required) hides these rules from IE9 and below */
+    .loading:not(:required) {
+        /* hide "loading..." text */
+        font: 0/0 a;
+        color: transparent;
+        text-shadow: none;
+        background-color: transparent;
+        border: 0;
+    }
+
+    .loading:not(:required):after {
+        content: '';
+        display: block;
+        font-size: 10px;
+        width: 1em;
+        height: 1em;
+        margin-top: -0.5em;
+        -webkit-animation: spinner 150ms infinite linear;
+        -moz-animation: spinner 150ms infinite linear;
+        -ms-animation: spinner 150ms infinite linear;
+        -o-animation: spinner 150ms infinite linear;
+        animation: spinner 150ms infinite linear;
+        border-radius: 0.5em;
+        -webkit-box-shadow: rgba(255, 255, 255, 0.75) 1.5em 0 0 0, rgba(255, 255, 255, 0.75) 1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) 0 1.5em 0 0, rgba(255, 255, 255, 0.75) -1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) -1.5em 0 0 0, rgba(255, 255, 255, 0.75) -1.1em -1.1em 0 0, rgba(255, 255, 255, 0.75) 0 -1.5em 0 0, rgba(255, 255, 255, 0.75) 1.1em -1.1em 0 0;
+        box-shadow: rgba(255, 255, 255, 0.75) 1.5em 0 0 0, rgba(255, 255, 255, 0.75) 1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) 0 1.5em 0 0, rgba(255, 255, 255, 0.75) -1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) -1.5em 0 0 0, rgba(255, 255, 255, 0.75) -1.1em -1.1em 0 0, rgba(255, 255, 255, 0.75) 0 -1.5em 0 0, rgba(255, 255, 255, 0.75) 1.1em -1.1em 0 0;
+    }
+
+    /* Animation */
+
+    @-webkit-keyframes spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    @-moz-keyframes spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    @-o-keyframes spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+</style>
+<div id="muncul_loading" class=""></div>
+
+<body class="hold-transition skin-black-light sidebar-mini " style="height: auto; min-height: 100%;">
+    <div class="wrapper">
+        <header class="main-header">
+
+            <a href="" class="logo">
+                <span class="logo-mini">
+                    <img src="http://localhost/test/budget/assets/dist/img/pandurasa_kharisma_pt.png" style="max-width:30px;border-radius:5%; padding-bottom:-10px;" alt="">
+                </span>
+                <span class="logo-lg">
+                    <img src="http://localhost/test/budget/assets/dist/img/pandurasa_kharisma_pt.png" style="max-width:25px;border-radius:10%; padding-bottom:-10px;" alt="">
+                    <span style="font-size: 14px;">
+                        <b>Pandurasa</b> Kharisma
+                    </span>
+                </span>
+            </a>
+
+            <nav class="navbar navbar-static-top">
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="http://localhost/test/budget/assets/dist/img/red-user.png" class="user-image" alt="User Image">
+                                <span class="hidden-xs">JANERIT</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="user-header">
+                                    <img src="http://localhost/test/budget/assets/dist/img/red-user.png" class="img-circle" alt="User Image">
+                                    <p>
+                                        <span class="">JANERIT</span>
+                                    </p>
+                                </li>
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="http://localhost/test/budget/auth/auth/logout" class="btn btn-danger btn-flat">Log Out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+
+        </header>
+
+        <aside class="main-sidebar">
+            <section class="sidebar">
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">MAIN NAVIGATION</li>
+                    <li class="treeview ">
+                        <a href="#">
+                            <i class="fa fa-archive"></i>
+                            <span>Data Master</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li >
+                                <a href="http://localhost/test/budget/pic/showGroup"><i class="fa fa-tag"></i><span>Group</span></a>
+                            </li>
+                            <li >
+                                <a href="http://localhost/test/budget/pic/showCustomer"><i class="fa fa-tag"></i><span>Customer</span></a>
+                            </li>
+                            <li >
+                                <a href="http://localhost/test/budget/pic/showBrand"><i class="fa fa-tag"></i><span>Brand</span></a>
+                            </li>
+                            <li >
+                                <a href="http://localhost/test/budget/pic/showItem"><i class="fa fa-tag"></i><span>Item</span></a>
+                            </li>
+                            <li >
+                                <a href="http://localhost/test/budget/pic/showActivity"><i class="fa fa-tag"></i><span>Activity</span></a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="treeview active">
+                        <a href="#">
+                            <i class="fa fa-folder-o"></i>
+                            <span>Proposal Promotion</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li class="active"><a href="http://localhost/test/budget/pic/show_create_form"><i class="fa fa-circle-o"></i> Create New Proposal</a></li>
+                            <li ><a href="http://localhost/test/budget/pic/showProposal"><i class="fa fa-circle-o"></i> Data Proposal</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview ">
+                        <a href="#">
+                            <i class="fa fa-folder-o"></i>
+                            <span>Budget</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li ><a href="http://localhost/test/budget/pic/createOperating"><i class="fa fa-circle-o"></i> Create New Budget</a></li>
+                            <li ><a href="http://localhost/test/budget/pic/showOperating"><i class="fa fa-circle-o"></i> Budget </a></li>
+                            <!-- <li ><a href="http://localhost/test/budget/pic/showBudgetOperatingPurchase"><i class="fa fa-circle-o"></i> Data Budget</a></li> -->
+                            <!-- <li ><a href="http://localhost/test/budget/pic/showPurchase"><i class="fa fa-circle-o"></i> Data Purchase</a></li> -->
+                        </ul>
+                    </li>
+                    <li class="treeview  ">
+                        <a href="#">
+                            <i class="fa fa-folder-o"></i>
+                            <span>Settings</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li >
+                                <a href="http://localhost/test/budget/pic/changePasswordPage">
+                                    <i class="fa fa-circle-o"></i> Change User Password
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+        </aside><style>
+    .table_header tr td {
+        padding: 0 !important;
+    }
+@media print {
+
+} 
+
+@page {
+            size: 14.85cm 10.5cm; /* Ukuran kertas setengah dari A4 (A4 = 21cm x 29.7cm) */
+            margin: 0; /* Margin nol agar tidak ada margin cetak */
+        }
+</style>
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Create Proposal</h4>
+            </div>
+            <div class="col-md-6">
+                <button id="" onclick="create()" class="btn btn-primary pull-right">Next</button>
+                <button class="btn btn-primary pull-right" id="btn_cari_customer" onclick="cariCustomer()" style="margin-right:5px">Cari Customer</button>
+            </div>
+        </div>
+    </section>
+    <section class="content">
+        <form id="formCreate">
+            <input type="hidden" id="json_customer" name="json_customer">
+            <input type="hidden" id="json_group" name="json_group">
+            <div class="row cetak">
+                <div class="col-md-5">
+                    <div class="box box-info">
+                        <div class="box-body">
+                            <table class="table table-responsive table_header">
+                                <tr>
+                                    <td style="display: none;">No. Doc</td>
+                                    <td style="display: none;">
+                                        <div class="input-group">
+                                            <input id="input-no-doc" name="no_doc" type="text" value="20230015" class="form-control" readonly>
+                                            <div class="input-group-btn">
+                                                <button type="button" onclick="checkNoDoc()" class="btn btn-primary">Check</button>
+                                            </div>
+                                            <!-- /btn-group -->
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Brand</td>
+                                    <td>
+                                        <select onchange="resetBudget()" class="form-control select2" name="brand" id="brand">
+                                            <option value="">--Pilih--</option>
+                                                                                            <option value="106">BETTY CROCKER</option>
+                                                                                            <option value="107">BLUE DIAMOND</option>
+                                                                                            <option value="111">CARMANS</option>
+                                                                                            <option value="127">HERO</option>
+                                                                                            <option value="128">HORMEL</option>
+                                                                                            <option value="141">NATURA</option>
+                                                                                            <option value="148">SANITARIUM</option>
+                                                                                            <option value="153">THE MUESLI COMPANY</option>
+                                                                                            <option value="157">WATERTHINS</option>
+                                                                                    </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Group Customer</td>
+                                    <td>
+                                        <select onchange="resetTableCustomer(this)" name="group_customer_" id="group" class="form-control select2" multiple required>
+                                            <option value="">--Pilih Group--</option>
+                                                                                            <option value="100">AEROFOOD</option>
+                                                                                            <option value="101">IMPORT</option>
+                                                                                            <option value="102">AEON GROUP</option>
+                                                                                            <option value="103">ALFA MART</option>
+                                                                                            <option value="104">ALFA MIDI</option>
+                                                                                            <option value="105">ALLFRESH</option>
+                                                                                            <option value="106">APPLE SHOP</option>
+                                                                                            <option value="107">LOCAL</option>
+                                                                                            <option value="108">BLITZ MEGAPLEX</option>
+                                                                                            <option value="109">BRASTAGI SPM</option>
+                                                                                            <option value="110">CARL'S JUNIOR</option>
+                                                                                            <option value="111">CENTURY</option>
+                                                                                            <option value="112">CEMPAKA BUAH</option>
+                                                                                            <option value="113">CAPITAL FRUIT</option>
+                                                                                            <option value="114">CIPTA MARKET</option>
+                                                                                            <option value="115">DIAMOND</option>
+                                                                                            <option value="116">DUTA BUAH</option>
+                                                                                            <option value="117">DINAMIKA BUAH</option>
+                                                                                            <option value="118">EXCELSO</option>
+                                                                                            <option value="119">E-COMMERCE</option>
+                                                                                            <option value="120">FOODHALL GROUP</option>
+                                                                                            <option value="121">FAMILY MART</option>
+                                                                                            <option value="122">FRESH KIOSK</option>
+                                                                                            <option value="123">FRESHTIVE</option>
+                                                                                            <option value="124">FISH SHOP</option>
+                                                                                            <option value="125">GELAEL (FS)</option>
+                                                                                            <option value="126">GENERAL (FS)</option>
+                                                                                            <option value="127">GRAND LUCKY</option>
+                                                                                            <option value="128">GS SUPERMARKET</option>
+                                                                                            <option value="129">HERO GROUP</option>
+                                                                                            <option value="130">HOKKY TE IT</option>
+                                                                                            <option value="131">HARI-HARI</option>
+                                                                                            <option value="132">INDO POINT</option>
+                                                                                            <option value="133">ISMAYA</option>
+                                                                                            <option value="134">INDOMARET</option>
+                                                                                            <option value="135">INDO GROSIR</option>
+                                                                                            <option value="136">JADDI</option>
+                                                                                            <option value="137">JOHNNY ANDREAN</option>
+                                                                                            <option value="138">JAK FRUIT</option>
+                                                                                            <option value="139">KEM CHICKS</option>
+                                                                                            <option value="140">KIMIA FARMA</option>
+                                                                                            <option value="141">KARTIKASARI</option>
+                                                                                            <option value="142">KKV</option>
+                                                                                            <option value="143">LOTTE MART GROUP</option>
+                                                                                            <option value="144">LION SUPERINDO</option>
+                                                                                            <option value="145">LOTTE GROSIR</option>
+                                                                                            <option value="146">LULU</option>
+                                                                                            <option value="147">LUAR KOTA</option>
+                                                                                            <option value="148">LOKA</option>
+                                                                                            <option value="149">MDA KULINER</option>
+                                                                                            <option value="150">MATAHARI GROUP</option>
+                                                                                            <option value="151">MARKET CITY</option>
+                                                                                            <option value="152">MAXIM FRUIT</option>
+                                                                                            <option value="153">NAGA SWALAYAN</option>
+                                                                                            <option value="154">OTHERS</option>
+                                                                                            <option value="155">PAPAYA</option>
+                                                                                            <option value="156">PETRA BUAH</option>
+                                                                                            <option value="157">RANCH MARKET GROUP</option>
+                                                                                            <option value="158">REZEKI</option>
+                                                                                            <option value="159">RUMAH BUAH</option>
+                                                                                            <option value="160">RETAIL</option>
+                                                                                            <option value="161">SALAD SEGAR</option>
+                                                                                            <option value="162">SUB DISTRIBUTOR</option>
+                                                                                            <option value="163">SETIABUDHI</option>
+                                                                                            <option value="164">SAGA</option>
+                                                                                            <option value="165">TRANS RETAIL GROUP</option>
+                                                                                            <option value="166">TOTAL BUAH</option>
+                                                                                            <option value="167">TIP TOP</option>
+                                                                                            <option value="168">TOP BUAH</option>
+                                                                                            <option value="169">UNION</option>
+                                                                                            <option value="170">YOGYA</option>
+                                                                                            <option value="171">GENERAL (RT)</option>
+                                                                                            <option value="172">GELAEL (RT)</option>
+                                                                                            <option value="173">CIRCLE</option>
+                                                                                            <option value="174">GADING FOOD</option>
+                                                                                            <option value="175">OFFICE</option>
+                                                                                            <option value="176">MO GUNG HWA</option>
+                                                                                            <option value="177">SANTA</option>
+                                                                                            <option value="178">TBD Food Service</option>
+                                                                                            <option value="179">TBD Retail</option>
+                                                                                            <option value="180">PARIT PADANG</option>
+                                                                                            <option value="181">3PL BALI</option>
+                                                                                            <option value="182">PEPITO</option>
+                                                                                            <option value="183">FOODMAX</option>
+                                                                                            <option value="185">FAMOUS AMOS</option>
+                                                                                            <option value="186">3PL SOLO</option>
+                                                                                            <option value="187">KEM CHICK BOGA</option>
+                                                                                            <option value="188">3PL MAM</option>
+                                                                                            <option value="189">3PL FIQO</option>
+                                                                                            <option value="190">GUARDIAN</option>
+                                                                                    </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Periode from</td>
+                                    <td>
+                                        <input onchange="resetBudget()" name="start_date" type="date" id="start_date" class="form-control col-md-6" required min="2023-10-09" max="2025-12-31">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Periode to</td>
+                                    <td>
+                                        <input onchange="resetBudget()" name="end_date" type="date" class="form-control col-md-6" id="end_date" value="" required min="2023-10-09" max="2025-12-31">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Activity</td>
+                                    <td>
+                                        <select onchange="resetBudget(); changeActivity()" class="form-control" name="activity" id="activity" required>
+                                            <option value="">--Pilih--</option>
+                                                                                            <option data-is_sales="Y" value="25">Rafraction</option>
+                                                                                            <option data-is_sales="Y" value="26">Premium, Gimmicks & Gifts</option>
+                                                                                            <option data-is_sales="Y" value="27">SPG - Event</option>
+                                                                                            <option data-is_sales="Y" value="28">Samples Promotion</option>
+                                                                                            <option data-is_sales="Y" value="29">Banded Promo (WH)</option>
+                                                                                            <option data-is_sales="Y" value="30">Banded Promo (Store)</option>
+                                                                                            <option data-is_sales="Y" value="31">Sponsorship</option>
+                                                                                            <option data-is_sales="Y" value="32">Rental Space Display</option>
+                                                                                            <option data-is_sales="Y" value="33">POS Material (Dumbin, Gondola, Sticker)</option>
+                                                                                            <option data-is_sales="Y" value="34">SPG - MD</option>
+                                                                                            <option data-is_sales="Y" value="35">Listing Fee</option>
+                                                                                            <option data-is_sales="Y" value="36">Mailer</option>
+                                                                                            <option data-is_sales="Y" value="37">Free Goods Promo</option>
+                                                                                            <option data-is_sales="Y" value="38">Sales Promotion</option>
+                                                                                            <option data-is_sales="Y" value="39">Corporate Trading Terms</option>
+                                                                                            <option data-is_sales="Y" value="40">Samples Listing</option>
+                                                                                            <option data-is_sales="Y" value="41">Social Media</option>
+                                                                                            <option data-is_sales="Y" value="42">Media Production</option>
+                                                                                            <option data-is_sales="Y" value="43">TV Media</option>
+                                                                                            <option data-is_sales="Y" value="44">Other Media</option>
+                                                                                            <option data-is_sales="Y" value="45">Agency Service Fees</option>
+                                                                                            <option data-is_sales="Y" value="46">Accrual</option>
+                                                                                            <option data-is_sales="Y" value="47">Return</option>
+                                                                                            <option data-is_sales="Y" value="48">Packaging Development</option>
+                                                                                            <option data-is_sales="Y" value="49">Research</option>
+                                                                                            <option data-is_sales="Y" value="50">Market Research</option>
+                                                                                            <option data-is_sales="Y" value="52">GO Store - Display</option>
+                                                                                            <option data-is_sales="Y" value="53">GO Store - Discount</option>
+                                                                                    </select>
+                                        <input type="hidden" name="is_sales" id="is_sales">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Sales</td>
+                                    <td>
+                                        <select onchange="changeAVG()" name="avg_sales" id="avg_sales" class="form-control" required>
+                                            <option value="">--Pilih--</option>
+                                            <option value="Last 3 Month">Last 3 Month</option>
+                                            <!-- <option value="none">None</option> -->
+                                            <!-- <input name="avg_sales" type="text" class="form-control" id="avg_sales" value="Last 3 Month" readonly> -->
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Budget</td>
+                                    <td>
+                                        <select onchange="getBudget();" name="budget_source" id="budget_source" class="form-control" required>
+                                            <option value="">--Pilih--</option>
+                                            <option value="anp">A&P</option>
+                                            <option value="on_top">On Top</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Operating</td>
+                                    <td>
+                                        <input type="text" class="form-control" value="0" id="operatingBudget" readonly required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!-- <td>Unbooked</td> -->
+                                    <td>Used</td>
+                                    <td><input type="text" class="form-control" name="allocated_budget" id="allocated_budget" readonly required></td>
+                                </tr>
+                                <tr>
+                                    <td>Balance</td>
+                                    <td>
+                                        <input type="text" class="form-control" name="balance_budget" value="0" id="balance_budget" readonly required>
+                                        <input type="hidden" id="balance_operating" require>
+                                        <input type="hidden" name="budget_code" id="budget_code" required>
+                                        <input type="hidden" name="budget_code_activity" id="budget_code_activity" required>
+                                        <input type="hidden" name="total_budget_activity" id="total_budget_activity" required>
+                                        <input type="hidden" name="total_operating" id="total_operating" required>
+                                    </td>
+                                </tr>
+
+                                <tr style="display: none;">
+                                    <td>Booked</td>
+                                    <td><input type="text" class="form-control" name="budget_booked" id="budget_booked" readonly required></td>
+                                </tr>
+                                <tr style="display:none">
+                                    <!-- <td>YTD Operating Budget - Target</td> -->
+                                    <td>Operating Activity</td>
+                                    <td><input type="text" class="form-control" name="budget_activity" id="budget_activity" readonly required></td>
+                                </tr>
+                                <tr style="display: none;">
+                                    <td>YTD Operating Budget - Purchase</td>
+                                    <td><input type="text" class="form-control" name="budget_actual" id="budget_actual" readonly required></td>
+                                </tr>
+                                <tr style="display:none">&nbsp;
+                                    <td>IMS</td>
+                                    <td>
+                                        <input name="ims_value" id="ims_value" type="text" class="form-control" readonly required>
+                                    </td>
+                                </tr>
+                                <tr id="use_ims" style="display:none;">
+                                    <td></td>
+                                    <td><input onchange="usingIMS();" name="ims" id="ims" type="checkbox" value="Y"> Gunakan IMS</td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">Claim to</td>
+                                    <td>
+                                        <select name="claim_to" id="claim_to" class="form-control" required>
+                                            <option value="">--Pilih--</option>
+                                            <option value="pandurasa">Pandurasa</option>
+                                            <option value="principal">Principal</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                            <input type="hidden">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="box">
+                        <div class="box-header">
+                            <!-- <button class="btn btn-primary pull-right" id="btn_cari_customer" onclick="cariCustomer()">Cari Customer</button> -->
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-responsive table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Code Customer</th>
+                                        <th>Group Customer</th>
+                                        <th>Customer Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyCustomer">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>
+<div id="showModalCustomer"></div>
+<footer class="main-footer">
+    <div class="pull-right hidden-xs">
+        <b>Version</b> 1.0.0
+    </div>
+    <strong>Copyright &copy; 2021-2022 <a href="">Pandurasa Kharisma</a>.</strong> All rights
+    reserved.
+</footer>
+<div class="control-sidebar-bg"></div>
+</div>
+<div class="modal fade bannerformmodal" tabindex="-1" role="dialog" aria-labelledby="bannerformmodal" aria-hidden="true" id="bannerformmodal">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">AVG SALES</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-responsive table-bordered">
+                    <!-- array(90) {
+  [0]=>
+  object(stdClass)#154 (2) {
+    ["GroupCode"]=>
+    int(163)
+    ["GroupName"]=>
+    string(10) "SETIABUDHI"
+  }
+  [1]=>
+  object(stdClass)#155 (2) {
+    ["GroupCode"]=>
+    int(103)
+    ["GroupName"]=>
+    string(9) "ALFA MART"
+  }
+  [2]=>
+  object(stdClass)#156 (2) {
+    ["GroupCode"]=>
+    int(174)
+    ["GroupName"]=>
+    string(11) "GADING FOOD"
+  }
+  [3]=>
+  object(stdClass)#157 (2) {
+    ["GroupCode"]=>
+    int(173)
+    ["GroupName"]=>
+    string(6) "CIRCLE"
+  }
+  [4]=>
+  object(stdClass)#158 (2) {
+    ["GroupCode"]=>
+    int(140)
+    ["GroupName"]=>
+    string(11) "KIMIA FARMA"
+  }
+  [5]=>
+  object(stdClass)#159 (2) {
+    ["GroupCode"]=>
+    int(171)
+    ["GroupName"]=>
+    string(12) "GENERAL (RT)"
+  }
+  [6]=>
+  object(stdClass)#160 (2) {
+    ["GroupCode"]=>
+    int(183)
+    ["GroupName"]=>
+    string(7) "FOODMAX"
+  }
+  [7]=>
+  object(stdClass)#161 (2) {
+    ["GroupCode"]=>
+    int(188)
+    ["GroupName"]=>
+    string(7) "3PL MAM"
+  }
+  [8]=>
+  object(stdClass)#162 (2) {
+    ["GroupCode"]=>
+    int(177)
+    ["GroupName"]=>
+    string(5) "SANTA"
+  }
+  [9]=>
+  object(stdClass)#163 (2) {
+    ["GroupCode"]=>
+    int(142)
+    ["GroupName"]=>
+    string(3) "KKV"
+  }
+  [10]=>
+  object(stdClass)#164 (2) {
+    ["GroupCode"]=>
+    int(180)
+    ["GroupName"]=>
+    string(12) "PARIT PADANG"
+  }
+  [11]=>
+  object(stdClass)#165 (2) {
+    ["GroupCode"]=>
+    int(144)
+    ["GroupName"]=>
+    string(14) "LION SUPERINDO"
+  }
+  [12]=>
+  object(stdClass)#166 (2) {
+    ["GroupCode"]=>
+    int(141)
+    ["GroupName"]=>
+    string(11) "KARTIKASARI"
+  }
+  [13]=>
+  object(stdClass)#167 (2) {
+    ["GroupCode"]=>
+    int(114)
+    ["GroupName"]=>
+    string(12) "CIPTA MARKET"
+  }
+  [14]=>
+  object(stdClass)#168 (2) {
+    ["GroupCode"]=>
+    int(104)
+    ["GroupName"]=>
+    string(9) "ALFA MIDI"
+  }
+  [15]=>
+  object(stdClass)#169 (2) {
+    ["GroupCode"]=>
+    int(116)
+    ["GroupName"]=>
+    string(9) "DUTA BUAH"
+  }
+  [16]=>
+  object(stdClass)#170 (2) {
+    ["GroupCode"]=>
+    int(156)
+    ["GroupName"]=>
+    string(10) "PETRA BUAH"
+  }
+  [17]=>
+  object(stdClass)#171 (2) {
+    ["GroupCode"]=>
+    int(189)
+    ["GroupName"]=>
+    string(8) "3PL FIQO"
+  }
+  [18]=>
+  object(stdClass)#172 (2) {
+    ["GroupCode"]=>
+    int(112)
+    ["GroupName"]=>
+    string(12) "CEMPAKA BUAH"
+  }
+  [19]=>
+  object(stdClass)#173 (2) {
+    ["GroupCode"]=>
+    int(152)
+    ["GroupName"]=>
+    string(11) "MAXIM FRUIT"
+  }
+  [20]=>
+  object(stdClass)#174 (2) {
+    ["GroupCode"]=>
+    int(129)
+    ["GroupName"]=>
+    string(10) "HERO GROUP"
+  }
+  [21]=>
+  object(stdClass)#175 (2) {
+    ["GroupCode"]=>
+    int(165)
+    ["GroupName"]=>
+    string(18) "TRANS RETAIL GROUP"
+  }
+  [22]=>
+  object(stdClass)#176 (2) {
+    ["GroupCode"]=>
+    int(139)
+    ["GroupName"]=>
+    string(10) "KEM CHICKS"
+  }
+  [23]=>
+  object(stdClass)#177 (2) {
+    ["GroupCode"]=>
+    int(158)
+    ["GroupName"]=>
+    string(6) "REZEKI"
+  }
+  [24]=>
+  object(stdClass)#178 (2) {
+    ["GroupCode"]=>
+    int(149)
+    ["GroupName"]=>
+    string(11) "MDA KULINER"
+  }
+  [25]=>
+  object(stdClass)#179 (2) {
+    ["GroupCode"]=>
+    int(136)
+    ["GroupName"]=>
+    string(5) "JADDI"
+  }
+  [26]=>
+  object(stdClass)#180 (2) {
+    ["GroupCode"]=>
+    int(145)
+    ["GroupName"]=>
+    string(12) "LOTTE GROSIR"
+  }
+  [27]=>
+  object(stdClass)#181 (2) {
+    ["GroupCode"]=>
+    int(166)
+    ["GroupName"]=>
+    string(10) "TOTAL BUAH"
+  }
+  [28]=>
+  object(stdClass)#182 (2) {
+    ["GroupCode"]=>
+    int(128)
+    ["GroupName"]=>
+    string(14) "GS SUPERMARKET"
+  }
+  [29]=>
+  object(stdClass)#183 (2) {
+    ["GroupCode"]=>
+    int(164)
+    ["GroupName"]=>
+    string(4) "SAGA"
+  }
+  [30]=>
+  object(stdClass)#184 (2) {
+    ["GroupCode"]=>
+    int(168)
+    ["GroupName"]=>
+    string(8) "TOP BUAH"
+  }
+  [31]=>
+  object(stdClass)#185 (2) {
+    ["GroupCode"]=>
+    int(106)
+    ["GroupName"]=>
+    string(10) "APPLE SHOP"
+  }
+  [32]=>
+  object(stdClass)#186 (2) {
+    ["GroupCode"]=>
+    int(100)
+    ["GroupName"]=>
+    string(8) "AEROFOOD"
+  }
+  [33]=>
+  object(stdClass)#187 (2) {
+    ["GroupCode"]=>
+    int(181)
+    ["GroupName"]=>
+    string(8) "3PL BALI"
+  }
+  [34]=>
+  object(stdClass)#188 (2) {
+    ["GroupCode"]=>
+    int(111)
+    ["GroupName"]=>
+    string(7) "CENTURY"
+  }
+  [35]=>
+  object(stdClass)#189 (2) {
+    ["GroupCode"]=>
+    int(155)
+    ["GroupName"]=>
+    string(6) "PAPAYA"
+  }
+  [36]=>
+  object(stdClass)#190 (2) {
+    ["GroupCode"]=>
+    int(186)
+    ["GroupName"]=>
+    string(8) "3PL SOLO"
+  }
+  [37]=>
+  object(stdClass)#191 (2) {
+    ["GroupCode"]=>
+    int(117)
+    ["GroupName"]=>
+    string(13) "DINAMIKA BUAH"
+  }
+  [38]=>
+  object(stdClass)#192 (2) {
+    ["GroupCode"]=>
+    int(169)
+    ["GroupName"]=>
+    string(5) "UNION"
+  }
+  [39]=>
+  object(stdClass)#193 (2) {
+    ["GroupCode"]=>
+    int(157)
+    ["GroupName"]=>
+    string(18) "RANCH MARKET GROUP"
+  }
+  [40]=>
+  object(stdClass)#194 (2) {
+    ["GroupCode"]=>
+    int(126)
+    ["GroupName"]=>
+    string(12) "GENERAL (FS)"
+  }
+  [41]=>
+  object(stdClass)#195 (2) {
+    ["GroupCode"]=>
+    int(132)
+    ["GroupName"]=>
+    string(10) "INDO POINT"
+  }
+  [42]=>
+  object(stdClass)#196 (2) {
+    ["GroupCode"]=>
+    int(137)
+    ["GroupName"]=>
+    string(14) "JOHNNY ANDREAN"
+  }
+  [43]=>
+  object(stdClass)#197 (2) {
+    ["GroupCode"]=>
+    int(115)
+    ["GroupName"]=>
+    string(7) "DIAMOND"
+  }
+  [44]=>
+  object(stdClass)#198 (2) {
+    ["GroupCode"]=>
+    int(102)
+    ["GroupName"]=>
+    string(10) "AEON GROUP"
+  }
+  [45]=>
+  object(stdClass)#199 (2) {
+    ["GroupCode"]=>
+    int(179)
+    ["GroupName"]=>
+    string(10) "TBD Retail"
+  }
+  [46]=>
+  object(stdClass)#200 (2) {
+    ["GroupCode"]=>
+    int(172)
+    ["GroupName"]=>
+    string(11) "GELAEL (RT)"
+  }
+  [47]=>
+  object(stdClass)#201 (2) {
+    ["GroupCode"]=>
+    int(147)
+    ["GroupName"]=>
+    string(9) "LUAR KOTA"
+  }
+  [48]=>
+  object(stdClass)#202 (2) {
+    ["GroupCode"]=>
+    int(113)
+    ["GroupName"]=>
+    string(13) "CAPITAL FRUIT"
+  }
+  [49]=>
+  object(stdClass)#203 (2) {
+    ["GroupCode"]=>
+    int(176)
+    ["GroupName"]=>
+    string(11) "MO GUNG HWA"
+  }
+  [50]=>
+  object(stdClass)#204 (2) {
+    ["GroupCode"]=>
+    int(138)
+    ["GroupName"]=>
+    string(9) "JAK FRUIT"
+  }
+  [51]=>
+  object(stdClass)#205 (2) {
+    ["GroupCode"]=>
+    int(162)
+    ["GroupName"]=>
+    string(15) "SUB DISTRIBUTOR"
+  }
+  [52]=>
+  object(stdClass)#206 (2) {
+    ["GroupCode"]=>
+    int(185)
+    ["GroupName"]=>
+    string(11) "FAMOUS AMOS"
+  }
+  [53]=>
+  object(stdClass)#207 (2) {
+    ["GroupCode"]=>
+    int(130)
+    ["GroupName"]=>
+    string(11) "HOKKY TE IT"
+  }
+  [54]=>
+  object(stdClass)#208 (2) {
+    ["GroupCode"]=>
+    int(134)
+    ["GroupName"]=>
+    string(9) "INDOMARET"
+  }
+  [55]=>
+  object(stdClass)#209 (2) {
+    ["GroupCode"]=>
+    int(178)
+    ["GroupName"]=>
+    string(16) "TBD Food Service"
+  }
+  [56]=>
+  object(stdClass)#210 (2) {
+    ["GroupCode"]=>
+    int(143)
+    ["GroupName"]=>
+    string(16) "LOTTE MART GROUP"
+  }
+  [57]=>
+  object(stdClass)#211 (2) {
+    ["GroupCode"]=>
+    int(133)
+    ["GroupName"]=>
+    string(6) "ISMAYA"
+  }
+  [58]=>
+  object(stdClass)#212 (2) {
+    ["GroupCode"]=>
+    int(146)
+    ["GroupName"]=>
+    string(4) "LULU"
+  }
+  [59]=>
+  object(stdClass)#213 (2) {
+    ["GroupCode"]=>
+    int(124)
+    ["GroupName"]=>
+    string(9) "FISH SHOP"
+  }
+  [60]=>
+  object(stdClass)#214 (2) {
+    ["GroupCode"]=>
+    int(109)
+    ["GroupName"]=>
+    string(12) "BRASTAGI SPM"
+  }
+  [61]=>
+  object(stdClass)#215 (2) {
+    ["GroupCode"]=>
+    int(122)
+    ["GroupName"]=>
+    string(11) "FRESH KIOSK"
+  }
+  [62]=>
+  object(stdClass)#216 (2) {
+    ["GroupCode"]=>
+    int(161)
+    ["GroupName"]=>
+    string(11) "SALAD SEGAR"
+  }
+  [63]=>
+  object(stdClass)#217 (2) {
+    ["GroupCode"]=>
+    int(167)
+    ["GroupName"]=>
+    string(7) "TIP TOP"
+  }
+  [64]=>
+  object(stdClass)#218 (2) {
+    ["GroupCode"]=>
+    int(148)
+    ["GroupName"]=>
+    string(4) "LOKA"
+  }
+  [65]=>
+  object(stdClass)#219 (2) {
+    ["GroupCode"]=>
+    int(150)
+    ["GroupName"]=>
+    string(14) "MATAHARI GROUP"
+  }
+  [66]=>
+  object(stdClass)#220 (2) {
+    ["GroupCode"]=>
+    int(170)
+    ["GroupName"]=>
+    string(5) "YOGYA"
+  }
+  [67]=>
+  object(stdClass)#221 (2) {
+    ["GroupCode"]=>
+    int(153)
+    ["GroupName"]=>
+    string(13) "NAGA SWALAYAN"
+  }
+  [68]=>
+  object(stdClass)#222 (2) {
+    ["GroupCode"]=>
+    int(123)
+    ["GroupName"]=>
+    string(9) "FRESHTIVE"
+  }
+  [69]=>
+  object(stdClass)#223 (2) {
+    ["GroupCode"]=>
+    int(121)
+    ["GroupName"]=>
+    string(11) "FAMILY MART"
+  }
+  [70]=>
+  object(stdClass)#224 (2) {
+    ["GroupCode"]=>
+    int(110)
+    ["GroupName"]=>
+    string(13) "CARL'S JUNIOR"
+  }
+  [71]=>
+  object(stdClass)#225 (2) {
+    ["GroupCode"]=>
+    int(120)
+    ["GroupName"]=>
+    string(14) "FOODHALL GROUP"
+  }
+  [72]=>
+  object(stdClass)#226 (2) {
+    ["GroupCode"]=>
+    int(127)
+    ["GroupName"]=>
+    string(11) "GRAND LUCKY"
+  }
+  [73]=>
+  object(stdClass)#227 (2) {
+    ["GroupCode"]=>
+    int(131)
+    ["GroupName"]=>
+    string(9) "HARI-HARI"
+  }
+  [74]=>
+  object(stdClass)#228 (2) {
+    ["GroupCode"]=>
+    int(118)
+    ["GroupName"]=>
+    string(7) "EXCELSO"
+  }
+  [75]=>
+  object(stdClass)#229 (2) {
+    ["GroupCode"]=>
+    int(119)
+    ["GroupName"]=>
+    string(10) "E-COMMERCE"
+  }
+  [76]=>
+  object(stdClass)#230 (2) {
+    ["GroupCode"]=>
+    int(135)
+    ["GroupName"]=>
+    string(11) "INDO GROSIR"
+  }
+  [77]=>
+  object(stdClass)#231 (2) {
+    ["GroupCode"]=>
+    int(125)
+    ["GroupName"]=>
+    string(11) "GELAEL (FS)"
+  }
+  [78]=>
+  object(stdClass)#232 (2) {
+    ["GroupCode"]=>
+    int(105)
+    ["GroupName"]=>
+    string(8) "ALLFRESH"
+  }
+  [79]=>
+  object(stdClass)#233 (2) {
+    ["GroupCode"]=>
+    int(151)
+    ["GroupName"]=>
+    string(11) "MARKET CITY"
+  }
+  [80]=>
+  object(stdClass)#234 (2) {
+    ["GroupCode"]=>
+    int(159)
+    ["GroupName"]=>
+    string(10) "RUMAH BUAH"
+  }
+  [81]=>
+  object(stdClass)#235 (2) {
+    ["GroupCode"]=>
+    int(182)
+    ["GroupName"]=>
+    string(6) "PEPITO"
+  }
+  [82]=>
+  object(stdClass)#236 (2) {
+    ["GroupCode"]=>
+    int(101)
+    ["GroupName"]=>
+    string(6) "IMPORT"
+  }
+  [83]=>
+  object(stdClass)#237 (2) {
+    ["GroupCode"]=>
+    int(107)
+    ["GroupName"]=>
+    string(5) "LOCAL"
+  }
+  [84]=>
+  object(stdClass)#238 (2) {
+    ["GroupCode"]=>
+    int(108)
+    ["GroupName"]=>
+    string(14) "BLITZ MEGAPLEX"
+  }
+  [85]=>
+  object(stdClass)#239 (2) {
+    ["GroupCode"]=>
+    int(154)
+    ["GroupName"]=>
+    string(6) "OTHERS"
+  }
+  [86]=>
+  object(stdClass)#240 (2) {
+    ["GroupCode"]=>
+    int(160)
+    ["GroupName"]=>
+    string(6) "RETAIL"
+  }
+  [87]=>
+  object(stdClass)#241 (2) {
+    ["GroupCode"]=>
+    int(175)
+    ["GroupName"]=>
+    string(6) "OFFICE"
+  }
+  [88]=>
+  object(stdClass)#242 (2) {
+    ["GroupCode"]=>
+    int(187)
+    ["GroupName"]=>
+    string(14) "KEM CHICK BOGA"
+  }
+  [89]=>
+  object(stdClass)#243 (2) {
+    ["GroupCode"]=>
+    int(190)
+    ["GroupName"]=>
+    string(8) "GUARDIAN"
+  }
+}
+ -->
+                    <tr>
+                        <form action="http://localhost/test/budget/pic/show_create_from_sales" method="POST">
+                            <td>
+                                LAST 3 MONTH
+                            </td>
+                            <td>
+                                <button type="submit" class="btn btn-primary">SELECT</button>
+                            </td>
+                        </form>
+                        <!-- <td><a class="btn btn-primary" href="http://localhost/test/budget/pic/show_create_from_sales">SELECT</a></td> -->
+                    </tr>
+                    <tr style="display:none;">
+                        <td>LAST YEAR</td>
+                        <td><a class="btn btn-primary" href="">SELECT</a></td>
+                    </tr>
+                    <tr>
+                        <td>NON SALES</td>
+                        <td><a class="btn btn-primary" href="http://localhost/test/budget/pic/createProposal">SELECT</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+</script>
+<!-- jQuery 3 -->
+<script src="http://localhost/test/budget/assets/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="http://localhost/test/budget/assets/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="http://localhost/test/budget/assets/bower_components/fastclick/lib/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="http://localhost/test/budget/assets/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="http://localhost/test/budget/assets/dist/js/demo.js"></script>
+<!-- Select2 -->
+<script src="http://localhost/test/budget/assets/bower_components/select2/dist/js/select2.full.min.js"></script>
+<!-- bootstrap datepicker -->
+<script src="http://localhost/test/budget/assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<!-- DataTables -->
+<script src="http://localhost/test/budget/assets/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="http://localhost/test/budget/assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="http://localhost/test/budget/assets/js/jquery_dataTables.js"></script>
+<script type="text/javascript" src="http://localhost/test/budget/assets/js/select_dataTables.js"></script>
+<script type="text/javascript" src="http://localhost/test/budget/assets/js/checkbox_dataTables.js"></script>
+<script type="text/javascript" src="http://localhost/test/budget/assets/js/sweetalert2.js"></script>
+<script type="text/javascript">
+    $('.select2').select2();
+    $("#table1").DataTable({resposive : true})
+
+    function loadingShow() {
+        var div_loading = document.getElementById("muncul_loading");
+        div_loading.classList.add("loading");
+    }
+
+    function loadingHide() {
+        var div_loading = document.getElementById("muncul_loading");
+        if (div_loading.classList.contains("loading") == true) {
+            div_loading.classList.remove("loading")
+        }
+    }
+
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+
+    function formatNumber(num) {
+        var value = num.value.replace(/,/g, '');
+        value = parseFloat(value);
+        return num.value = isNaN(value) ? '' : value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function reset_to_zero(elem) {
+        if (elem.value == '') {
+            elem.value = 0;
+        }
+    }
+</script>
+
+</html><script>
+    $(document).ready(function() {
+        $('.select2').select2();
+    })
+
+    function noDocExists() {
+        var noDoc = document.getElementById("input-no-doc").value
+        var result = true;
+
+        if (noDoc == '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'No doc kosong!',
+            })
+        } else {
+            var ajaxNoDoc = $.ajax({
+                url: 'http://localhost/test/budget/pic/cekNoDoc',
+                type: 'POST',
+                data: {
+                    no_doc: noDoc
+                },
+                async: false,
+                dataType: 'JSON',
+                success: function(response) {
+                    if (response.success == true) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'No doc ' + noDoc + ' sudah ada, tidak bisa digunakan',
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'No doc ' + noDoc + ' bisa digunakan',
+                        })
+                    }
+                }
+            });
+
+            if (ajaxNoDoc.responseJSON.success == true) {
+                result = true
+            } else {
+                result = false
+            }
+        }
+        return result
+    }
+
+    function checkNoDoc() {
+        noDocExists()
+    }
+
+    function changeAVG() {
+        var avg = document.getElementById('avg_sales');
+        var button_cari_customer = document.getElementById('btn_cari_customer');
+        var tbodyCustomer = document.getElementById('tbodyCustomer');
+        var input_activity = document.getElementById('activity');
+        if (avg.value == 'none') {
+            button_cari_customer.style.display = 'none';
+            tbodyCustomer.innerHTML = '';
+        } else {
+            button_cari_customer.style.display = 'revert';
+        }
+    }
+
+    function usingIMS() {
+        var checkbox = document.getElementById('ims');
+        var balance_operating = document.getElementById('balance_operating').value;
+        var balance_ims = document.getElementById('ims_value').value;
+        var input_balance = document.getElementById('balance_budget');
+        if (checkbox.checked) {
+            input_balance.value = balance_ims;
+        } else {
+            input_balance.value = balance_operating;
+        }
+    }
+
+    function changeActivity() {
+        var is_sales_element = document.getElementById('activity');
+        var is_sales = is_sales_element.options[is_sales_element.selectedIndex].getAttribute('data-is_sales');
+        var btn_cari_customer = document.getElementById('btn_cari_customer');
+        var tbody_customer = document.getElementById('tbodyCustomer');
+        if (is_sales == 'N') {
+            btn_cari_customer.style.display = 'none';
+            tbody_customer.innerHTML = '';
+        } else {
+            btn_cari_customer.style.display = 'revert';
+        }
+    }
+
+    function resetIms() {
+        var checkbox = document.getElementById('ims');
+        if (checkbox.checked) {
+            checkbox.checked = false;
+        }
+        var tr_ims = document.getElementById('use_ims').style.display = 'none';
+    }
+
+
+    function resetBudget() {
+        var budget_source = document.getElementById('budget_source').value = '';
+        var input_balance_budget = document.getElementById('balance_budget').value = '';
+        var input_allocated_budget = document.getElementById('allocated_budget').value = '';
+        var input_budget_booked = document.getElementById('budget_booked').value = '';
+        var input_budget_activity = document.getElementById('budget_activity').value = '';
+        var input_budget_actual = document.getElementById('budget_actual').value = '';
+        var input_balance_operating = document.getElementById('balance_operating').value = '';
+        var input_budget_code = document.getElementById('budget_code').value = '';
+        var input_budget_code_activity = document.getElementById('budget_code_activity').value = '';
+        var input_total_budget_activity = document.getElementById('total_budget_activity').value = '';
+        var input_total_operating = document.getElementById('total_operating').value = '';
+        var input_value_ims = document.getElementById('ims_value').value = '';
+        document.getElementById('operatingBudget').value = '';
+        var checkbox = document.getElementById('ims');
+        if (checkbox.checked) {
+            checkbox.checked = false;
+        }
+        var tr_ims = document.getElementById('use_ims').style.display = 'none';
+    }
+
+    function money(x) {
+        return Math.round(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function normalNumber(x) {
+        return parseFloat(x.replace(/,/g, ''));
+    }
+
+    function getBudget() {
+        var budget_source = $('#budget_source').val();
+        var brand = $('#brand').val();
+        var activity = $('#activity').val();
+        var start_date = $('#start_date').val();
+        var end_date = $('#end_date').val();
+        var input_balance_budget = document.getElementById('balance_budget');
+        var input_budget_booked = document.getElementById('budget_booked');
+        var input_allocated_budget = document.getElementById('allocated_budget');
+        var input_budget_activity = document.getElementById('budget_activity');
+        var input_budget_actual = document.getElementById('budget_actual');
+        var input_budget_code = document.getElementById('budget_code');
+        var input_budget_code_activity = document.getElementById('budget_code_activity');
+        var input_total_budget_activity = document.getElementById('total_budget_activity');
+        var input_total_operating = document.getElementById('total_operating');
+        var input_ims_value = document.getElementById('ims_value');
+        var tr_use_ims = document.getElementById('use_ims');
+        var input_balance_operating = document.getElementById('balance_operating');
+
+        var inputOperatingBudget = document.getElementById('operatingBudget');
+
+        $.ajax({
+            url: 'http://localhost/test/budget/pic/get_budget',
+            type: 'POST',
+            data: {
+                budget_source,
+                brand,
+                activity,
+                start_date,
+                end_date,
+            },
+            dataType: 'JSON',
+            success: function(response) {
+                if (response.budget == 'not_set') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Budget Tidak Tersedia',
+                    })
+                    resetBudget()
+                    return false;
+                }
+
+                if (response.budget_on_top == 'not_set') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Budget On Top Tidak Tersedia',
+                    })
+                    resetBudget()
+                    return false;
+                }
+
+                // console.log(response)
+
+                input_balance_budget.value = money(response.balance);
+                input_balance_operating.value = money(response.balance);
+                input_allocated_budget.value = money(response.budget_used);
+                input_budget_booked.value = money(response.budget_booked);
+                input_budget_actual.value = money(response.actual_budget);
+                input_budget_activity.value = money(response.budget_activity);
+                input_budget_code.value = response.budget_code;
+                input_budget_code_activity.value = response.budget_code_activity;
+                input_total_budget_activity.value = money(response.total_budget_activity);
+                input_total_operating.value = money(response.total_operating);
+                input_ims_value.value = money(response.ims_value);
+
+                inputOperatingBudget.value = money(response.operatingBudget);
+                // console.log(response.balance);
+                // if (response.balance < 1000000) {
+                //     tr_use_ims.style.display = 'revert';
+                // } else if (budget_source == 'on_top') {
+                //     resetIms()
+                // }
+
+
+            }
+        })
+    }
+
+    function deleteRowCustomer(e) {
+        e.parentElement.parentElement.remove();
+    }
+
+    function resetTableCustomer(input) {
+        var group_selected = $(input).val()
+        var tbodyCustomer = document.getElementById('tbodyCustomer')
+        var trGroupCode = tbodyCustomer.querySelectorAll('tr[data-tr-group-code]')
+
+        // ini untuk menentukan table customer sesuai sama group yang dipilih, jika di table customer tidak mengandung group yang dipilih maka barisnya akan dihapus
+        if (group_selected.length > 0) {
+            if (trGroupCode.length > 0) {
+                trGroupCode.forEach(function(tr) {
+                    var trValue = tr.getAttribute('data-tr-group-code')
+                    if (!group_selected.includes(trValue)) {
+                        tr.remove()
+                    }
+                })
+            }
+        } else {
+            document.getElementById('tbodyCustomer').innerHTML = '';
+        }
+    }
+
+    function cariCustomer() {
+
+        var input_customer = document.querySelectorAll('input.input_customer');
+        var customer = [];
+        for (var i = 0; i < input_customer.length; i++) {
+            customer.push(input_customer[i].value);
+        }
+        var group = $('#group').val();
+        if (group == '') {
+            //alert("Group customer belum dipilih");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Group customer belum dipilih',
+            })
+            return false;
+        } else {
+            loadingShow();
+            $('#showModalCustomer').load('http://localhost/test/budget/pic/showModalCustomerFromSales', {
+                group,
+                customer
+            })
+        }
+
+    }
+
+    function create() {
+        var brand = $('#brand').val();
+        var activity = $('#activity').val();
+        var start_date = $('#start_date').val();
+        var end_date = $('#end_date').val();
+        var group = $('#group').val();
+        var input_balance_budget = document.getElementById('balance_budget');
+
+        if (brand == '' || activity == '' || start_date == '' || end_date == '' || group == '') {
+            // alert('Semua harus diisi');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Semua wajib diisi',
+            })
+            return false;
+        }
+
+        if ($('#avg_sales').val() == '') {
+            // alert('Semua harus diisi');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Semua wajib diisi',
+            })
+            return false;
+        }
+
+        var form = document.getElementById("formCreate");
+        var input_customer = document.querySelectorAll('input.input_customer');
+        var input_group = document.querySelectorAll('input.input_group');
+
+        if (input_balance_budget.value <= 0 && document.getElementById('ims').checked == false) {
+            // alert("Balance tidak mencukupi");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Budget tidak cukup',
+            })
+            return false;
+        }
+
+        if (input_balance_budget.value <= 0 && document.getElementById('ims').value <= 0) {
+            // alert("Balance tidak mencukupi");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Budget tidak cukup',
+            })
+            return false;
+        }
+
+        var is_sales_element = document.getElementById('activity');
+        var is_sales = is_sales_element.options[is_sales_element.selectedIndex].getAttribute('data-is_sales');
+        var avg_sales = document.getElementById('avg_sales').value;
+        document.getElementById('is_sales').value = is_sales;
+
+        if (is_sales == 'N' && avg_sales != 'none') {
+            // alert('Activity tidak sesuai dengan Avg Salesnya');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Activity tidak sesuai dengan Avg Salesnya',
+            })
+            return false;
+        }
+
+        if (is_sales == 'Y' && avg_sales == 'none') {
+            // alert('Activity tidak sesuai dengan Avg Salesnya');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Activity tidak sesuai dengan Avg Salesnya',
+            })
+            return false;
+        }
+
+        if (is_sales == 'Y' && input_customer.length < 1) {
+            // alert("Customer belum dipilih");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Customer belum dipilih',
+            })
+            return false;
+        }
+
+        var budget_source = $('#budget_source').val();
+        if (budget_source == "") {
+            // alert("Budget belum ditentukan");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Budget belum ditentukan',
+            })
+            resetIms();
+            return false;
+        }
+
+        if (document.getElementById('claim_to').value == '') {
+            // alert('Claim to belum diisi');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Claim belum diisi',
+            })
+            return false;
+        }
+
+        if (noDocExists() == true) {
+            return false;
+        }
+
+        // console.log(form);
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Anda yakin akan lanjut? \n Data tidak dapat dirubah kembali',
+            // showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Lanjukan',
+            cancelButtonText: 'Check Kembali',
+            // denyButtonText: `Don't save`,
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                loadingShow()
+                var input_group = document.querySelectorAll('input.input_group')
+                var input_customer = document.querySelectorAll('input.input_customer')
+                var group_code = []
+                var customer_code = []
+
+                input_customer.forEach(input => {
+                    customer_code.push(input.value)
+                })
+
+                input_group.forEach(input => {
+                    group_code.push(input.value)
+                })
+
+                // console.log(customer_code.length);
+                // return false;
+                var json_customer = JSON.stringify(customer_code)
+                var json_group = JSON.stringify(group_code)
+                var input_jsonGroup = document.getElementById("json_group");
+                var input_jsonCustomer = document.getElementById("json_customer");
+                input_jsonGroup.value = json_group
+                input_jsonCustomer.value = json_customer
+
+                form.action = "http://localhost/test/budget/pic/show_form_proposal_from_sales";
+                form.method = "POST";
+                form.submit();
+            } else if (result.isDenied) {
+                loadingHide()
+                Swal.fire('Changes are not saved', '', 'info')
+            }
+        })
+
+    }
+</script>

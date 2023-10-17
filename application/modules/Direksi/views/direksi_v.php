@@ -122,7 +122,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <table id="table1" class="table table-bordered  table-striped table-hover dataTable" role="grid" aria-describedby="example2_info">
+                                    <table id="table1" class="table table-bordered  table-responsive table-striped table-hover dataTable" role="grid" aria-describedby="example2_info">
                                         <thead>
                                             <tr>
                                                 <th>No.</th>
@@ -130,10 +130,10 @@
                                                 <th>Start Periode</th>
                                                 <th>End Periode</th>
                                                 <th>Operating</th>
-                                                <th>Costing</th>
-                                                <th>DN Amount</th>
-                                                <th style="background-color: #FFDBAA;">Claim Amount</th>
-                                                <th style="background-color: #FFB7B7;">Used Amount</th>
+                                                <th>Used Amount</th>
+                                                <th style="background-color: #FFDBAA;">Payment Deduction</th>
+                                                <th style="background-color: #FFB7B7;">Claim to Principal (DN Amount)</th>
+                                                <th style="background-color: #FFB7B7;">Claim to PK</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -146,9 +146,9 @@
                                                     <td><?= $data->EndPeriode ?></td>
                                                     <td style="text-align: right;"><?= number_format($data->TotalOperatingBudget) ?></td>
                                                     <td style="text-align: right;"><?= number_format($data->TotalCosting) ?></td>
-                                                    <td><?= number_format($data->Totaldn); ?></td>
                                                     <td style="text-align: right;background-color: #FFDBAA;"> <?= number_format($data->TotalIncomingAmount) ?></td>
-                                                    <td style="background-color: #FFB7B7;"></td>
+                                                    <td style="background-color: #FFB7B7;"><?= number_format($data->Totaldn); ?></td>
+                                                    <td>0</td>
                                                 </tr>
                                             <?php } ?>
                                         </tbody>

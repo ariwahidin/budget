@@ -173,5 +173,79 @@ h4 {
         </td>
     </tr>
 </table>
-<hr>
+<!-- <hr>
+<table class="table table-responsive table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Month</th>
+            <th style="display:none">Target (<?= $_POST['valas'] ?>)</th>
+            <th>Principal Target (IDR)</th>
+            <th style="display:none">A&P (<?= $_POST['valas'] ?>)</th>
+            <th>Principal A&P (IDR)</th>
+            <th>PK Target (IDR)</th>
+            <th>PK A&P (IDR)</th>
+            <th>Operating (IDR) (<?= $_POST['percent_operating'] ?>%)</th>
+            <?php if ($_POST['set_ims'] = 'Y') { ?>
+            <th>IMS Target</th>
+            <th>IMS Budget</th>
+            <?php } ?>
+        </tr>
+    </thead>
+    <tbody>
+        <?php $no = 1; foreach ($periode as $month) { ?>
+        <tr>
+            <td><?= $no++ ?></td>
+            <td>
+                <?= date('M - Y', strtotime($month)) ?>
+                <input type="hidden" name="month[]" class="input_month" value="<?= $month ?>">
+            </td>
+            <td style="display:none">
+                <input type="text" name="principal_target_valas[]" onpaste="calculating(this)"
+                    onkeypress="javascript:return isNumber(event)" onkeyup="formatNumber(this); calculating(this)"
+                    class="form-control input_principal_target_aud target_valas" readonly value="0">
+            </td>
+            <td>
+                <input type="text" name="principal_target_idr[]" onkeypress="javascript:return isNumber(event)"
+                    onkeyup="formatNumber(this); calculateTargetValas(this)"
+                    class="form-control input_principal_target_idr" value="0">
+            </td>
+            <td style="display:none">
+                <input type="text" name="anp_principal_valas[]" onkeypress="javascript:return isNumber(event)"
+                    onkeyup="formatNumber(this); calculating(this)" class="form-control input_anp_valas" readonly
+                    value="0">
+            </td>
+            <td>
+                <input type="text" name="anp_principal_idr[]" onkeypress="javascript:return isNumber(event)"
+                    onkeyup="formatNumber(this);calculatingOperating(this);calculatingAnpValas(this)"
+                    class="form-control input_target input_principal_anp_idr" value="0">
+            </td>
+            <td>
+                <input type="text" name="pk_target_idr[]" onkeypress="javascript:return isNumber(event)"
+                    onkeyup="formatNumber(this)" class="form-control input_pk_target_idr" value="0">
+            </td>
+            <td>
+                <input type="text" name="pk_anp_idr[]" onkeypress="javascript:return isNumber(event)"
+                    onkeyup="formatNumber(this);calculatingOperating(this);" class="form-control input_pk_anp_idr"
+                    value="0">
+            </td>
+
+            <td>
+                <input type="text" name="anp_operating[]" onkeypress="javascript:return isNumber(event)"
+                    onkeyup="formatNumber(this)" class="form-control input_operating" value="0">
+            </td>
+            <td>
+                <input type="text" name="input_ims_target[]" onkeypress="javascript:return isNumber(event)"
+                    onkeyup="formatNumber(this)" class="form-control input_ims_target" value="0"
+                    <?= $_POST['set_ims'] == 'N' ? 'readonly' : ''; ?>>
+            </td>
+            <td>
+                <input type="text" name="input_ims[]" onkeypress="javascript:return isNumber(event)"
+                    onkeyup="formatNumber(this)" class="form-control input_ims" value="0"
+                    <?= $_POST['set_ims'] == 'N' ? 'readonly' : ''; ?>>
+            </td>
+        </tr>
+        <?php } ?>
+    </tbody>
+</table> -->
 <?php } ?>
