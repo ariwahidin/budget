@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 //$config['base_url'] = 'http://192.168.60.14:1895/anp-development/';
-$config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/anp-development/';
+$config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/anp/';
 
 // $config['base_url'] = "https://test.test/budget/";
 /*

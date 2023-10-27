@@ -695,6 +695,8 @@ class Pic_model extends CI_Model
 
     public function insertProposal($post)
     {
+
+        
         // var_dump(count($post['customer_code']));
         $post['customer_code'] = json_decode($post['customer_code'], true);
         // die;
@@ -725,115 +727,120 @@ class Pic_model extends CI_Model
         );
         $this->db->insert('tb_proposal', $params);
         $id = $this->db->insert_id();
-
-        //insert item
-        for ($i = 0; $i < count($post['item_code']); $i++) {
-            $items = array(
-                'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
-                'BrandCode' => $post['brand'],
-                'ItemCode' => $post['item_code'][$i],
-                'Price' => (float)$post['item_price'][$i],
-                'AvgSales' => (float)$post['item_avg_sales'][$i],
-                'Qty' => (float)$post['item_qty'][$i],
-                'Target' => (float)$post['item_target'][$i],
-                'Promo' => (float)$post['item_promo'][$i],
-                'PromoValue' => !empty($post['item_promo_value']) ? (float)$post['item_promo_value'][$i] : 0,
-                'Costing' => (float)$post['item_costing'][$i],
-                'ListingCost' => !empty($post['listing_cost']) ? (float)$post['listing_cost'][$i] : 0,
-            );
-            $this->db->insert('tb_proposal_item', $items);
-        }
-
-        //insert item other
-        if (isset($post['other_cost'])) {
-            for ($i = 0; $i < count($post['other_cost']); $i++) {
-                $items_other = array(
-                    'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
-                    'Desc' => $post['other_desc'][$i],
-                    'Costing' => $post['other_cost'][$i],
+        if($id){
+            
+            //insert customer
+            $proposalx = $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row();
+            if($proposalx){
+                $ProposalNumber = $proposalx->Number;
+                //insert item
+                for ($i = 0; $i < count($post['item_code']); $i++) {
+                    $items = array(
+                        'ProposalNumber' => $ProposalNumber,
+                        'BrandCode' => $post['brand'],
+                        'ItemCode' => $post['item_code'][$i],
+                        'Price' => (float)$post['item_price'][$i],
+                        'AvgSales' => (float)$post['item_avg_sales'][$i],
+                        'Qty' => (float)$post['item_qty'][$i],
+                        'Target' => (float)$post['item_target'][$i],
+                        'Promo' => (float)$post['item_promo'][$i],
+                        'PromoValue' => !empty($post['item_promo_value']) ? (float)$post['item_promo_value'][$i] : 0,
+                        'Costing' => (float)$post['item_costing'][$i],
+                        'ListingCost' => !empty($post['listing_cost']) ? (float)$post['listing_cost'][$i] : 0,
+                    );
+                    $this->db->insert('tb_proposal_item', $items);
+                }
+    
+                //insert item other
+                if (isset($post['other_cost'])) {
+                    for ($i = 0; $i < count($post['other_cost']); $i++) {
+                        $items_other = array(
+                            'ProposalNumber' => $ProposalNumber,
+                            'Desc' => $post['other_desc'][$i],
+                            'Costing' => $post['other_cost'][$i],
+                        );
+                        $this->db->insert('tb_proposal_item_other', $items_other);
+                    }
+                }
+    
+                $CustomerCode = implode(",", $post['customer_code']);
+                $sql_insert_customer = "exec insertCustomerProposal '$ProposalNumber','$CustomerCode'";
+                $insert_customer_proposal = $this->db->query($sql_insert_customer);
+    
+    
+                //Insert CustomerGroup
+                $sql_insert_customer_group = "insert into tb_proposal_group(ProposalNumber, GroupCustomer)
+                select ProposalNumber, GroupCustomer from tb_proposal_customer
+                where ProposalNumber = '$ProposalNumber'
+                group by ProposalNumber, GroupCustomer";
+                $insert_customer_group = $this->db->query($sql_insert_customer_group);
+    
+    
+                //insert operating proposal
+                $operating = array(
+                    'BudgetCode' => $budget_code,
+                    'BudgetCodeActivity' => $budget_code_activity,
+                    'BrandCode' => $post['brand'],
+                    'ActivityCode' => $post['activity'],
+                    'ProposalNumber' => $ProposalNumber,
+                    'StartPeriodeProposal' => $post['start_date'],
+                    'EndPeriodeProposal' => $post['end_date'],
+                    'TotalCosting' => (float)$post['total_costing'],
+                    'Budget_type' => $post['budget_type'],
+                    'Budget_saldo' => (float)str_replace(',', '', $post['budget_saldo']),
+                    'Budget_allocated' => (float)str_replace(',', '', $post['total_costing']),
+                    'Budget_unbooked' => (float)str_replace(',', '', $post['total_costing']),
+                    'Budget_booked' => 0,
+                    'Budget_used' => 0,
+                    'Budget_balance' => (float)str_replace(',', '', $post['budget_saldo']) - (float)str_replace(',', '', $post['total_costing']),
+                    'CreatedBy' => $username,
+                    'CreatedDate' => $date,
                 );
-                $this->db->insert('tb_proposal_item_other', $items_other);
+                $this->db->insert('tb_operating_proposal', $operating);
+    
+                if (!empty($post['objective'])) {
+                    for ($i = 0; $i < count($post['objective']); $i++) {
+                        $objective = [
+                            'ProposalNumber' => $ProposalNumber,
+                            'Objective' => $post['objective'][$i],
+                        ];
+                        $this->db->insert('tb_proposal_objective', $objective);
+                    }
+                }
+    
+                if (!empty($post['mechanism'])) {
+                    for ($i = 0; $i < count($post['mechanism']); $i++) {
+                        $mechanism = [
+                            'ProposalNumber' => $ProposalNumber,
+                            'Mechanism' => $post['mechanism'][$i],
+                        ];
+                        $this->db->insert('tb_proposal_mechanism', $mechanism);
+                    }
+                }
+    
+                if (!empty($post['comment'])) {
+                    for ($i = 0; $i < count($post['comment']); $i++) {
+                        $comment = [
+                            'ProposalNumber' => $ProposalNumber,
+                            'Comment' => $post['comment'][$i],
+                        ];
+                        $this->db->insert('tb_proposal_comment', $comment);
+                    }
+                }
+    
+                //insert item sales detail by group
+                for ($i = 0; $i < count($post['t_qty_item']); $i++) {
+                    $customer_group_item = [
+                        'ProposalNumber' => $ProposalNumber,
+                        'GroupCustomer' => $post['t_group'][$i],
+                        'ItemCode' => $post['t_item_code'][$i],
+                        'Sales' => $post['t_sales'][$i],
+                        'Target' => $post['t_qty_item'][$i],
+                    ];
+                    $this->db->insert('tb_proposal_group_item', $customer_group_item);
+                }
             }
-        }
-
-        //insert customer
-        $ProposalNumber = $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number;
-        $CustomerCode = implode(",", $post['customer_code']);
-        $sql_insert_customer = "exec insertCustomerProposal '$ProposalNumber','$CustomerCode'";
-        $insert_customer_proposal = $this->db->query($sql_insert_customer);
-
-
-        //Insert CustomerGroup
-        $ProposalNumber = $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number;
-        $sql_insert_customer_group = "insert into tb_proposal_group(ProposalNumber, GroupCustomer)
-        select ProposalNumber, GroupCustomer from tb_proposal_customer
-        where ProposalNumber = '$ProposalNumber'
-        group by ProposalNumber, GroupCustomer";
-        $insert_customer_group = $this->db->query($sql_insert_customer_group);
-
-
-        //insert operating proposal
-        $operating = array(
-            'BudgetCode' => $budget_code,
-            'BudgetCodeActivity' => $budget_code_activity,
-            'BrandCode' => $post['brand'],
-            'ActivityCode' => $post['activity'],
-            'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
-            'StartPeriodeProposal' => $post['start_date'],
-            'EndPeriodeProposal' => $post['end_date'],
-            'TotalCosting' => (float)$post['total_costing'],
-            'Budget_type' => $post['budget_type'],
-            'Budget_saldo' => (float)str_replace(',', '', $post['budget_saldo']),
-            'Budget_allocated' => (float)str_replace(',', '', $post['total_costing']),
-            'Budget_unbooked' => (float)str_replace(',', '', $post['total_costing']),
-            'Budget_booked' => 0,
-            'Budget_used' => 0,
-            'Budget_balance' => (float)str_replace(',', '', $post['budget_saldo']) - (float)str_replace(',', '', $post['total_costing']),
-            'CreatedBy' => $username,
-            'CreatedDate' => $date,
-        );
-        $this->db->insert('tb_operating_proposal', $operating);
-
-        if (!empty($post['objective'])) {
-            for ($i = 0; $i < count($post['objective']); $i++) {
-                $objective = [
-                    'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
-                    'Objective' => $post['objective'][$i],
-                ];
-                $this->db->insert('tb_proposal_objective', $objective);
-            }
-        }
-
-        if (!empty($post['mechanism'])) {
-            for ($i = 0; $i < count($post['mechanism']); $i++) {
-                $mechanism = [
-                    'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
-                    'Mechanism' => $post['mechanism'][$i],
-                ];
-                $this->db->insert('tb_proposal_mechanism', $mechanism);
-            }
-        }
-
-        if (!empty($post['comment'])) {
-            for ($i = 0; $i < count($post['comment']); $i++) {
-                $comment = [
-                    'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
-                    'Comment' => $post['comment'][$i],
-                ];
-                $this->db->insert('tb_proposal_comment', $comment);
-            }
-        }
-
-        //insert item sales detail by group
-        for ($i = 0; $i < count($post['t_qty_item']); $i++) {
-            $customer_group_item = [
-                'ProposalNumber' => $this->db->query("SELECT [Number] FROM tb_proposal WHERE id = '$id'")->row()->Number,
-                'GroupCustomer' => $post['t_group'][$i],
-                'ItemCode' => $post['t_item_code'][$i],
-                'Sales' => $post['t_sales'][$i],
-                'Target' => $post['t_qty_item'][$i],
-            ];
-            $this->db->insert('tb_proposal_group_item', $customer_group_item);
+            
         }
     }
 
