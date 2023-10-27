@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 //$config['base_url'] = 'http://192.168.60.14:1895/anp-development/';
-$config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/test/budget/';
+$config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/anp-development/';
 
 // $config['base_url'] = "https://test.test/budget/";
 /*
@@ -227,7 +227,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 4;
+$config['log_threshold'] = 1;
 
 /*
 |--------------------------------------------------------------------------

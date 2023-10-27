@@ -357,7 +357,7 @@ class Pic_model extends CI_Model
         $sql .= " order by xx.Quantity DESC";
         $result = $this->db->query($sql);
         // print_r($sql);
-
+        
         return $result;
     }
 
@@ -431,7 +431,7 @@ class Pic_model extends CI_Model
     public function getTarikanProposalExcel($post)
     {
         $user_code = $this->session->userdata('user_code');
-        $sql = "select * from ProposalTarikanExcelViewd
+        $sql = "select * from ProposalTarikanExcelView
         where UserCode = '$user_code' order by Number ASC";
         $query = $this->db->query($sql);
         return $query;
@@ -441,13 +441,6 @@ class Pic_model extends CI_Model
     {
         // var_dump($budgetCode);
         $sql = "select sum(OperatingBudget) as BudgetOperating from tb_operating where BudgetCode = '$budgetCode'";
-        $query = $this->db->query($sql);
-        return $query;
-    }
-
-    public function operatingextend($budgetCode)
-    {
-        $sql = "select sum(OperatingAmount) as BudgetOperating from tb_operating_extend where BudgetCode = '$budgetCode' and [isApprove]='y'";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -1761,7 +1754,7 @@ class Pic_model extends CI_Model
         // var_dump($end);
 
         $sql = "getSalesByCustomerGroup @GroupCode='$group_customer', @ItemCode = '$item_code', @CustomerCode = '$customer_code', @StartDate = '$start', @EndDate = '$end'";
-
+        
 
         $salesByGroup = $this->db->query($sql);
         return $salesByGroup;
@@ -1857,18 +1850,5 @@ class Pic_model extends CI_Model
         where t2.UserCode = '$user_code'";
         $query = $this->db->query($sql);
         return $query;
-    }
-
-
-    public function simpanExtendOperating($post)
-    {
-        $user_code = $this->session->userdata('user_code');
-        $params = array(
-            'BudgetCode' => $post['budgetCode'],
-            'OperatingAmount' => $post['amountOperating'],
-            'CreatedAt' => $this->getDate(),
-            'CreatedBy' => $user_code,
-        );
-        $this->db->insert('tb_operating_extend', $params);
     }
 }

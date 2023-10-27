@@ -274,9 +274,6 @@ class Pic extends CI_Controller
                 $is_ims = $this->db->query("SELECT DISTINCT is_ims FROM tb_operating WHERE BudgetCode = '$budget_code'")->row()->is_ims;
 
                 $operatingBudget = $this->pic_model->getOperatingBudget($budget_code)->row()->BudgetOperating;
-                $operatingextend = $this->pic_model->operatingextend($budget_code)->row()->BudgetOperating;
-
-                $operatingBudget = $operatingBudget + $operatingextend;
 
                 if ($is_ims == 'Y') {
                     $ims_value = $this->pic_model->get_ytd_ims($_POST['brand'], $budget_code, $_POST['end_date']);
@@ -762,19 +759,19 @@ class Pic extends CI_Controller
         // $brand = str_replace(array(' ', "\t"), '', $_POST['brand']);;
         // $start_month = date('Y-m-d', strtotime($_POST['start_month']));
         // //$end_month = date('Y-m-d', strtotime($_POST['end_month']));
-
+        
         // $end_month = date('Y-m-d', strtotime($_POST['start_month']." +3 month"));
         // $begin = new DateTime($start_month);
         // $end = new DateTime($end_month);
         // $end = $end->modify('+1 month');
-
+        
         $brand = str_replace(array(' ', "\t"), '', $_POST['brand']);;
         $start_month = date('Y-m-d', strtotime($_POST['start_month']));
         $end_month = date('Y-m-d', strtotime($_POST['end_month']));
         $begin = new DateTime($start_month);
         $end = new DateTime($end_month);
         $end = $end->modify('+1 month');
-
+        
         $interval = new DateInterval('P1M');
         $daterange = new DatePeriod($begin, $interval, $end);
         $periode = array();
@@ -806,7 +803,7 @@ class Pic extends CI_Controller
     {
         $brand = $_POST['brand'];
         $start_month = date('Y-m-d', strtotime($_POST['start_month']));
-
+        
         //$end_month = date('Y-m-d', strtotime($_POST['start_month']." +3 month"));
         $end_month = date('Y-m-d', strtotime($_POST['end_month']));
         $begin = new DateTime($start_month);
@@ -1585,24 +1582,5 @@ class Pic extends CI_Controller
     {
         $post = $this->input->post();
         var_dump($post);
-    }
-
-    public function createExtendOperating()
-    {
-        $post = $this->input->post();
-
-        $this->pic_model->simpanExtendOperating($post);
-
-
-        if ($this->db->affected_rows() > 0) {
-            $response = array(
-                'success' => true
-            );
-        } else {
-            $response = array(
-                'success' => false
-            );
-        }
-        echo json_encode($response);
     }
 }

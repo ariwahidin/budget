@@ -21,8 +21,8 @@ class Direksi_model extends CI_Model
     public function getBrand($a = null)
     {
         $sql = "SELECT BrandCode, BrandName FROM m_brand";
-        if($a){
-            $sql .= " where BrandCode = '".$a."'";
+        if ($a) {
+            $sql .= " where BrandCode = '" . $a . "'";
         }
 
         $query = $this->db->query($sql);
@@ -35,7 +35,7 @@ class Direksi_model extends CI_Model
         $query = $this->db->query($sql);
         return $query;
     }
-    
+
 
     public function getGroup()
     {
@@ -131,23 +131,54 @@ class Direksi_model extends CI_Model
         if ($budget_code != null) {
             $sql = "SELECT * FROM tb_operating WHERE BudgetCode = '$budget_code'";
         } else {
-            $sql = "SELECT BudgetCode, ss.BrandCode, ss.ExchangeRate, ss.Valas,
+            // $sql = "SELECT BudgetCode, ss.BrandCode, ss.ExchangeRate, ss.Valas,
+            // MIN([month]) AS StartPeriode,
+            // MAX([month]) AS EndPeriode, t2.BrandName,
+            // SUM([PrincipalTargetIDR]) AS PrincipalTarget,
+            // SUM([PrincipalAnpIDR]) AS TargetAnp,
+            // SUM([PKTargetIDR]) AS PKTarget,
+            // SUM([PKAnpIDR]) AS PKAnp,
+            // SUM(OperatingBudget) AS OperatingBudget FROM
+            // (SELECT * FROM tb_operating)ss
+            // INNER JOIN m_brand t2 ON ss.BrandCode = t2.BrandCode
+            // GROUP BY BudgetCode, ss.BrandCode, t2.BrandName, ss.ExchangeRate, ss.Valas";
+
+            $sql = "SELECT 
+            BudgetCode,
+            BrandCode,
+            ExchangeRate,
+            Valas,
+            StartPeriode,
+            EndPeriode,
+            BrandName,
+            PrincipalTarget,
+            TargetAnp,
+            case when PKTarget is null then 0 else PKTarget end AS PKTarget,
+            case when PKAnp is null then 0 else PKAnp end AS PKAnp,
+            OperatingBudget + case when OperatingExtend is null then 0 else OperatingExtend end AS OperatingBudget,
+            NewOperating
+            FROM 
+            (SELECT 
+            ss.BudgetCode, ss.BrandCode, ss.ExchangeRate, ss.Valas,
             MIN([month]) AS StartPeriode,
             MAX([month]) AS EndPeriode, t2.BrandName,
             SUM([PrincipalTargetIDR]) AS PrincipalTarget,
             SUM([PrincipalAnpIDR]) AS TargetAnp,
             SUM([PKTargetIDR]) AS PKTarget,
             SUM([PKAnpIDR]) AS PKAnp,
-            SUM(OperatingBudget) AS OperatingBudget FROM
+            SUM(OperatingBudget) AS OperatingBudget,
+            (SELECT SUM(OperatingAmount) FROM tb_operating_extend WHERE BudgetCode = ss.BudgetCode AND isApprove = 'y') AS OperatingExtend,
+            (SELECT COUNT(id) FROM tb_operating_extend where BudgetCode = ss.BudgetCode and isApprove = 'n') as NewOperating
+            FROM
             (SELECT * FROM tb_operating)ss
             INNER JOIN m_brand t2 ON ss.BrandCode = t2.BrandCode
-            GROUP BY BudgetCode, ss.BrandCode, t2.BrandName, ss.ExchangeRate, ss.Valas";
+            GROUP BY BudgetCode, ss.BrandCode, t2.BrandName, ss.ExchangeRate, ss.Valas)bb";
         }
         $query = $this->db->query($sql);
         return $query;
     }
 
-    public function getHeaderOperatingbybrand($brand,$year = null, $periode = null)
+    public function getHeaderOperatingbybrand($brand, $year = null, $periode = null)
     {
         $sql = "SELECT MIN([Month]) AS StartPeriode, 
         MAX([Month]) AS EndPeriode, 
@@ -160,21 +191,21 @@ class Direksi_model extends CI_Model
         SUM(OperatingBudget) AS TotalOperating 
         FROM tb_operating WHERE BrandCode = '$brand'";
 
-        
-        if(($year)&&($periode)){
+
+        if (($year) && ($periode)) {
             $range0 = 3 * ($periode - 1);
             $range1 = 3 * $periode;
             $range0 = ($range0 >= 1) ? $range0 : 1;
             $range1 = ($range1 < 12) ? $range1 : 12;
-            $periode0 = $year."-".$range0."-01";
-            $periode1 = $year."-".$range1."-01";
+            $periode0 = $year . "-" . $range0 . "-01";
+            $periode1 = $year . "-" . $range1 . "-01";
 
-            $sql0 = $sql." and Month between '$periode0' and '$periode1'";  
-    
+            $sql0 = $sql . " and Month between '$periode0' and '$periode1'";
+
             $query0 = $this->db->query($sql0);
-            if($query0->num_rows() >= 1){
+            if ($query0->num_rows() >= 1) {
                 return $query0;
-            }else{
+            } else {
 
                 $sql = "SELECT MIN([Month]) AS StartPeriode, 
                 startp = '$periode0',
@@ -338,19 +369,19 @@ class Direksi_model extends CI_Model
     }
 
 
-    public function getProposalbybrand($kode_brand = null,$actx=null)
+    public function getProposalbybrand($kode_brand = null, $actx = null)
     {
         $sql = "SELECT t1.*, t2.TotalCosting FROM tb_proposal t1
 		LEFT JOIN tb_operating_proposal t2 on t1.Number = t2.ProposalNumber
         WHERE t1.Status != 'canceled'";
         if ($kode_brand != null) {
-            $sql .= " and t1.BrandCode = '".$kode_brand."'";
+            $sql .= " and t1.BrandCode = '" . $kode_brand . "'";
         }
 
         if ($actx != null) {
-            $sql .= " and t1.Activity = '".$actx."'";
+            $sql .= " and t1.Activity = '" . $actx . "'";
         }
-        
+
         $sql .= " ORDER BY t1.id DESC";
         $query = $this->db->query($sql);
         return $query;
@@ -604,7 +635,7 @@ class Direksi_model extends CI_Model
         return $query;
     }
 
-    
+
 
     public function get_detail_budget($budget_code)
     {
@@ -613,34 +644,35 @@ class Direksi_model extends CI_Model
         return $query;
     }
 
-    public function costkot($brand_code){
+    public function costkot($brand_code)
+    {
         $arr0 = [];
-        $sql ="SELECT  t1.Number, sum(t2.TotalCosting) as totalang
+        $sql = "SELECT  t1.Number, sum(t2.TotalCosting) as totalang
         FROM tb_proposal t1
         LEFT JOIN tb_operating_proposal t2 ON t1.Number = t2.ProposalNumber ";
 
-        
-        if($brand_code){
-            $sql .= " where t1.BrandCode = '".$brand_code."' and t1.Status != 'canceled'";
-        } else{
+
+        if ($brand_code) {
+            $sql .= " where t1.BrandCode = '" . $brand_code . "' and t1.Status != 'canceled'";
+        } else {
             $sql .= " where t1.Status != 'canceled'";
         }
 
-        $sql .=" GROUP BY t1.Number";
+        $sql .= " GROUP BY t1.Number";
         $query = $this->db->query($sql);
         foreach ($query->result() as $key => $value) {
-            
-            $sql1 ="select mc.City from tb_proposal_customer t3 left join m_customer mc on mc.CardCode = t3.CustomerCode ";
-            $sql1 .= " where t3.ProposalNumber = '".$value->Number."' ";
+
+            $sql1 = "select mc.City from tb_proposal_customer t3 left join m_customer mc on mc.CardCode = t3.CustomerCode ";
+            $sql1 .= " where t3.ProposalNumber = '" . $value->Number . "' ";
             $query1 = $this->db->query($sql1);
             foreach ($query1->result() as $key1 => $value1) {
                 $arrk['city'] = $value1->City;
                 $arrk['totalang'] = $value->totalang;
-                array_push($arr0,$arrk);
+                array_push($arr0, $arrk);
             }
         }
 
-                
+
         // Array untuk menyimpan totalang berdasarkan city
         $totalangByCity = [];
 
@@ -648,7 +680,7 @@ class Direksi_model extends CI_Model
         foreach ($arr0 as $item) {
             $city = $item["city"];
             $totalang = $item["totalang"];
-            
+
             // Jika city belum ada dalam $totalangByCity, inisialisasi dengan nilai totalang
             if (!isset($totalangByCity[$city])) {
                 $totalangByCity[$city] = $totalang;
@@ -659,31 +691,30 @@ class Direksi_model extends CI_Model
         }
 
         return $totalangByCity;
-
     }
 
 
-    public function filterkota($brand_code){
+    public function filterkota($brand_code)
+    {
         $sql = "select mc.City,sum(t2.TotalCosting) as totalang FROM tb_proposal t1
         INNER JOIN tb_operating_proposal t2 ON t1.Number = t2.ProposalNumber
         INNER join tb_proposal_customer tc on t1.Number = tc.ProposalNumber
         INNER join m_customer mc on mc.CardCode = tc.CustomerCode
         INNER JOIN m_brand t3 ON t1.BrandCode = t3.BrandCode";
-        
-        if($brand_code){
-            $sql .= " where t1.BrandCode = ".$brand_code." and t1.Status != 'canceled'";
-        } else{
+
+        if ($brand_code) {
+            $sql .= " where t1.BrandCode = " . $brand_code . " and t1.Status != 'canceled'";
+        } else {
             $sql .= "where t1.Status != 'canceled'";
         }
 
-        $sql .=" and mc.city is not null GROUP BY mc.City";
-        
+        $sql .= " and mc.city is not null GROUP BY mc.City";
+
         $query = $this->db->query($sql);
         return $query;
-        
     }
 
-    
+
     public function filteract2($budget_code)
     {
         $sql = "
@@ -734,14 +765,15 @@ ORDER BY
     ss.BudgetActivity DESC;
 
         ";
-        
+
         $query = $this->db->query($sql);
         return $query;
     }
 
 
-    public function filteract($brand_code){
-        $sql ="SELECT 
+    public function filteract($brand_code)
+    {
+        $sql = "SELECT 
         t5.BudgetActivity,
         t2.ActivityCode, t4.promo_name,
         t1.BudgetCode, t3.BrandName, t1.BrandCode,
@@ -752,24 +784,24 @@ ORDER BY
         INNER JOIN m_brand t3 ON t1.BrandCode = t3.BrandCode
         INNER JOIN m_promo t4 ON t2.ActivityCode = t4.id";
 
-        
-        if($brand_code){
-            $sql .= " where t1.BrandCode = '".$brand_code."' and t1.Status != 'canceled'";
-        } else{
+
+        if ($brand_code) {
+            $sql .= " where t1.BrandCode = '" . $brand_code . "' and t1.Status != 'canceled'";
+        } else {
             $sql .= "where t1.Status != 'canceled'";
         }
 
-        $sql .="
+        $sql .= "
         GROUP BY t2.ActivityCode, t5.BudgetActivity, t4.promo_name,
             t1.BudgetCode, t3.BrandName, t1.BrandCode
         ORDER BY t2.ActivityCode";
-        
+
         $query = $this->db->query($sql);
         return $query;
-
     }
 
-    public function anpdir1($kode_brand = null){
+    public function anpdir1($kode_brand = null)
+    {
         $sql = "SELECT t1.*, t1.BudgetCode, t3.BrandCode, t1.BrandName, t3.Code,
         FORMAT(StartPeriode, 'MMM yyyy') as StartPeriode, 
         FORMAT(EndPeriode, 'MMM yyyy') AS EndPeriode,
@@ -801,8 +833,8 @@ ORDER BY
     LEFT JOIN CostingByBudgetCodeView t2 ON t1.BudgetCode = t2.BudgetCode
     LEFT JOIN m_brand_anp t3 ON t3.BrandCode = t1.BrandCode 
     ";
-        if($kode_brand){
-            $sql .= " where t3.BrandCode ='".$kode_brand."'";
+        if ($kode_brand) {
+            $sql .= " where t3.BrandCode ='" . $kode_brand . "'";
         }
         $sql .= "ORDER BY TotalIncomingAmount DESC";
 
@@ -847,12 +879,14 @@ ORDER BY
         return $query;
     }
 
-    public function plan_list_brand($a=null){ 
+    public function plan_list_brand($a = null)
+    {
         $sql = "SELECT BrandCode, BrandName FROM tb_operating group by BrandCode, BrandName";
         return $this->db->query($sql);
     }
-    
-    public function plan_list_year($a=null){ 
+
+    public function plan_list_year($a = null)
+    {
         $where = "";
         if (count($a) > 0) {
             $ax = implode(",", $a);
@@ -862,7 +896,8 @@ ORDER BY
         return $this->db->query($sql);
     }
 
-    public function plan_list_periode($a=null,$b=null){ 
+    public function plan_list_periode($a = null, $b = null)
+    {
         $where = "";
         if (count($a) > 0) {
             $ax = implode(",", $a);
@@ -876,28 +911,28 @@ ORDER BY
         $sql = "SELECT distinct CASE when (MONTH(Month) % 3) != 0 then (MONTH(Month)/3) +1 else (MONTH(Month)/3) END AS periode FROM tb_operating $where";
         return $this->db->query($sql);
     }
-    
+
 
     public function getProposalpic($params = null)
     {
         $sql = "SELECT DISTINCT t1.*, t2.Budget_type FROM tb_proposal t1 
         inner join tb_operating_proposal t2 on t1.[Number] = t2.ProposalNumber";
 
-            if (isset($params['brand'])) {
-                $brand = $params['brand'];
-                $sql .= " AND t1.BrandCode IN (SELECT * FROM STRING_SPLIT('$brand', ','))";
-            }
+        if (isset($params['brand'])) {
+            $brand = $params['brand'];
+            $sql .= " AND t1.BrandCode IN (SELECT * FROM STRING_SPLIT('$brand', ','))";
+        }
 
-            if (isset($params['activity'])) {
-                $activity = $params['activity'];
-                $sql .= " AND t1.Activity IN (SELECT * FROM STRING_SPLIT('$activity', ','))";
-            }
+        if (isset($params['activity'])) {
+            $activity = $params['activity'];
+            $sql .= " AND t1.Activity IN (SELECT * FROM STRING_SPLIT('$activity', ','))";
+        }
 
-            if (isset($params['status'])) {
-                $status = $params['status'];
-                $sql .= " AND t1.Status IN (SELECT * FROM STRING_SPLIT('$status', ','))";
-            }
-        
+        if (isset($params['status'])) {
+            $status = $params['status'];
+            $sql .= " AND t1.Status IN (SELECT * FROM STRING_SPLIT('$status', ','))";
+        }
+
 
         if (!empty($params['number'])) {
             $number = $params['number'];
@@ -906,17 +941,18 @@ ORDER BY
 
         $sql .= " ORDER BY t1.id DESC";
 
-        
+
         // echo $sql;
         $query = $this->db->query($sql);
         return $query;
     }
 
-    public function getProposalx($params = null){
+    public function getProposalx($params = null)
+    {
         $anu = $this->getProposalpic($params);
         return $anu;
     }
-    
+
     public function getBrandProposalByPic()
     {
         $sql = "SELECT DISTINCT t1.BrandCode, t1.BrandName FROM ProposalTarikanExcelView t1 
@@ -925,7 +961,7 @@ ORDER BY
         return $query;
     }
 
-    public function getBudgetOperatingbybrand($brand,$year = null, $periode = null)
+    public function getBudgetOperatingbybrand($brand, $year = null, $periode = null)
     {
         $sql = "select
         BrandName,BrandCode, Valas,ExchangeRate, ActualAnp,
@@ -937,21 +973,21 @@ ORDER BY
         OperatingBudget
         from tb_operating where BrandCode = '$brand'";
 
-        if(($year)&&($periode)){
+        if (($year) && ($periode)) {
             $range0 = 3 * ($periode - 1);
             $range1 = 3 * $periode;
             $range0 = ($range0 >= 1) ? $range0 : 1;
             $range1 = ($range1 < 12) ? $range1 : 12;
-            $periode0 = $year."-".$range0."-01";
-            $periode1 = $year."-".$range1."-01";
+            $periode0 = $year . "-" . $range0 . "-01";
+            $periode1 = $year . "-" . $range1 . "-01";
 
-            $sql0 = $sql." and Month between '$periode0' and '$periode1'";  
-            
+            $sql0 = $sql . " and Month between '$periode0' and '$periode1'";
+
             $query0 = $this->db->query($sql0);
-            if($query0->num_rows() >= 1){
+            if ($query0->num_rows() >= 1) {
                 return $query0;
-            }else{
-                        
+            } else {
+
                 $sql = "select
                 BrandName,BrandCode, Valas,ExchangeRate, ActualAnp,
                 [Month] as Periode,
@@ -1095,5 +1131,25 @@ ORDER BY
         );
         $this->db->where('user_code', $this->session->userdata('user_code'));
         $this->db->update('master_user', $params);
+    }
+
+    public function getNewOperatingToApprove($post)
+    {
+        $budgetCode = $post['budgetcode'];
+        $sql = "select * from tb_operating_extend where BudgetCode = '$budgetCode' and isApprove = 'n'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function approveNewOperating($post)
+    {
+        $budgetCode = $post['budgetcode'];
+        $params = array(
+            'isApprove' => 'y',
+            'approveBy' => $this->session->userdata('user_code'),
+            'approveDate' => $this->getDate(),
+        );
+        $this->db->where('BudgetCode', $budgetCode);
+        $this->db->update('tb_operating_extend', $params);
     }
 }

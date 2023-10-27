@@ -52,7 +52,6 @@
                                             <?php if (statusOperatingActivity($op->BudgetCode) == 'not complete') { ?>
                                                 <a href="<?= base_url($_SESSION['page'] . '/lihatOperatingActivity/' . $op->BudgetCode) ?>" class="btn btn-info btn-xs">Breakdown Activity</a>
                                             <?php } ?>
-                                            <button onclick="showModalAddOperating(this)" data-budgetcode="<?= $op->BudgetCode ?>" data-toggle="modal" data-target="#modal-add-operating" class="btn btn-xs btn-primary">Add operating</button>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -64,34 +63,9 @@
         </div>
     </section>
 </div>
-
-<div class="modal fade" id="modal-add-operating">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Extend Operating</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Operating Amount</label>
-                    <input type="number" class="form-control" id="operatingAmount">
-                    <input type="hidden" class="form-control" id="budgetCode">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <button type="button" onclick="prosesSimpanExtendOperating()" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
 <?php $this->view('footer') ?>
 <script>
-    $('.table_operating').DataTable({
-        resposive: true
-    });
+    $('.table_operating').DataTable({resposive : true});
 
     function loading() {
         div_loading = document.getElementById('muncul_loading');
@@ -104,46 +78,5 @@
             'You clicked the button!',
             'success'
         )
-    }
-
-    function showModalAddOperating(elem) {
-        let budgetCode = $(elem).data('budgetcode');
-        $('#budgetCode').val(budgetCode)
-    }
-
-    function prosesSimpanExtendOperating() {
-        let budgetCode = $('#budgetCode').val();
-        let amountOperating = $('#operatingAmount').val();
-
-        if (budgetCode.trim() != '') {
-            $.ajax({
-                url: "<?= base_url($_SESSION['page'] . '/createExtendOperating') ?>",
-                method: "POST",
-                data: {
-                    amountOperating,
-                    budgetCode
-                },
-                dataType: "JSON",
-                success: function(response) {
-                    if (response.success == true) {
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'success',
-                            title: 'Data berhasil disimpan',
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(function() {
-                            window.location.href = "<?= base_url($_SESSION['page'] . '/showOperating') ?>";
-                        })
-                    } else {
-                        Swal.fire(
-                            'Error',
-                            'Gagal simpan data',
-                            'error'
-                        )
-                    }
-                }
-            })
-        }
     }
 </script>

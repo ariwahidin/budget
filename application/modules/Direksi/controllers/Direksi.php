@@ -13,7 +13,6 @@ class Direksi extends CI_Controller
         parent::__construct();
         check_login();
         $this->load->model(['direksi_model']);
-        
     }
 
     public function render($view, array $data = NULL)
@@ -23,7 +22,8 @@ class Direksi extends CI_Controller
         $this->load->view('footer');
     }
 
-    public function index(){
+    public function index()
+    {
         $anp = $this->direksi_model->anpdir1();
         $resumeAnp = $this->direksi_model->getResumeAnp();
         // var_dump($resumeAnp->result());
@@ -36,7 +36,8 @@ class Direksi extends CI_Controller
         $this->load->view('direksi_v', $data);
     }
 
-    public function cekdir(){
+    public function cekdir()
+    {
         $kode_brand = $_POST['code'];
         $costkot = $this->direksi_model->costkot($kode_brand);
         $data['costkot'] = $costkot;
@@ -53,10 +54,11 @@ class Direksi extends CI_Controller
     }
 
 
-    public function propd(){
+    public function propd()
+    {
         $kode_brand = $_POST['code'];
         $actx = $_POST['actx'];
-        $data['proposal']  = $this->direksi_model->getProposalbybrand($kode_brand,$actx);
+        $data['proposal']  = $this->direksi_model->getProposalbybrand($kode_brand, $actx);
         $this->load->view('propd', $data);
     }
 
@@ -583,7 +585,7 @@ class Direksi extends CI_Controller
         $this->render('operating/detail_budget', $data);
     }
 
-    
+
     public function loadTableProposal()
     {
 
@@ -614,7 +616,8 @@ class Direksi extends CI_Controller
     }
 
 
-    public function loadplan(){
+    public function loadplan()
+    {
         $plan_list_brand = $this->direksi_model->plan_list_brand();
         $plan_list_year = $this->direksi_model->plan_list_year();
         $plan_list_periode = $this->direksi_model->plan_list_periode();
@@ -622,20 +625,20 @@ class Direksi extends CI_Controller
         $var_brand = $_POST['var_brand'] ?? null;
         $var_year = $_POST['var_year'] ?? null;
         $var_periode = $_POST['var_periode'] ?? null;
-        
-        if ($var_brand){
+
+        if ($var_brand) {
             $tahun_list = $this->direksi_model->plan_list_year($var_brand);
-            if ($var_year){
-                $tahun_list = $this->direksi_model->plan_list_periode($var_brand,$var_year);
-            }        
+            if ($var_year) {
+                $tahun_list = $this->direksi_model->plan_list_periode($var_brand, $var_year);
+            }
         }
 
         $range0 = 3 * ($var_periode - 1);
         $range1 = 3 * $var_periode;
         $range0 = ($range0 >= 1) ? $range0 : 1;
         $range1 = ($range1 < 12) ? $range1 : 12;
-        $periode0 = $year."-".$range0."-01";
-        $periode1 = $year."-".$range1."-01";
+        $periode0 = $year . "-" . $range0 . "-01";
+        $periode1 = $year . "-" . $range1 . "-01";
 
         $data = array(
             'plan_list_brand' => $plan_list_brand,
@@ -645,12 +648,12 @@ class Direksi extends CI_Controller
             'var_brand' => $var_brand,
             'var_year' => $var_year,
             'var_periode' => $var_periode,
-            
+
             'brand' => $this->direksi_model->getBrandProposalByPic(),
             'activity' => $this->direksi_model->getActivity()
         );
 
-        if ($var_brand){
+        if ($var_brand) {
 
             // // for($i = $range0+1; $i <= $range1; $i++){
             // //     echo $i."<br>";
@@ -662,11 +665,11 @@ class Direksi extends CI_Controller
             // $interval = new DateInterval('P1M');
             // $daterange = new DatePeriod($periode0, $interval, $periode1);
             // $periode = array();
-    
+
             // foreach ($daterange as $date) {
             //     array_push($periode, $date->format("Y-m-d"));
             // }
-    
+
             // // $data = array(
             // //     'brand' => $var_brand,
             // //     'start_month' => $periode0,
@@ -679,13 +682,13 @@ class Direksi extends CI_Controller
             $data['filteract']  = $this->direksi_model->filteract($var_brand);
             $data['filterkota']  = $this->direksi_model->filterkota($var_brand);
             $data['brand'] =  $this->direksi_model->getBrand($var_brand)->row();
-            $data['operating'] = $this->direksi_model->getBudgetOperatingbybrand($var_brand,$var_year,$var_periode);
-            $data['header']  = $this->direksi_model->getHeaderOperatingbybrand($var_brand,$var_year,$var_periode);
+            $data['operating'] = $this->direksi_model->getBudgetOperatingbybrand($var_brand, $var_year, $var_periode);
+            $data['header']  = $this->direksi_model->getHeaderOperatingbybrand($var_brand, $var_year, $var_periode);
             $data['proposal']  = $this->direksi_model->getProposalbybrand($var_brand);
             return $this->load->view('proposal/loadtableplan', $data);
         }
 
-        
+
         $this->render('operating/loadplan', $data);
     }
 
@@ -812,5 +815,40 @@ class Direksi extends CI_Controller
             $this->session->set_flashdata('error', 'Gagal ubah password');
         }
         redirect(base_url($_SESSION['page'] . '/changePasswordPage'));
+    }
+
+    public function getNewOperatingToApprove()
+    {
+        $post = $this->input->post();
+        $newoperating = $this->direksi_model->getNewOperatingToApprove($post);
+        if ($newoperating->num_rows() > 0) {
+            $response = array(
+                'success' => true,
+                'data' => $newoperating->result()
+            );
+        } else {
+            $response = array(
+                'success' => false,
+            );
+        }
+        echo json_encode($response);
+    }
+
+    public function approveNewOperating()
+    {
+        $post = $this->input->post();
+        $this->direksi_model->approveNewOperating($post);
+
+        if ($this->db->affected_rows() > 0) {
+            $response = array(
+                'success' => true
+            );
+        } else {
+            $response = array(
+                'success' => false
+            );
+        }
+
+        echo json_encode($response);
     }
 }
